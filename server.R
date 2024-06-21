@@ -1,10 +1,11 @@
-# LOAD LIBRARIES --------------
+# SERVER ------------
 library(shiny)
 library(readxl)
+library(shinyjs)
 
-# Define Server
 server <- function(input, output, session) {
-  # Load the deflators data inside the server function
+  
+  # Load data inside server function
   deflators <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "deflators")
   
   observeEvent(input$adjust, {
@@ -25,7 +26,9 @@ server <- function(input, output, session) {
     }
     
     if (is.na(nominal_value) || is.na(deflator_start) || is.na(deflator_end)) {
-      output$adjusted_value <- renderText("Please enter valid numeric values.")
+      output$adjusted_value <- renderUI({
+        HTML("<div style='text-align: center; color: red;'>Please enter valid numeric values.</div>")
+      })
     } else {
       # Adjust the nominal value using the deflators
       adjusted_value <- nominal_value * (deflator_end / deflator_start)
@@ -33,6 +36,9 @@ server <- function(input, output, session) {
       output$adjusted_value <- renderUI({
         HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(adjusted_value, 2), "</b>.</div>"))
       })
+      
+      # Show additional buttons after calculation
+      shinyjs::show("additional_buttons")
     }
   })
 }
