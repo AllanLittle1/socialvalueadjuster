@@ -84,7 +84,7 @@ ui <- navbarPage(
                                 title = "For Financial Year, the input year corresponds to the start of the FY. E.g., 2022 means FY 2022/23"
                               )),
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard social value" = "other", "Wellbeing-year value (WELLBYs)" = "wellbeing"),
+                              prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard social value" = "standard", "Wellbeing-year value (WELLBYs)" = "wellbeing"),
                                                  inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
                               tags$span(
                                 id = "value_type_tooltip",

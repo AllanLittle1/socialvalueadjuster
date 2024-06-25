@@ -1,8 +1,3 @@
-# SERVER ------------
-library(shiny)
-library(readxl)
-library(shinyjs)
-
 server <- function(input, output, session) {
   
   # Load data inside server function
@@ -19,19 +14,30 @@ server <- function(input, output, session) {
       # Financial Year
       deflator_start <- deflators$deflator_fy[deflators$year == price_year]
       deflator_end <- deflators$deflator_fy[deflators$year == adjusted_year]
+      gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
+      gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
     } else {
       # Calendar Year
       deflator_start <- deflators$deflator_cy[deflators$year == price_year]
       deflator_end <- deflators$deflator_cy[deflators$year == adjusted_year]
+      gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
+      gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
     }
     
-    if (is.na(nominal_value) || is.na(deflator_start) || is.na(deflator_end)) {
+    if (is.na(nominal_value) || is.na(deflator_start) || is.na(deflator_end) || 
+        (input$value_type == "wellbeing" && (is.na(gdp_per_capita_start) || is.na(gdp_per_capita_end)))) {
       output$adjusted_value <- renderUI({
         HTML("<div style='text-align: center; color: red;'>Please enter valid numeric values.</div>")
       })
     } else {
-      # Adjust the nominal value using the deflators
-      adjusted_value <- nominal_value * (deflator_end / deflator_start)
+      if (input$value_type == "wellbeing") {
+        # Adjust the nominal value using the deflators and GDP per capita for wellbeing value
+        adjusted_value <- nominal_value * (deflator_end / deflator_start) * 
+          (gdp_per_capita_end / gdp_per_capita_start) ^ 1.3
+      } else {
+        # Adjust the nominal value using the deflators for standard value
+        adjusted_value <- nominal_value * (deflator_end / deflator_start)
+      }
       
       output$adjusted_value <- renderUI({
         HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(adjusted_value, 2), "</b>.</div>"))
@@ -42,3 +48,4 @@ server <- function(input, output, session) {
     }
   })
 }
+
