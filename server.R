@@ -1,3 +1,8 @@
+library(shiny)
+library(readxl)
+library(shinyjs)
+library(openxlsx2)
+
 server <- function(input, output, session) {
   
   # Load data inside server function
@@ -47,5 +52,15 @@ server <- function(input, output, session) {
       shinyjs::show("additional_buttons")
     }
   })
+  
+  # Create a simple data frame from the deflators data
+  deflators_df <- data.frame(year = deflators$year, deflator_cy = deflators$deflator_cy, deflator_fy = deflators$deflator_fy,
+    label_fy = deflators$label_fy,  gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
+  
+  # Download handler for CSV
+  output$download_csv <- downloadHandler(
+    filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
+    content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
 }
+
 

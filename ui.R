@@ -1,4 +1,3 @@
-# LOAD LIBRARIES --------------
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
@@ -12,7 +11,7 @@ library(plotly)
 library(bslib)
 library(bsicons)
 
-# Custom CSS for Accordion Styling
+# Custom CSS for Accordion Styling and Button Styling
 custom_css <- "
 .accordion .accordion-header {
   background-color: #f7f7f7;
@@ -35,6 +34,20 @@ custom_css <- "
 .accordion-container {
   margin: 0 auto;
   width: 70%;
+}
+.btn-unite {
+  background-color: #5cb85c !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  text-align: center !important;
+  margin: 5px !important;
+}
+.btn-unite:hover {
+  background-color: #4cae4c !important;
 }
 "
 
@@ -63,62 +76,57 @@ ui <- navbarPage(
                               span(style = "padding-left: 5px;", "prices?")),
                           br(),
                           div(style = "text-align: center;",
-                              actionBttn(inputId = "adjust", label = "Calculate Real Value", style = "unite", color = "primary")
-                          ),
+                              actionBttn(inputId = "adjust", label = "Calculate Real Value", style = "unite", color = "primary")),
                           br(),br(),
                           htmlOutput("adjusted_value"),
                           br(), br(),
                           div(id = "additional_buttons", style = "text-align: center; display: none;",
-                              actionBttn(inputId = "interpret", label = "Interpretation", style = "unite", color = "warning"),
-                              actionBttn(inputId = "download_report", label = "Download Report", style = "unite", color = "primary"),
-                              actionBttn(inputId = "download_csv", label = "Download CSV", style = "unite", color = "success")
-                          ),
+                              actionBttn(inputId = "interpret", label = "Interpretation", style = "unite", color = "warning",
+                                         size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("search")),
+                              
+                              downloadBttn(outputId = "download_report", label = "Download Report", style = "unite", color = "primary",  
+                                           size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
+                              
+                              downloadBttn(outputId = "download_csv", label = "Download CSV", style = "unite", color = "success",  
+                                           #Colour options - default, primary, warning, danger, success, royal.
+                                           size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))
+                             ),
                           br(), br(),
                           h5("Specialist Options"),
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
                               prettyRadioButtons(inputId = "year_type", label = " ", choices = c("Calendar years" = "cy", "Financial years" = "fy"),
                                                  inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              tags$span(
-                                id = "year_type_tooltip",
-                                class = "glyphicon glyphicon-info-sign",
-                                title = "For Financial Year, the input year corresponds to the start of the FY. E.g., 2022 means FY 2022/23"
-                              )),
+                              tags$span(id = "year_type_tooltip", class = "glyphicon glyphicon-info-sign",
+                                title = "For Financial Year, the input year corresponds to the start of the FY. 
+                                E.g., 2022 means FY 2022/23")),
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
                               prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard social value" = "standard", "Wellbeing-year value (WELLBYs)" = "wellbeing"),
                                                  inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              tags$span(
-                                id = "value_type_tooltip",
-                                class = "glyphicon glyphicon-info-sign",
-                                title = "Subjective wellbeing values, measured in wellbeing-years (WELLBYs), are adjusted slightly differently (see technical guidance)."
-                              ))
-                      )
-               )
-             ),
+                              tags$span(id = "value_type_tooltip", class = "glyphicon glyphicon-info-sign",
+                                title = "Subjective wellbeing values, measured in wellbeing-years (WELLBYs), 
+                                are adjusted slightly differently (see technical guidance)."))
+                      ))),
              br(), br(),
              div(class = "accordion-container",
                  accordion(
-                   accordion_panel(
-                     "Why does this matter?",
-                     icon = icon("info-circle"),
-                     p("This section explains why adjusting social values to real terms is important.")
-                   ),
-                   accordion_panel(
-                     "Non-technical explainer",
-                     icon = icon("question-circle"),
-                     p("This section provides a non-technical explanation of the calculations.")
-                   ),
-                   accordion_panel(
-                     "Technical guidance",
-                     icon = icon("cogs"),
-                     p("This section provides technical guidance on the calculations and methodology.")
-                   ),
-                   accordion_panel(
-                     "Version control",
-                     icon = icon("code-branch"),
-                     p("This section provides information on version control and updates.")
-                   )
-                 )
-             )
-           )
+                   accordion_panel("Why does this matter?", icon = icon("info-circle"),
+                     p("This section explains why adjusting social values to real terms is important.")),
+                   accordion_panel("Non-technical explainer", icon = icon("question-circle"),
+                     p("This section provides a non-technical explanation of the calculations.")),
+                   accordion_panel("Technical guidance", icon = icon("cogs"),
+                     p("This section provides technical guidance on the calculations and methodology.")),
+                   accordion_panel("Version control", icon = icon("code-branch"),
+                     p("This section provides information on version control and updates."))
+                 ))),
+           
+           # Chat Bot Box
+           div(id = "chat_box", class = "chat-box", 
+               div(class = "chat-header", "Chat with AI Assistant"),
+               div(class = "chat-body", p("Hello! How can I assist you today?")),
+               div(class = "chat-footer", 
+                   textInput("chat_input", "", placeholder = "Type your message..."),
+                   actionButton("send_chat", "Send", icon = icon("paper-plane")))
   )
-)
+           
+) # end TabPanel
+)#end Server
