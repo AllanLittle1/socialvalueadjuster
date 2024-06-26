@@ -61,6 +61,26 @@ server <- function(input, output, session) {
   output$download_csv <- downloadHandler(
     filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
     content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
+  
+   
+  # Minimize and expand chat card
+  observe({
+    runjs("
+      $('.chat-header').click(function() {
+        $('.chat-body, .chat-footer').toggle();
+      });
+    ")
+  })
+  
+  # Add resizable functionality using jQuery UI
+  observe({
+    runjs("
+      $('#chat_card').resizable({
+        handles: 'se'
+      });
+    ")
+  })
+  
 }
 
 
