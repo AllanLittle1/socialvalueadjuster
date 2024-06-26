@@ -1,21 +1,13 @@
+# LIBRARIES -------------------------------------------------------------------------------------------------------------------------
+load_libraries <- function(packages) {for (pkg in packages) {if (!require(pkg, character.only = TRUE)) {
+      install.packages(pkg, dependencies = TRUE)
+      library(pkg, character.only = TRUE)}}}
 
+packages <- c("shiny", "shinyjs", "shinyWidgets", "shinyBS", "readxl", "shinythemes", "DT", "dplyr", "httr", "plotly", "bslib", 
+              "bsicons", "shinyjqui")
+load_libraries(packages)
 
-
-library(shiny)
-library(shinyjs)
-library(shinyWidgets)
-library(shinyBS)
-library(readxl)
-library(shinythemes)
-library(DT)
-library(dplyr)
-library(httr)
-library(plotly)
-library(bslib)
-library(bsicons)
-library(shinyjqui)  # For draggable functionality
-
-# CUSTOM CSS --------------------------------------------------------------------------------------------------------------------------------
+# CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 
       # Accordion Styling, Button Styling, and Chat Bot Box Styling
       
@@ -35,21 +27,19 @@ library(shinyjqui)  # For draggable functionality
       .chat-body {display: none; padding: 10px; max-height: 400px; overflow-y: auto;}
       .chat-footer {display: none; padding: 10px; border-top: 1px solid #ddd;}
       "
-
-# UI --------------------------------------------------------------------------------------------------------------------------------
+# UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
-  
-  # SET UP ----------
   theme = bs_theme(bootswatch = "flatly"),
   "Get Real",
   
+  # GET REAL TAB SET UP--------------------------------------------------------------------------------------------------------------
   tabPanel("Get Real",
            fluidPage(
              useShinyjs(),  # Initialize shinyjs
              tags$style(HTML(custom_css)),  # Include custom CSS
              tags$script(HTML("$(function() {$('.draggable-card').draggable();});")), # Include jQuery UI for draggable function
              
-             
+             # Calculator Fluid Row -------------------------------------------------------------------------------------------------
              fluidRow(column(6, offset = 3,
                       div(class = "well",
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
@@ -102,6 +92,8 @@ ui <- navbarPage(
                               ))
                       ))),
              br(), br(),
+             
+             # Accordian -------------------------------------------------------------------------------------------------
              div(class = "accordion-container",
                  accordion(
                    accordion_panel(
@@ -127,7 +119,7 @@ ui <- navbarPage(
                  )
              ),
              
-             # Chat Bot Card
+             # AI assistant-------------------------------------------------------------------------------------------------
              jqui_draggable(
                div(id = "chat_card", class = "draggable-card",
                    div(class = "chat-header", "Chat with Get Real AI"),
@@ -140,6 +132,5 @@ ui <- navbarPage(
                ))           
              
              )#end fluid page
-             )#end tab panel
+      )#end tab panel
 )#end UI and navbar
-
