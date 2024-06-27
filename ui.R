@@ -96,28 +96,55 @@ ui <- navbarPage(
              # Accordian -------------------------------------------------------------------------------------------------
              div(class = "accordion-container",
                  accordion(
-                   accordion_panel(
-                     "Why does this matter?",
-                     icon = icon("info-circle"),
-                     p("This section explains why adjusting social values to real terms is important.")
-                   ),
-                   accordion_panel(
-                     "Non-technical explainer",
-                     icon = icon("question-circle"),
-                     p("This section provides a non-technical explanation of the calculations.")
-                   ),
-                   accordion_panel(
-                     "Technical guidance",
-                     icon = icon("cogs"),
-                     p("This section provides technical guidance on the calculations and methodology.")
-                   ),
-                   accordion_panel(
-                     "Version control",
-                     icon = icon("code-branch"),
-                     p("This section provides information on version control and updates.")
-                   )
+                   accordion_panel("Why do we need to Get Real?", icon = icon("info-circle"),
+                                   HTML("<p>Proper adjustment of social values is crucial for:</p>
+                  <ul>
+                    <li><strong>Accurate comparison:</strong> Compare your social benefits to investment costs in 'real terms', essential for calculating Social Return on Investment (SROI).</li>
+                    <li><strong>Credibility:</strong> Maintain credibility with central and local government and other key funders.</li>
+                    <li><strong>Avoiding undervaluation:</strong> Recent high inflation rates mean you could be significantly undervaluing your social impacts. For example, values from five years ago could make your SROI about 20% higher than currently claimed.</li>
+                  </ul>")),
+                  accordion_panel("Non-technical explainer", icon = icon("question-circle"),
+                                  HTML("<p><strong>Inflation:</strong></p>
+                 <ul>     
+                   <li>Prices typically increase over time. The rate of this increase is called inflation.</li> 
+                   <li>When we talk about changes in 'real terms,' we're accounting for inflation to make better 
+                       comparisons of the actual value of goods and services over time.</li>
+                   <li>The Treasury recommends using their 'GDP deflator' to adjust for inflation in social values. 
+                       While you may have heard of the Consumer Price Index (CPI), the GDP deflator is the preferred measure for this purpose.</li>
+                 </ul> 
+              <p><strong>Present Values:</strong></p>
+                 <ul>     
+                   <li>People generally prefer benefits now rather than later.</li> 
+                   <li>Discounting helps us determine the present worth of future money.</li>
+                   <li>Discounting is separate from inflation adjustment.</li> 
+                   <li>We apply Treasury discount rates (after removing inflation effects) to estimate the 
+                       present value of future social costs and benefits.</li>
+                 </ul>")),
+              accordion_panel("Technical guidance", icon = icon("cogs"),
+                              HTML("<p><strong>Inflation Adjustment:</strong></p>
+                   <ul>
+                     <li>Use 'real' base year prices for costs and benefits in social value appraisal.</li>
+                     <li>For short time horizons, use the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts.</li>
+                     <li>For longer horizons, refer to the OBR Fiscal Sustainability Report or extrapolate using the final year's growth rate.</li>
+                     <li>Relative price effects can be used with historical evidence and future expectations, but must be justified and agreed upon.</li>
+                   </ul>
+                   
+                   <p><strong>Discounting:</strong></p>
+                   <ul>
+                     <li>Apply the Social Time Preference Rate (STPR) of 3.5% in real terms (1.5% for health and wellbeing values).</li>
+                     <li>Convert to real prices first, then apply discounting.</li>
+                     <li>Never apply discounting retrospectively.</li>
+                     <li>Time horizon: typically 10 years, but up to 60 years for infrastructure projects.</li>
+                   </ul>")),
+              accordion_panel("Version control", icon = icon("code-branch"),
+                              HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
+                 <p><strong>GDP Deflators:</strong> Market prices, and money GDP. 
+                   Outturn data are as at the Quarterly National Accounts from ONS - updated 28 March 2024. 
+                   Forecast data are consistent with OBR EFO data as at Budget 6 March 2024.</p>
+                 <p><strong>GVA per head used in WELLBY estimation:</strong> 
+                   Gross domestic product (Average) per head at market prices - released 10 May 2024</p>")))
                  )
-             ),
+             ), # Added comma here
              
              # AI assistant-------------------------------------------------------------------------------------------------
              jqui_draggable(
@@ -130,7 +157,7 @@ ui <- navbarPage(
                    ),
                    div(class = "resize-handle")
                ))           
-             
+# UI END ------------------------------------------------------------------------------------------------------------------             
              )#end fluid page
       )#end tab panel
 )#end UI and navbar
