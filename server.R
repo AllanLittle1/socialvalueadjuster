@@ -7,6 +7,10 @@ library(openxlsx2)
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
   server <- function(input, output, session) {
   
+  # INITIALISE TOOLTOP -----------------------------------------------------------------------------------------------------
+    
+    shinyjs::runjs("$('.custom-tooltip').tooltip({container: 'body', placement: 'top', html: true});")
+    
   # LOAD DATA (inside server) -----------------------------------------------------------------------------------------------
   deflators <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "deflators")
   

@@ -27,9 +27,22 @@ load_libraries(packages)
       .chat-body {display: none; padding: 10px; max-height: 400px; overflow-y: auto;}
       .chat-footer {display: none; padding: 10px; border-top: 1px solid #ddd;}
       "
+# CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
+my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
+    .custom-info-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 1px solid #3498db; color: white; background-color: #3498db;
+      margin-left: 5px; cursor: pointer; transition: all 0.3s ease;
+    }
+    .custom-info-icon:hover {
+      background-color: transparent; color: #3498db;
+    }
+")
+
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
-  theme = bs_theme(bootswatch = "flatly"),
+  theme = my_theme,
   "Get Real",
   
   # GET REAL TAB SET UP--------------------------------------------------------------------------------------------------------------
@@ -77,19 +90,22 @@ ui <- navbarPage(
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
                               prettyRadioButtons(inputId = "year_type", label = " ", choices = c("Calendar years" = "cy", "Financial years" = "fy"),
                                                  inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              tags$span(
-                                id = "year_type_tooltip",
-                                class = "glyphicon glyphicon-info-sign",
-                                title = "For Financial Year, the input year corresponds to the start of the FY. E.g., 2022 means FY 2022/23"
-                              )),
+                              bslib::tooltip(
+                                tags$span(id = "year_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                "The Treasury provides GDP deflators for both calendar years (CY) and financial years (FY), and their values differ slightly. It's important to check whether your unadjusted social values are in CY or FY. Additionally, when preparing an investment case, verify if decision makers have set a preferred base year in CY or FY.",
+                                placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                              )
+                          ),
                           div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard social value" = "standard", "Wellbeing-year value (WELLBYs)" = "wellbeing"),
+                              prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard value" = "standard", "Wellbeing value" = "wellbeing"),
                                                  inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              tags$span(
-                                id = "value_type_tooltip",
-                                class = "glyphicon glyphicon-info-sign",
-                                title = "Subjective wellbeing values, measured in wellbeing-years (WELLBYs), are adjusted slightly differently (see technical guidance)."
-                              ))
+                              bslib::tooltip(
+                                tags$span(id = "value_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                "Most social costs and benefits can be adjusted using the standard GDP deflator series. If you’re using wellbeing-years (WELLBYs), inflation adjustments are more complex. We need to consider that as society's wealth increases, the additional happiness gained from a bit more money decreases. See the technical guidance for details.",
+                                placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                              )
+                          )
+                          
                       ))),
              br(), br(),
              
