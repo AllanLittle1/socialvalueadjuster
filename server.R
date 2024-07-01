@@ -1,8 +1,21 @@
 # LIBRARIES -------------------------------------------------------------------------------------------------------------------------
 library(shiny)
-library(readxl)
 library(shinyjs)
+library(shinyWidgets)
+library(shinyBS)
+library(readxl)
+library(shinythemes)
+library(DT)
+library(dplyr)
+library(httr)
+library(plotly)
+library(bslib)
+library(bsicons)
+library(shinyjqui)
 library(openxlsx2)
+library(httr)
+library(jsonlite)
+
 
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
   server <- function(input, output, session) {
@@ -74,7 +87,83 @@ library(openxlsx2)
     
     # Add resizable functionality with jQuery 
     observe({runjs("$('#chat_card').resizable({handles: 'se'});")})
+   
     
+# Add this to your server function, after the existing code
+    
+    # Read the API key from the configuration file
+    config <- readLines("config.txt")
+    api_key <- gsub("OPENAI_API_KEY=", "", config[grep("OPENAI_API_KEY", config)])
+    
+    openai_api_endpoint <- "https://api.openai.com/v1/chat/completions"
+    
+    # Initialize the conversation history
+    conversation_history <- list(list(role = "system", 
+                                      content = "You are GetReal.ai, a knowledgeable and helpful assistant specializing in inflation adjustments and social value calculations. Your role is to provide insightful explanations, assist users in understanding the inflation adjustment process, and interpret outputs within the Get Real app. Stay focused on topics pertinent to inflation adjustments, social value, and the app's functionalities. If asked about unrelated topics, respond politely by steering the conversation back to the app's domain or declining to answer. You are an integral CoPilot in this social valuation App, committed to enhancing users' understanding and decision-making in social value calculations and inflation adjustments."))
+    
+    openai_api_call <- function(prompt_text, conversation_history) {
+      # Add the user message to the conversation history
+      conversation_history <- c(conversation_history, list(list(role = "user", content = prompt_text)))
+      
+      # API call
+      response <- POST(openai_api_endpoint,
+                       add_headers(Authorization = paste0("Bearer ", api_key)),
+                       body = list(model = "gpt-4", messages = conversation_history),
+                       encode = "json")
+      
+      # Parse the response
+      parsed_response <- content(response, "parsed")
+      assistant_message <- parsed_response$choices[[1]]$message$content
+      
+      # Add the assistant's message to the conversation history
+      conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
+      
+      # Return the assistant's message and the updated conversation history
+      return(list(assistant_message, conversation_history))
+    }
+    
+    # Inside your server function
+    conversation_history_rv <- reactiveVal(conversation_history)
+    
+    output$chat_output <- renderUI({
+      div(class = "chat-container empty-chat")
+    })
+    
+    observeEvent(input$send_chat, {
+      user_message <- input$chat_input
+      current_conversation_history <- conversation_history_rv()
+      
+      result <- tryCatch({
+        openai_api_call(user_message, current_conversation_history)
+      }, error = function(e) {
+        print(paste("Error in openai_api_call: ", e$message))
+        return(NULL)
+      })
+      
+      if (!is.null(result)) {
+        assistant_message <- result[[1]]
+        updated_history <- result[[2]]
+        
+        conversation_history_rv(updated_history)
+        
+        output$chat_output <- renderUI({
+          chat_contents <- lapply(updated_history, function(msg) {
+            if (msg$role != "system") {
+              if (msg$role == "user") {
+                div(class = "chat-message user-message", style="color: blue;", msg$content)
+              } else {
+                div(class = "chat-message assistant-message", style="color: black;", msg$content)
+              }
+            }
+          })
+          do.call(div, c(list(class = "chat-container"), chat_contents))
+        })
+      }
+    })
+    
+    
+    
+     
 }  #end server
 
 

@@ -1,4 +1,8 @@
 # LIBRARIES -------------------------------------------------------------------------------------------------------------------------
+# Set the CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+# Load necessary libraries
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
@@ -12,6 +16,10 @@ library(plotly)
 library(bslib)
 library(bsicons)
 library(shinyjqui)
+library(openxlsx2)
+library(httr)
+library(jsonlite)
+
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 
@@ -32,7 +40,31 @@ library(shinyjqui)
       .chat-header {background-color: #007bff; color: white; padding: 10px; font-size: 16px; cursor: pointer;}
       .chat-body {display: none; padding: 10px; max-height: 400px; overflow-y: auto;}
       .chat-footer {display: none; padding: 10px; border-top: 1px solid #ddd;}
+      
+      
+      .chat-container {
+  height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+}
+.chat-message {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+.user-message {
+  background-color: #e6f3ff;
+  text-align: right;
+}
+.assistant-message {
+  background-color: #f0f0f0;
+  text-align: left;
+}
+      
+      
       "
+
+
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
 my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
     .custom-info-icon {
@@ -170,16 +202,20 @@ ui <- navbarPage(
              ), # Added comma here
              
              # AI assistant-------------------------------------------------------------------------------------------------
+             # Modify your existing chat card in the UI
              jqui_draggable(
                div(id = "chat_card", class = "draggable-card",
-                   div(class = "chat-header", "Chat with Get Real AI"),
-                   div(class = "chat-body", p("Hello! How can I assist you today?")),
+                   div(class = "chat-header", "Chat with GetReal AI"),
+                   div(class = "chat-body", 
+                       uiOutput("chat_output")  # This will display the chat messages
+                   ),
                    div(class = "chat-footer", 
                        textInput("chat_input", "", placeholder = "Type your message..."),
                        actionButton("send_chat", "Send", icon = icon("paper-plane"))
                    ),
                    div(class = "resize-handle")
-               ))           
+               )
+             )          
 # UI END ------------------------------------------------------------------------------------------------------------------             
              )#end fluid page
       )#end tab panel

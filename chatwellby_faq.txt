@@ -1,0 +1,8 @@
+Q: What is the role of life satisfaction in the Global Wellbeing Ready Reckoner?
+A: Life satisfaction is a key indicator in the Global Wellbeing Ready Reckoner. It reflects the overall wellbeing of individuals and is used to assess the impact of policies on population wellbeing.
+
+Q: How is the wellbeing value per person calculated?
+A: The wellbeing value per person is calculated by multiplying the change in lifetime wellbys (Policy ON - Policy OFF) by the wellbeing value per person, reflecting the economic impact of policy changes on individual wellbeing.
+
+Q: In what scenarios should I consider adjusting the intervention cost?
+A: You should consider adjusting the intervention cost when there are significant changes in policy implementation costs, economic conditions, or when scaling the intervention to larger populations.
