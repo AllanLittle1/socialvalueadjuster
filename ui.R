@@ -1,11 +1,17 @@
 # LIBRARIES -------------------------------------------------------------------------------------------------------------------------
-load_libraries <- function(packages) {for (pkg in packages) {if (!require(pkg, character.only = TRUE)) {
-      install.packages(pkg, dependencies = TRUE)
-      library(pkg, character.only = TRUE)}}}
-
-packages <- c("shiny", "shinyjs", "shinyWidgets", "shinyBS", "readxl", "shinythemes", "DT", "dplyr", "httr", "plotly", "bslib", 
-              "bsicons", "shinyjqui")
-load_libraries(packages)
+library(shiny)
+library(shinyjs)
+library(shinyWidgets)
+library(shinyBS)
+library(readxl)
+library(shinythemes)
+library(DT)
+library(dplyr)
+library(httr)
+library(plotly)
+library(bslib)
+library(bsicons)
+library(shinyjqui)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 
@@ -39,6 +45,7 @@ my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
       background-color: transparent; color: #3498db;
     }
 ")
+
 
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
