@@ -1,50 +1,52 @@
-# LIBRARIES -------------------------------------------------------------------------------------------------------------------------
-      library(shiny)
-      library(shinyjs)
-      library(shinyWidgets)
-      library(shinyBS)
-      library(readxl)
-      library(shinythemes)
-      library(DT)
-      library(dplyr)
-      library(httr)
-      library(plotly)
-      library(bslib)
-      library(bsicons)
-      library(shinyjqui)
-      library(openxlsx2)
-      library(httr)
-      library(jsonlite)
-      library(officer)
-      library(magrittr)
-      library(officedown)
-      library(rmarkdown)
-      library(ggplot2)
+# Libraries --------------------------------------------------------------------
+library(shiny)
+library(shinyjs)
+library(shinyWidgets)
+library(shinyBS)
+library(readxl)
+library(shinythemes)
+library(DT)
+library(dplyr)
+library(httr)
+library(plotly)
+library(bslib)
+library(bsicons)
+library(shinyjqui)
+library(openxlsx2)
+library(httr)
+library(jsonlite)
+library(officer)
+library(magrittr)
+library(officedown)
+library(rmarkdown)
+library(ggplot2)
+library(shinydashboard)
+library(bs4Dash)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
+custom_css <- "
+.accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer;
+  border: 1px solid #ddd; border-bottom: none;}
+.accordion .accordion-body {border: 1px solid #ddd; padding: 10px; font-size: 16px; background-color: #fff;}
+.accordion .accordion-body p {margin: 0;}
+.accordion-container {margin: 0 auto; width: 70%;}
+.btn-unite {background-color: #5cb85c !important; color: white !important; border: none !important;
+  padding: 10px 20px !important; font-size: 18px !important;cursor: pointer !important;
+  display: inline-block !important; text-align: center !important; margin: 5px !important;}
+.btn-unite:hover {background-color: #4cae4c !important;}
+"
 
-      custom_css <- "
-      .accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer;
-        border: 1px solid #ddd; border-bottom: none;}
-      .accordion .accordion-body {border: 1px solid #ddd; padding: 10px; font-size: 16px; background-color: #fff;}
-      .accordion .accordion-body p {margin: 0;}
-      .accordion-container {margin: 0 auto; width: 70%;}
-      .btn-unite {background-color: #5cb85c !important; color: white !important; border: none !important;
-        padding: 10px 20px !important; font-size: 18px !important;cursor: pointer !important;
-        display: inline-block !important; text-align: center !important; margin: 5px !important;}
-      .btn-unite:hover {background-color: #4cae4c !important;}
-      "
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
 my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
-    .custom-info-icon {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 20px; height: 20px; border-radius: 50%;
-      border: 1px solid #3498db; color: white; background-color: #3498db;
-      margin-left: 5px; cursor: pointer; transition: all 0.3s ease;
-    }
-    .custom-info-icon:hover {
-      background-color: transparent; color: #3498db;
-    }
+                .custom-info-icon {
+                  display: inline-flex; align-items: center; justify-content: center;
+                  width: 20px; height: 20px; border-radius: 50%;
+                  border: 1px solid #3498db; color: white; background-color: #3498db;
+                  margin-left: 5px; cursor: pointer; transition: all 0.3s ease;
+                }
+                .custom-info-icon:hover {
+                  background-color: transparent; color: #3498db;
+                }
 ")
 
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
@@ -78,17 +80,16 @@ ui <- navbarPage(
                                      actionBttn(inputId = "adjust", label = "Calculate Real Value", style = "unite", color = "primary")
                                  ),
                                  br(),br(),
+                                 
+                                 #Value output
                                  htmlOutput("adjusted_value"),
+
                                  br(), br(),
                                  div(id = "additional_buttons", style = "text-align: center; display: none;",
-                                     actionBttn(inputId = "interpret", label = "Interpretation", style = "unite", color = "warning",
-                                                size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("search")),
-                                     
                                      downloadBttn(outputId = "download_report", label = "Download Report", style = "unite", color = "primary",  
                                                   size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
                                      
                                      downloadBttn(outputId = "download_csv", label = "Download CSV", style = "unite", color = "success",  
-                                                  #Colour options - default, primary, warning, danger, success, royal.
                                                   size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))
                                  ),
                                  br(), br(),
@@ -117,6 +118,7 @@ ui <- navbarPage(
              # Accordian -------------------------------------------------------------------------------------------------
              div(class = "accordion-container",
                  accordion(
+                   id = "accordion_id",  # Providing an id for the accordion
                    accordion_panel("Why do we need to Get Real?", icon = icon("info-circle"),
                                    HTML("<p>Proper adjustment of social values is crucial for:</p>
                   <ul>
