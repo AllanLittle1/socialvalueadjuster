@@ -15,6 +15,9 @@ library(shinyjqui)
 library(openxlsx2)
 library(httr)
 library(jsonlite)
+library(officer)
+library(magrittr)
+
 
 
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
@@ -25,6 +28,9 @@ server <- function(input, output, session) {
   
   # LOAD DATA (inside server) -----------------------------------------------------------------------------------------------
   deflators <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "deflators")
+  
+  # REACTIVE VALUE TO STORE ADJUSTED VALUE ---------------------------------------------------------------------------------
+  rv <- reactiveValues(adjusted_value = NULL)
   
   # CALCULATOR -----------------------------------------------------------------------------------------------
   observeEvent(input$adjust, {
@@ -56,15 +62,15 @@ server <- function(input, output, session) {
     } else {
       if (input$value_type == "wellbeing") {
         # Adjust the nominal value using the deflators and GDP per capita for wellbeing value
-        adjusted_value <- nominal_value * (deflator_end / deflator_start) * 
+        rv$adjusted_value <- nominal_value * (deflator_end / deflator_start) * 
           (gdp_per_capita_end / gdp_per_capita_start) ^ 1.3
       } else {
         # Adjust the nominal value using the deflators for standard value
-        adjusted_value <- nominal_value * (deflator_end / deflator_start)
+        rv$adjusted_value <- nominal_value * (deflator_end / deflator_start)
       }
       
       output$adjusted_value <- renderUI({
-        HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(adjusted_value, 2), "</b>.</div>"))
+        HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(rv$adjusted_value, 2), "</b>.</div>"))
       })
       
       # Show additional buttons after calculation
@@ -74,10 +80,37 @@ server <- function(input, output, session) {
   
   # DATA FRAME ----------------------------------------------------------------------------------------------------------------------- 
   deflators_df <- data.frame(year = deflators$year, deflator_cy = deflators$deflator_cy, deflator_fy = deflators$deflator_fy,
-                             label_fy = deflators$label_fy,  gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
+                             label_fy = deflators$label_fy, gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
   
   # CSV -----------------------------------------------------------------------------------------------------------------------------
   output$download_csv <- downloadHandler(
     filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
     content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
+  
+  # WORD REPORT ----------------------------------------------------------------------------------------------------------------------
+  output$download_report <- downloadHandler(
+    filename = function() {paste("social_value_report", Sys.Date(), ".docx", sep = "")},
+    content = function(file) {
+      req(input$nominal_value, input$price_year, input$adjusted_year, rv$adjusted_value)
+      
+      nominal_value <- as.numeric(input$nominal_value)
+      price_year <- as.numeric(input$price_year)
+      adjusted_year <- as.numeric(input$adjusted_year)
+      adjusted_value <- round(rv$adjusted_value, 2)
+      
+      doc <- read_docx() %>%
+        body_add_par("Your social value is £", style = "Normal") %>%
+        body_add_par(nominal_value, style = "Normal") %>%
+        body_add_par(" in ", style = "Normal") %>%
+        body_add_par(price_year, style = "Normal") %>%
+        body_add_par(" prices.", style = "Normal") %>%
+        body_add_par("In real terms, based on ", style = "Normal") %>%
+        body_add_par(adjusted_year, style = "Normal") %>%
+        body_add_par(" prices, your social value is £", style = "Normal") %>%
+        body_add_par(adjusted_value, style = "Normal") %>%
+        body_add_par(".", style = "Normal")
+      
+      print(doc, target = file)
+    }
+  )
 }

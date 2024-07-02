@@ -15,6 +15,9 @@
       library(openxlsx2)
       library(httr)
       library(jsonlite)
+      library(officer)
+      library(magrittr)
+
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 
