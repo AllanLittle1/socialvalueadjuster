@@ -1,30 +1,23 @@
 # LIBRARIES -------------------------------------------------------------------------------------------------------------------------
-# Set the CRAN mirror
-options(repos = c(CRAN = "https://cran.rstudio.com/"))
-
-# Load necessary libraries
-library(shiny)
-library(shinyjs)
-library(shinyWidgets)
-library(shinyBS)
-library(readxl)
-library(shinythemes)
-library(DT)
-library(dplyr)
-library(httr)
-library(plotly)
-library(bslib)
-library(bsicons)
-library(shinyjqui)
-library(openxlsx2)
-library(httr)
-library(jsonlite)
-
+      library(shiny)
+      library(shinyjs)
+      library(shinyWidgets)
+      library(shinyBS)
+      library(readxl)
+      library(shinythemes)
+      library(DT)
+      library(dplyr)
+      library(httr)
+      library(plotly)
+      library(bslib)
+      library(bsicons)
+      library(shinyjqui)
+      library(openxlsx2)
+      library(httr)
+      library(jsonlite)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 
-      # Accordion Styling, Button Styling, and Chat Bot Box Styling
-      
       custom_css <- "
       .accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer;
         border: 1px solid #ddd; border-bottom: none;}
@@ -35,36 +28,7 @@ library(jsonlite)
         padding: 10px 20px !important; font-size: 18px !important;cursor: pointer !important;
         display: inline-block !important; text-align: center !important; margin: 5px !important;}
       .btn-unite:hover {background-color: #4cae4c !important;}
-      .draggable-card {position: absolute; bottom: 20px; right: 20px; width: 300px; border: 1px solid #ddd; background-color: #fff; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; z-index: 9999; cursor: move;}
-      .chat-header {background-color: #007bff; color: white; padding: 10px; font-size: 16px; cursor: pointer;}
-      .chat-body {display: none; padding: 10px; max-height: 400px; overflow-y: auto;}
-      .chat-footer {display: none; padding: 10px; border-top: 1px solid #ddd;}
-      
-      
-      .chat-container {
-  height: 300px;
-  overflow-y: auto;
-  padding: 10px;
-}
-.chat-message {
-  margin-bottom: 10px;
-  padding: 5px;
-  border-radius: 5px;
-}
-.user-message {
-  background-color: #e6f3ff;
-  text-align: right;
-}
-.assistant-message {
-  background-color: #f0f0f0;
-  text-align: left;
-}
-      
-      
       "
-
-
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
 my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
     .custom-info-icon {
@@ -77,7 +41,6 @@ my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
       background-color: transparent; color: #3498db;
     }
 ")
-
 
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
@@ -93,59 +56,57 @@ ui <- navbarPage(
              
              # Calculator Fluid Row -------------------------------------------------------------------------------------------------
              fluidRow(column(6, offset = 3,
-                      div(class = "well",
-                          div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              span(style = "padding-right: 5px;", "My social value is £"),
-                              numericInput("nominal_value", "", value = 10, min = 0, step = 0.01, width = '100px'),
-                              span(style = "padding: 0 5px;", "in"),
-                              numericInput("price_year", "", value = 2020, min = 2000, max = 2028, width = '100px'),
-                              span(style = "padding: 0 5px;", "prices.")),
-                          br(),
-                          div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              span(style = "padding-right: 5px;", "What would this be in real terms, based on"),
-                              numericInput("adjusted_year", "", value = 2023, min = 2000, max = 2028, width = '100px'),
-                              span(style = "padding-left: 5px;", "prices?")),
-                          br(),
-                          div(style = "text-align: center;",
-                              actionBttn(inputId = "adjust", label = "Calculate Real Value", style = "unite", color = "primary")
-                          ),
-                          br(),br(),
-                          htmlOutput("adjusted_value"),
-                          br(), br(),
-                          div(id = "additional_buttons", style = "text-align: center; display: none;",
-                              actionBttn(inputId = "interpret", label = "Interpretation", style = "unite", color = "warning",
-                                         size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("search")),
-                              
-                              downloadBttn(outputId = "download_report", label = "Download Report", style = "unite", color = "primary",  
-                                           size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
-                              
-                              downloadBttn(outputId = "download_csv", label = "Download CSV", style = "unite", color = "success",  
-                                           #Colour options - default, primary, warning, danger, success, royal.
-                                           size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))
-                              
-                          ),
-                          br(), br(),
-                          h5("Specialist Options"),
-                          div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              prettyRadioButtons(inputId = "year_type", label = " ", choices = c("Calendar years" = "cy", "Financial years" = "fy"),
-                                                 inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              bslib::tooltip(
-                                tags$span(id = "year_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
-                                "The Treasury provides GDP deflators for both calendar years (CY) and financial years (FY), and their values differ slightly. It's important to check whether your unadjusted social values are in CY or FY. Additionally, when preparing an investment case, verify if decision makers have set a preferred base year in CY or FY.",
-                                placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
-                              )
-                          ),
-                          div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                              prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard value" = "standard", "Wellbeing value" = "wellbeing"),
-                                                 inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
-                              bslib::tooltip(
-                                tags$span(id = "value_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
-                                "Most social costs and benefits can be adjusted using the standard GDP deflator series. If you’re using wellbeing-years (WELLBYs), inflation adjustments are more complex. We need to consider that as society's wealth increases, the additional happiness gained from a bit more money decreases. See the technical guidance for details.",
-                                placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
-                              )
-                          )
-                          
-                      ))),
+                             div(class = "well",
+                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                                     span(style = "padding-right: 5px;", "My social value is £"),
+                                     numericInput("nominal_value", "", value = 10, min = 0, step = 0.01, width = '100px'),
+                                     span(style = "padding: 0 5px;", "in"),
+                                     numericInput("price_year", "", value = 2020, min = 2000, max = 2028, width = '100px'),
+                                     span(style = "padding: 0 5px;", "prices.")),
+                                 br(),
+                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                                     span(style = "padding-right: 5px;", "What would this be in real terms, based on"),
+                                     numericInput("adjusted_year", "", value = 2023, min = 2000, max = 2028, width = '100px'),
+                                     span(style = "padding-left: 5px;", "prices?")),
+                                 br(),
+                                 div(style = "text-align: center;",
+                                     actionBttn(inputId = "adjust", label = "Calculate Real Value", style = "unite", color = "primary")
+                                 ),
+                                 br(),br(),
+                                 htmlOutput("adjusted_value"),
+                                 br(), br(),
+                                 div(id = "additional_buttons", style = "text-align: center; display: none;",
+                                     actionBttn(inputId = "interpret", label = "Interpretation", style = "unite", color = "warning",
+                                                size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("search")),
+                                     
+                                     downloadBttn(outputId = "download_report", label = "Download Report", style = "unite", color = "primary",  
+                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
+                                     
+                                     downloadBttn(outputId = "download_csv", label = "Download CSV", style = "unite", color = "success",  
+                                                  #Colour options - default, primary, warning, danger, success, royal.
+                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))
+                                 ),
+                                 br(), br(),
+                                 h5("Specialist Options"),
+                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                                     prettyRadioButtons(inputId = "year_type", label = " ", choices = c("Calendar years" = "cy", "Financial years" = "fy"),
+                                                        inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
+                                     bslib::tooltip(
+                                       tags$span(id = "year_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                       "The Treasury provides GDP deflators for both calendar years (CY) and financial years (FY), and their values differ slightly. It's important to check whether your unadjusted social values are in CY or FY. Additionally, when preparing an investment case, verify if decision makers have set a preferred base year in CY or FY.",
+                                       placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                     )
+                                 ),
+                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                                     prettyRadioButtons(inputId = "value_type", label = " ", choices = c("Standard value" = "standard", "Wellbeing value" = "wellbeing"),
+                                                        inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"),
+                                     bslib::tooltip(
+                                       tags$span(id = "value_type_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                       "Most social costs and benefits can be adjusted using the standard GDP deflator series. If you’re using wellbeing-years (WELLBYs), inflation adjustments are more complex. We need to consider that as society's wealth increases, the additional happiness gained from a bit more money decreases. See the technical guidance for details.",
+                                       placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                     )
+                                 )
+                             ))),
              br(), br(),
              
              # Accordian -------------------------------------------------------------------------------------------------
@@ -199,24 +160,7 @@ ui <- navbarPage(
                  <p><strong>GVA per head used in WELLBY estimation:</strong> 
                    Gross domestic product (Average) per head at market prices - released 10 May 2024</p>")))
                  )
-             ), # Added comma here
-             
-             # AI assistant-------------------------------------------------------------------------------------------------
-             # Modify your existing chat card in the UI
-             jqui_draggable(
-               div(id = "chat_card", class = "draggable-card",
-                   div(class = "chat-header", "Chat with GetReal AI"),
-                   div(class = "chat-body", 
-                       uiOutput("chat_output")  # This will display the chat messages
-                   ),
-                   div(class = "chat-footer", 
-                       textInput("chat_input", "", placeholder = "Type your message..."),
-                       actionButton("send_chat", "Send", icon = icon("paper-plane"))
-                   ),
-                   div(class = "resize-handle")
-               )
-             )          
-# UI END ------------------------------------------------------------------------------------------------------------------             
-             )#end fluid page
-      )#end tab panel
-)#end UI and navbar
+             )
+           )
+  )
+)

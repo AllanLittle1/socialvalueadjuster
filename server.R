@@ -18,152 +18,66 @@ library(jsonlite)
 
 
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
-  server <- function(input, output, session) {
+server <- function(input, output, session) {
   
-  # INITIALISE TOOLTOP -----------------------------------------------------------------------------------------------------
-    
-    shinyjs::runjs("$('.custom-tooltip').tooltip({container: 'body', placement: 'top', html: true});")
-    
+  # INITIALISE TOOLTIP -----------------------------------------------------------------------------------------------------
+  shinyjs::runjs("$('.custom-tooltip').tooltip({container: 'body', placement: 'top', html: true});")
+  
   # LOAD DATA (inside server) -----------------------------------------------------------------------------------------------
   deflators <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "deflators")
   
   # CALCULATOR -----------------------------------------------------------------------------------------------
-    observeEvent(input$adjust, {
-      req(input$nominal_value, input$price_year, input$adjusted_year)  # Ensure inputs are available
-      
-      nominal_value <- as.numeric(input$nominal_value)
-      price_year <- as.numeric(input$price_year)
-      adjusted_year <- as.numeric(input$adjusted_year)
-      
-      if (input$year_type == "fy") {
-        # Financial Year
-        deflator_start <- deflators$deflator_fy[deflators$year == price_year]
-        deflator_end <- deflators$deflator_fy[deflators$year == adjusted_year]
-        gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
-        gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
-      } else {
-        # Calendar Year
-        deflator_start <- deflators$deflator_cy[deflators$year == price_year]
-        deflator_end <- deflators$deflator_cy[deflators$year == adjusted_year]
-        gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
-        gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
-      }
-      
-      if (is.na(nominal_value) || is.na(deflator_start) || is.na(deflator_end) || 
-          (input$value_type == "wellbeing" && (is.na(gdp_per_capita_start) || is.na(gdp_per_capita_end)))) {
-        output$adjusted_value <- renderUI({
-          HTML("<div style='text-align: center; color: red;'>Please enter valid numeric values.</div>")
-        })
-      } else {
-        if (input$value_type == "wellbeing") {
-          # Adjust the nominal value using the deflators and GDP per capita for wellbeing value
-          adjusted_value <- nominal_value * (deflator_end / deflator_start) * 
-            (gdp_per_capita_end / gdp_per_capita_start) ^ 1.3
-        } else {
-          # Adjust the nominal value using the deflators for standard value
-          adjusted_value <- nominal_value * (deflator_end / deflator_start)
-        }
-        
-        output$adjusted_value <- renderUI({
-          HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(adjusted_value, 2), "</b>.</div>"))
-        })
-        
-        # Show additional buttons after calculation
-        shinyjs::show("additional_buttons")
-      }
-    })
+  observeEvent(input$adjust, {
+    req(input$nominal_value, input$price_year, input$adjusted_year)  # Ensure inputs are available
     
-  # DATA FRAME ----------------------------------------------------------------------------------------------------------------------- 
-    deflators_df <- data.frame(year = deflators$year, deflator_cy = deflators$deflator_cy, deflator_fy = deflators$deflator_fy,
-      label_fy = deflators$label_fy,  gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
+    nominal_value <- as.numeric(input$nominal_value)
+    price_year <- as.numeric(input$price_year)
+    adjusted_year <- as.numeric(input$adjusted_year)
     
-  # CSV -----------------------------------------------------------------------------------------------------------------------------
-    output$download_csv <- downloadHandler(
-      filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
-      content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
-    
-  # AI CARD --------------------------------------------------------------------------------------------------------------------------
-    observe({runjs("$('.chat-header').click(function() {$('.chat-body, .chat-footer').toggle();});")})
-    
-    # Add resizable functionality with jQuery 
-    observe({runjs("$('#chat_card').resizable({handles: 'se'});")})
-   
-    
-# Add this to your server function, after the existing code
-    
-    # Read the API key from the configuration file
-    config <- readLines("config.txt")
-    api_key <- gsub("OPENAI_API_KEY=", "", config[grep("OPENAI_API_KEY", config)])
-    
-    openai_api_endpoint <- "https://api.openai.com/v1/chat/completions"
-    
-    # Initialize the conversation history
-    conversation_history <- list(list(role = "system", 
-                                      content = "You are GetReal.ai, a knowledgeable and helpful assistant specializing in inflation adjustments and social value calculations. Your role is to provide insightful explanations, assist users in understanding the inflation adjustment process, and interpret outputs within the Get Real app. Stay focused on topics pertinent to inflation adjustments, social value, and the app's functionalities. If asked about unrelated topics, respond politely by steering the conversation back to the app's domain or declining to answer. You are an integral CoPilot in this social valuation App, committed to enhancing users' understanding and decision-making in social value calculations and inflation adjustments."))
-    
-    openai_api_call <- function(prompt_text, conversation_history) {
-      # Add the user message to the conversation history
-      conversation_history <- c(conversation_history, list(list(role = "user", content = prompt_text)))
-      
-      # API call
-      response <- POST(openai_api_endpoint,
-                       add_headers(Authorization = paste0("Bearer ", api_key)),
-                       body = list(model = "gpt-4", messages = conversation_history),
-                       encode = "json")
-      
-      # Parse the response
-      parsed_response <- content(response, "parsed")
-      assistant_message <- parsed_response$choices[[1]]$message$content
-      
-      # Add the assistant's message to the conversation history
-      conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
-      
-      # Return the assistant's message and the updated conversation history
-      return(list(assistant_message, conversation_history))
+    if (input$year_type == "fy") {
+      # Financial Year
+      deflator_start <- deflators$deflator_fy[deflators$year == price_year]
+      deflator_end <- deflators$deflator_fy[deflators$year == adjusted_year]
+      gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
+      gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
+    } else {
+      # Calendar Year
+      deflator_start <- deflators$deflator_cy[deflators$year == price_year]
+      deflator_end <- deflators$deflator_cy[deflators$year == adjusted_year]
+      gdp_per_capita_start <- deflators$gdp_per_capita[deflators$year == price_year]
+      gdp_per_capita_end <- deflators$gdp_per_capita[deflators$year == adjusted_year]
     }
     
-    # Inside your server function
-    conversation_history_rv <- reactiveVal(conversation_history)
-    
-    output$chat_output <- renderUI({
-      div(class = "chat-container empty-chat")
-    })
-    
-    observeEvent(input$send_chat, {
-      user_message <- input$chat_input
-      current_conversation_history <- conversation_history_rv()
+    if (is.na(nominal_value) || is.na(deflator_start) || is.na(deflator_end) || 
+        (input$value_type == "wellbeing" && (is.na(gdp_per_capita_start) || is.na(gdp_per_capita_end)))) {
+      output$adjusted_value <- renderUI({
+        HTML("<div style='text-align: center; color: red;'>Please enter valid numeric values.</div>")
+      })
+    } else {
+      if (input$value_type == "wellbeing") {
+        # Adjust the nominal value using the deflators and GDP per capita for wellbeing value
+        adjusted_value <- nominal_value * (deflator_end / deflator_start) * 
+          (gdp_per_capita_end / gdp_per_capita_start) ^ 1.3
+      } else {
+        # Adjust the nominal value using the deflators for standard value
+        adjusted_value <- nominal_value * (deflator_end / deflator_start)
+      }
       
-      result <- tryCatch({
-        openai_api_call(user_message, current_conversation_history)
-      }, error = function(e) {
-        print(paste("Error in openai_api_call: ", e$message))
-        return(NULL)
+      output$adjusted_value <- renderUI({
+        HTML(paste0("<div style='text-align: center; font-size: 18px;'>Your value in real terms is <b style='color: #337ab7;'>£", round(adjusted_value, 2), "</b>.</div>"))
       })
       
-      if (!is.null(result)) {
-        assistant_message <- result[[1]]
-        updated_history <- result[[2]]
-        
-        conversation_history_rv(updated_history)
-        
-        output$chat_output <- renderUI({
-          chat_contents <- lapply(updated_history, function(msg) {
-            if (msg$role != "system") {
-              if (msg$role == "user") {
-                div(class = "chat-message user-message", style="color: blue;", msg$content)
-              } else {
-                div(class = "chat-message assistant-message", style="color: black;", msg$content)
-              }
-            }
-          })
-          do.call(div, c(list(class = "chat-container"), chat_contents))
-        })
-      }
-    })
-    
-    
-    
-     
-}  #end server
-
-
+      # Show additional buttons after calculation
+      shinyjs::show("additional_buttons")
+    }
+  })
+  
+  # DATA FRAME ----------------------------------------------------------------------------------------------------------------------- 
+  deflators_df <- data.frame(year = deflators$year, deflator_cy = deflators$deflator_cy, deflator_fy = deflators$deflator_fy,
+                             label_fy = deflators$label_fy,  gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
+  
+  # CSV -----------------------------------------------------------------------------------------------------------------------------
+  output$download_csv <- downloadHandler(
+    filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
+    content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
+}
