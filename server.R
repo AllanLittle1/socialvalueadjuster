@@ -89,9 +89,8 @@ server <- function(input, output, session) {
     content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
   
   # WORD REPORT ----------------------------------------------------------------------------------------------------------------------
-  # WORD REPORT ----------------------------------------------------------------------------------------------------------------------
   output$download_report <- downloadHandler(
-    filename = function() {paste("social_value_report", Sys.Date(), ".docx", sep = "")},
+    filename = function() {paste("My Get Real Report_", Sys.Date(), ".docx", sep = "")},
     content = function(file) {
       req(input$nominal_value, input$price_year, input$adjusted_year, rv$adjusted_value)
       
