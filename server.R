@@ -17,8 +17,9 @@ library(httr)
 library(jsonlite)
 library(officer)
 library(magrittr)
-
-
+library(officedown)
+library(rmarkdown)
+library(ggplot2)
 
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
 server <- function(input, output, session) {
@@ -88,29 +89,23 @@ server <- function(input, output, session) {
     content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
   
   # WORD REPORT ----------------------------------------------------------------------------------------------------------------------
+  # WORD REPORT ----------------------------------------------------------------------------------------------------------------------
   output$download_report <- downloadHandler(
     filename = function() {paste("social_value_report", Sys.Date(), ".docx", sep = "")},
     content = function(file) {
       req(input$nominal_value, input$price_year, input$adjusted_year, rv$adjusted_value)
       
-      nominal_value <- as.numeric(input$nominal_value)
-      price_year <- as.numeric(input$price_year)
-      adjusted_year <- as.numeric(input$adjusted_year)
-      adjusted_value <- round(rv$adjusted_value, 2)
+      params <- list(
+        nominal_value = input$nominal_value,
+        price_year = input$price_year,
+        adjusted_year = input$adjusted_year,
+        adjusted_value = rv$adjusted_value
+      )
       
-      doc <- read_docx() %>%
-        body_add_par("Your social value is £", style = "Normal") %>%
-        body_add_par(nominal_value, style = "Normal") %>%
-        body_add_par(" in ", style = "Normal") %>%
-        body_add_par(price_year, style = "Normal") %>%
-        body_add_par(" prices.", style = "Normal") %>%
-        body_add_par("In real terms, based on ", style = "Normal") %>%
-        body_add_par(adjusted_year, style = "Normal") %>%
-        body_add_par(" prices, your social value is £", style = "Normal") %>%
-        body_add_par(adjusted_value, style = "Normal") %>%
-        body_add_par(".", style = "Normal")
-      
-      print(doc, target = file)
+      rmarkdown::render("report_template_officedown.Rmd", output_file = file, params = params, envir = new.env(parent = globalenv()))
     }
   )
+
+  #END SERVER ----------------------------------------------------------------------------------------------------------------   
 }
+

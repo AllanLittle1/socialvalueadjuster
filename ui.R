@@ -17,7 +17,9 @@
       library(jsonlite)
       library(officer)
       library(magrittr)
-
+      library(officedown)
+      library(rmarkdown)
+      library(ggplot2)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 

@@ -1,0 +1,17 @@
+---
+title: "Social Value Report"
+output: 
+  officedown::rdocx_document:
+    reference_docx: "template.docx"
+params:
+  nominal_value: NA
+  price_year: NA
+  adjusted_year: NA
+  adjusted_value: NA
+---
+
+## Your Social Value Report
+
+Your social value is £`r params$nominal_value` in `r params$price_year` prices.
+
+In real terms, based on `r params$adjusted_year` prices, your social value is £`r params$adjusted_value`.
