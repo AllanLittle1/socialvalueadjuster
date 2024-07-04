@@ -1,5 +1,5 @@
 ---
-title: "Get Real Report"
+title: "Get Real: Real Values Report"
 output: 
   officedown::rdocx_document:
     reference_docx: style_reference.docx
@@ -20,9 +20,9 @@ library(officer)
 library(flextable)
 ```
 
-# Get Real Report: `r format(Sys.Date(), "%d %B %Y")`
+# Get Real: Real Values Report - `r format(Sys.Date(), "%d %B %Y")`
 
-## Your Value
+## Your Real Value
 
 Your social value of **£`r params$nominal_value`** in **`r params$price_year`** prices is equivalent to **£`r params$adjusted_value`** in 'real terms' (**`r params$adjusted_year`** prices).
 
@@ -44,8 +44,6 @@ Proper adjustment of social values is crucial for:
 
 **GDP Deflators:** The Treasury recommends using their measures of inflation - the GDP deflator series - to adjust for inflation in social values. The GDP deflator is recommended as a measure of general inflation across the whole economy. You may have heard of other popular measures like the Consumer Price Index (CPI) or Retail Price Index (RPI) - these are also reliable ways to adjust for inflation for the goods and services we buy. But, they are less applicable to estimate the real value of things that we don't buy, like public services. This is why the Treasury and trained social value practitioners use GDP deflators.
 
-**Present Values**: People prefer benefits now rather than later - we call this Social Time Preference. We apply Treasury discount rates to estimate the "present value" of future social costs and benefits. This is a completely separate concept to inflation. Treasury recommend that inflation is removed first, before discounting.
-
 ## Technical Guidance
 
 **Inflation Adjustment**: Get Real uses the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts. It is suitable to estimate values in real terms since the base year is typically the first year of a proposal, or a relatively recent year.
@@ -53,8 +51,6 @@ Proper adjustment of social values is crucial for:
 **Short and long-term adjustments:** Get Real is currently suitable for inflating and deflating values up to 2028. For inflation forecasts over longer horizons, Treasury refers practitioners to the OBR Fiscal Sustainability Report.
 
 **General vs specific inflation:** The GDP deflator accounts for general inflation. There can be a case for applying a more specific inflation index, e.g. for construction or information technology. Treasury suggest that relative price effects for specific goods and services can be used in economic appraisal but only where the historical evidence and future expectations support their use. These must be clearly justified.
-
-**Discounting**: We apply the Treasury Social Time Preference Rates (STPR). Over the first thirty years these are 3.5% in real terms and 1.5% for health and wellbeing values. We also apply the incrementally lower long term rates. It is important to convert to real prices first, then apply discounting. Discounting should not be applied retrospectively.
 
 ## Version
 

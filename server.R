@@ -7,7 +7,15 @@ server <- function(input, output, session) {
   # LOAD DATA (inside server) -----------------------------------------------------------------------------------------------
   deflators <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "deflators")
   discount_factors <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "discount")
-
+  
+  # Create discount_data based on discount_factors, assuming it has columns 'year', 'df_stpr_standard', etc.
+  discount_data <- data.frame(
+    year = discount_factors$year,
+    df_stpr_standard = discount_factors$df_stpr_standard,
+    df_stpr_reduced_rate_where_pure_stp_0 = discount_factors$df_stpr_reduced_rate_where_pure_stp_0,
+    df_health = discount_factors$df_health,
+    df_health_reduced_rate_where_pure_stp_0 = discount_factors$df_health_reduced_rate_where_pure_stp_0
+  )
   
   # REACTIVE VALUE TO STORE ADJUSTED VALUE AND CALCULATION STATUS -----------------------------------------------------------
   rv <- reactiveValues(adjusted_value = NULL, calculated = FALSE, showAlert = FALSE, cumulative_inflation = NULL, avg_inflation = NULL)
@@ -106,14 +114,14 @@ server <- function(input, output, session) {
   deflators_df <- data.frame(year = deflators$year, deflator_cy = deflators$deflator_cy, deflator_fy = deflators$deflator_fy,
                              label_fy = deflators$label_fy, gdp_per_capita = deflators$gdp_per_capita, stringsAsFactors = FALSE)
   
-  # CSV -----------------------------------------------------------------------------------------------------------------------------
+  # CSV REAL-----------------------------------------------------------------------------------------------------------------------------
   output$download_csv <- downloadHandler(
     filename = function() {paste("deflators_data", Sys.Date(), ".csv", sep = "")},
     content = function(file) {write.csv(deflators_df, file, row.names = FALSE)})
   
-  # REPORT -----------------------------------------------------------------------------------------------------------------------------
+  # REPORT REAL-----------------------------------------------------------------------------------------------------------------------------
   output$download_report <- downloadHandler(
-    filename = function() {paste("My Get Real Report", Sys.Date(), ".docx", sep = "")},
+    filename = function() {paste("Get Real: Real Values Report ", Sys.Date(), ".docx", sep = "")},
     content = function(file) {
       req(input$nominal_value, input$price_year, input$adjusted_year, rv$adjusted_value, rv$cumulative_inflation, rv$avg_inflation)
       params <- list(
@@ -127,17 +135,14 @@ server <- function(input, output, session) {
         value_type = input$value_type,
         deflators_df = deflators_df)
       
-      rmarkdown::render("report_template_officedown.Rmd", 
+      rmarkdown::render("report_real_values.Rmd", 
                         output_file = file, params = params, envir = new.env(parent = globalenv()))})
   
-  
-  # Load discount factors data
-  discount_factors <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "discount")
-  
-  # Reactive value for Present Value calculation
+  # PV CALCULATOR ------------------------------------------------------------------------------------------------------------- 
+  # Reactive value for Present Value calculation -------------
   rv_pv <- reactiveValues(present_value = NULL, calculated = FALSE, discount_factor = NULL)
   
-  # Reset calculation status when inputs change
+  # Reset calculation status when inputs change -------------
   observe({
     input$pv_real_value
     input$pv_future_year
@@ -149,7 +154,7 @@ server <- function(input, output, session) {
     output$present_value_output <- renderUI({NULL})
   })
   
-  # Present Value calculation
+  # Present Value calculation -------------------
   observeEvent(input$calculate_pv, {
     req(input$pv_real_value, input$pv_future_year, input$pv_present_year)
     
@@ -194,6 +199,40 @@ server <- function(input, output, session) {
     }
   })
   
+  # CSV PV-----------------------------------------------------------------------------------------------------------------------------
+  output$pv_download_csv <- downloadHandler(
+    filename = function() {
+      paste("discount_rates_and_factors", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(discount_data, file, row.names = FALSE)
+    }
+  )
+  
+  # REPORT FOR PV -----------------------------------------------------------------------------------------------------------------------------
+  output$pv_download_report <- downloadHandler(
+    filename = function() {paste("Get Real: Present Values Report ", Sys.Date(), ".docx", sep = "")},
+    content = function(file) {
+      req(input$pv_real_value, input$pv_future_year, input$pv_present_year, rv_pv$present_value, rv_pv$discount_factor)
+      
+      # Calculate years_diff here
+      years_diff <- as.numeric(input$pv_future_year) - as.numeric(input$pv_present_year)
+      
+      params <- list(
+        pv_real_value = round(as.numeric(input$pv_real_value), 2),
+        pv_future_year = input$pv_future_year,
+        pv_present_year = input$pv_present_year,
+        present_value = round(rv_pv$present_value, 2),
+        discount_factor = round(rv_pv$discount_factor, 4),
+        years_diff = years_diff,
+        pv_discount_type = input$pv_discount_type,
+        pv_rate_type = input$pv_rate_type,
+        discount_factors_df = discount_factors)
+      
+      rmarkdown::render("report_present_values.Rmd", 
+                        output_file = file, params = params, envir = new.env(parent = globalenv()))
+    }
+  )
+  
   # END SERVER ------------------------------------------------------------------------------------------------------------------------
 }
-

@@ -61,7 +61,6 @@ ui <- navbarPage(
   tabPanel("Real Values",
            fluidPage(
              useShinyjs(),  # Initialize shinyjs
-             useShinyalert(), # Initialize shinyalert
              tags$head(tags$script(src = "https://polyfill.io/v3/polyfill.min.js?features=es6")),
              tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")),
              tags$style(HTML(custom_css)),  # Include custom CSS
@@ -93,8 +92,9 @@ ui <- navbarPage(
                                                 div(id = "additional_buttons", style = "text-align: center; display: none;",
                                                     downloadBttn(outputId = "download_report", label = "Download Report", style = "unite", color = "primary",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
-                                                    downloadBttn(outputId = "download_csv", label = "Download CSV", style = "unite", color = "success",  
+                                                    downloadBttn(outputId = "download_csv", label = "Download Deflators", style = "unite", color = "success",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))), br(), br(),
+                                                
                                                 # Specialist options --------
                                                 h5("Specialist Options", class = "specialist-value"),
                                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 14px;",
@@ -185,7 +185,6 @@ ui <- navbarPage(
   tabPanel("Present Values",
            fluidPage(
              useShinyjs(),
-             useShinyalert(), # Initialize shinyalert
              tags$head(tags$script(src = "https://polyfill.io/v3/polyfill.min.js?features=es6")),
              tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")),
              tags$style(HTML(custom_css)),  # Include custom CSS
@@ -215,9 +214,8 @@ ui <- navbarPage(
                                                 div(id = "pv_additional_buttons", style = "text-align: center; display: none;",
                                                     downloadBttn(outputId = "pv_download_report", label = "Download Report", style = "unite", color = "primary",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
-                                                    downloadBttn(outputId = "pv_download_csv", label = "Download CSV", style = "unite", color = "success",  
+                                                    downloadBttn(outputId = "pv_download_csv", label = "Download Discount Factors", style = "unite", color = "success",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))), br(), br(),
-                                                
              # Specialist options --------
                                                 h5("Specialist Options", class = "specialist-value"),
                                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 14px;",
