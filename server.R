@@ -118,6 +118,70 @@ server <- function(input, output, session) {
           rmarkdown::render("report_template_officedown.Rmd", 
                             output_file = file, params = params, envir = new.env(parent = globalenv()))})
   
+      
+      # Load discount factors data
+      discount_factors <- read_excel("socialvalueadjuster_deflators.xlsx", sheet = "discount")
+      
+      # Reactive value for Present Value calculation
+      rv_pv <- reactiveValues(present_value = NULL, calculated = FALSE, discount_factor = NULL)
+      
+      # Reset calculation status when inputs change
+      observe({
+        input$pv_real_value
+        input$pv_future_year
+        input$pv_present_year
+        input$pv_discount_type
+        input$pv_rate_type
+        
+        rv_pv$calculated <- FALSE
+        output$present_value_output <- renderUI({NULL})
+      })
+      
+      # Present Value calculation
+      observeEvent(input$calculate_pv, {
+        req(input$pv_real_value, input$pv_future_year, input$pv_present_year)
+        
+        real_value <- as.numeric(input$pv_real_value)
+        future_year <- as.numeric(input$pv_future_year)
+        present_year <- as.numeric(input$pv_present_year)
+        
+        # Determine which discount factor column to use
+        discount_column <- case_when(
+          input$pv_discount_type == "standard" && input$pv_rate_type == "standard_stpr" ~ "df_stpr_standard",
+          input$pv_discount_type == "standard" && input$pv_rate_type == "reduced_rate" ~ "df_stpr_reduced_rate_where_pure_stp_0",
+          input$pv_discount_type == "health" && input$pv_rate_type == "standard_stpr" ~ "df_health",
+          input$pv_discount_type == "health" && input$pv_rate_type == "reduced_rate" ~ "df_health_reduced_rate_where_pure_stp_0"
+        )
+        
+        # Calculate years difference and get appropriate discount factor
+        years_diff <- future_year - present_year
+        if(years_diff < 0 || years_diff > 125) {
+          output$present_value_output <- renderUI({
+            HTML("<div style='text-align: center; color: red;'>Invalid year range. Please ensure the future year is between the present year and 125 years from now.</div>")
+          })
+        } else {
+          discount_factor <- discount_factors[[discount_column]][years_diff + 1]  # +1 because R is 1-indexed
+          rv_pv$present_value <- real_value * discount_factor
+          rv_pv$discount_factor <- discount_factor
+          rv_pv$calculated <- TRUE
+          
+          output$present_value_output <- renderUI({
+            req(input$pv_real_value, input$pv_future_year, input$pv_present_year)
+            div(style = "text-align: center; position: relative;",
+                HTML(paste0("<div style='text-align: center; font-size: 18px;'>",
+                            "The present value is <b style='color: #337ab7;'>£", 
+                            format(round(rv_pv$present_value, 2), big.mark = ","), "</b>.</div>")),
+                br(),
+                HTML(paste0("<div style='font-size: 14px; color: #666; text-align: center;'>",
+                            "Discount factor: ", round(rv_pv$discount_factor, 4), "<br>",
+                            "Years discounted: ", years_diff, "<br>","</div>")))
+          })
+          
+          # Show additional buttons after calculation
+          shinyjs::show("pv_additional_buttons")
+        }
+      })
+      
   # END SERVER ------------------------------------------------------------------------------------------------------------------------
     }
 

@@ -50,8 +50,8 @@ ui <- navbarPage(
   theme = my_theme,
   "Get Real",
   
-  # GET REAL TAB --------------------------------------------------------------------------------------------------------------
-  tabPanel("Get Real",
+  # REAL VALUES PANEL --------------------------------------------------------------------------------------------------------------
+  tabPanel("Real Values",
            fluidPage(
              useShinyjs(),  # InitialiSe shinyjs
              tags$style(HTML(custom_css)),  # Include custom CSS
@@ -61,13 +61,13 @@ ui <- navbarPage(
           fluidRow(column(6, offset = 3, div(class = "well",
             # Inputs ----------
              div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                 span(style = "padding-right: 5px;", "My social value is £"),
+                 span(style = "padding-right: 5px;", "Our social value is £"),
                  numericInput("nominal_value", "", value = 10, min = 0, step = 0.01, width = '100px'),
                  span(style = "padding: 0 5px;", "in"),
                  numericInput("price_year", "", value = 2020, min = 2000, max = 2028, width = '100px'),
                  span(style = "padding: 0 5px;", "prices.")), br(),
              div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
-                 span(style = "padding-right: 5px;", "What would this be in real terms, based on"),
+                 span(style = "padding-right: 5px;", "What's the real value, based on"),
                  numericInput("adjusted_year", "", value = 2023, min = 2000, max = 2028, width = '100px'),
                  span(style = "padding-left: 5px;", "prices?")), br(),
              div(style = "text-align: center;",
@@ -103,7 +103,7 @@ ui <- navbarPage(
       # Accordion -------------------------------------------------------------------------------------------------
             # Container -------
             div(class = "accordion-container", tags$div(class = "accordion", id = "accordionExample",
-              # Item 1: Why Get Real? -------------
+              # Item 1: Why do we need to Get Real? -------------
                 div(class = "accordion-item",
                   h2(class = "accordion-header", id = "headingOne",
                      tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOne", 
@@ -127,16 +127,8 @@ ui <- navbarPage(
                          comparisons of the actual value of goods and services over time.</li>
                      <li>The Treasury recommends using their 'GDP deflator' to adjust for inflation in social values. 
                          While you may have heard of the Consumer Price Index (CPI), the GDP deflator is the preferred measure for this purpose.</li>
-                   </ul> 
-                  <p><strong>Present Values:</strong></p>
-                   <ul>     
-                     <li>People generally prefer benefits now rather than later.</li> 
-                     <li>Discounting helps us determine the present worth of future money.</li>
-                     <li>Discounting is separate from inflation adjustment.</li> 
-                     <li>We apply Treasury discount rates (after removing inflation effects) to estimate the 
-                         present value of future social costs and benefits.</li>
                    </ul>")))),
-              # Item 3: Non-Technical? -------------
+              # Item 3: Technical? -------------
                 div(class = "accordion-item", h2(class = "accordion-header", id = "headingThree",
                    tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
                                `aria-expanded` = "false", `aria-controls` = "collapseThree", "Technical guidance")),
@@ -147,13 +139,6 @@ ui <- navbarPage(
                        <li>For short time horizons, use the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts.</li>
                        <li>For longer horizons, refer to the OBR Fiscal Sustainability Report or extrapolate using the final year's growth rate.</li>
                        <li>Relative price effects can be used with historical evidence and future expectations, but must be justified and agreed upon.</li>
-                     </ul>
-                     <p><strong>Discounting:</strong></p>
-                     <ul>
-                       <li>Apply the Social Time Preference Rate (STPR) of 3.5% in real terms (1.5% for health and wellbeing values).</li>
-                       <li>Convert to real prices first, then apply discounting.</li>
-                       <li>Never apply discounting retrospectively.</li>
-                       <li>Time horizon: typically 10 years, but up to 60 years for infrastructure projects.</li>
                      </ul>")))),
               # Item 4: Version Control -------------
                 div(class = "accordion-item", h2(class = "accordion-header", id = "headingFour",
@@ -169,8 +154,113 @@ ui <- navbarPage(
               # End Accordian --------------
                ))
       # End Get Real Tab ----
-               ))
-  
+               )),
+  tabPanel("Present Values",
+           fluidPage(
+             useShinyjs(),
+             tags$style(HTML(custom_css)),
+             # Calculator Fluid Row ---------------------           
+             fluidRow(column(6, offset = 3, div(class = "well",
+                # Inputs -------------
+                div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                    span(style = "padding-right: 5px;", "We estimate a real social value of £"),
+                    numericInput("pv_real_value", "", value = 10, min = 0, step = 0.01, width = '100px'),
+                    span(style = "padding: 0 5px;", "in the year"),
+                    numericInput("pv_future_year", "", value = 2030, min = 2024, max = 2149, width = '100px')), br(),
+                div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                    span(style = "padding-right: 5px;", "What is the present value, discounted to the year"),
+                    numericInput("pv_present_year", "", value = 2024, min = 2024, max = 2149, width = '100px'),
+                    span(style = "padding-left: 5px;", "?"),
+                    bslib::tooltip(
+                      tags$span(id = "pv_present_year_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                      "The present year is typically the current year or the base year for your analysis. All future values will be discounted back to this year.",
+                      placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                    )), br(),
+                div(style = "text-align: center;",
+                    actionBttn(inputId = "calculate_pv", label = "Calculate Present Value", style = "unite", color = "success")), br(), br(),
+                # Outputs -------------
+                htmlOutput("present_value_output"), br(), br(),
+                
+                # Additional buttons ----------
+                div(id = "pv_additional_buttons", style = "text-align: center; display: none;",
+                    downloadBttn(outputId = "pv_download_report", label = "Download Report", style = "unite", color = "primary",  
+                                 size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
+                    downloadBttn(outputId = "pv_download_csv", label = "Download CSV", style = "unite", color = "success",  
+                                 size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))), br(), br(),
+                
+                # Specialist options --------
+                h5("Specialist Options"),
+                div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                    prettyRadioButtons(inputId = "pv_discount_type", label = " ", 
+                                       choices = c("Standard" = "standard", "Health" = "health"),
+                                       inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly")),
+                div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
+                    prettyRadioButtons(inputId = "pv_rate_type", label = " ", 
+                                       choices = c("Standard STPR" = "standard_stpr", "Reduced Rate" = "reduced_rate"),
+                                       inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"))
+              # End Fluid Row -------
+              ))), br(), br(),
+
+             # Accordion -------------------------------------------------------------------------------------------------
+             div(class = "accordion-container", tags$div(class = "accordion", id = "accordionExamplePV",
+              # Item 1: Why discount to present value? -------------
+               div(class = "accordion-item",
+                   h2(class = "accordion-header", id = "headingOnePV",
+                      tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOnePV", 
+                                  `aria-expanded` = "true", `aria-controls` = "collapseOnePV", "Why discount to present value?")),
+                   div(id = "collapseOnePV", class = "accordion-collapse collapse show", `aria-labelledby` = "headingOnePV", `data-bs-parent` = "#accordionExamplePV",
+                       div(class = "accordion-body", HTML("<p>Discounting future values to present value is crucial for:</p>
+                      <ul>
+                        <li><strong>Comparing projects:</strong> Enabling a fair comparison of projects with different timelines and cash flows.</li>
+                        <li><strong>Comparing costs with benefits:</strong> For example, to compare the social value of upfront costs and downstream benefits.</li>
+                        <li><strong>Credibility:</strong> Government and other funders will expect your Social Return on Investment to be in present values.</li>
+                      </ul>")))),
+              # Item 2: Non-Technical Explainer -------------
+                div(class = "accordion-item", h2(class = "accordion-header", id = "headingTwo",
+                                                 tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
+                                                             `aria-expanded` = "false", `aria-controls` = "collapseTwo", "Non-technical explainer")),
+                    div(id = "collapseTwo", class = "accordion-collapse collapse", `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
+                        div(class = "accordion-body", HTML("
+                  <p><strong>Present Values:</strong></p>
+                   <ul>     
+                     <li>People generally prefer benefits now rather than later. If your social costs and benefits occur in the future you'll
+                        need to account for society's time preferences, to estimate your Social Return on Investment (SROI) </li> 
+                     <li>Discounting helps us determine the 'present value' of social impacts when they're given in monetary terms.</li>
+                     <li>Discounting is a completely separate concept to inflation.</li> 
+                     <li>Apply Treasury discount rates to your 'real' social value (after first removing inflation effects) to estimate the 
+                         'present value' of future social costs and benefits.</li>
+                   </ul>")))),
+              # Item 3: Technical Guidance -------------
+              div(class = "accordion-item", h2(class = "accordion-header", id = "headingThreePV",
+                                               tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThreePV", 
+                                                           `aria-expanded` = "false", `aria-controls` = "collapseThreePV", "Technical guidance")),
+                  div(id = "collapseThreePV", class = "accordion-collapse collapse", `aria-labelledby` = "headingThreePV", `data-bs-parent` = "#accordionExamplePV",
+                      div(class = "accordion-body", HTML("<p><strong>Discounting Procedure:</strong></p>
+                 <ul>
+                   <li>First, ensure all future values are in real terms (adjusted for inflation).</li>
+                   <li>Apply the appropriate discount rate based on the project type (standard or health) and time horizon.</li>
+                   <li>Use the formula: Present Value = Future Value / (1 + r)^t, where r is the discount rate and t is the number of years.</li>
+                   <li>For streams of benefits or costs, calculate the present value for each year and sum them.</li>
+                 </ul>
+                 <p><strong>Discount Rates:</strong></p>
+                 <ul>
+                   <li>Standard rate: 3.5% for years 0-30, 3% for years 31-75, and 2.5% for years 76-125.</li>
+                   <li>Health rate: 1.5% for years 0-30, 1.29% for years 31-75, and 1.07% for years 76-125.</li>
+                   <li>Reduced rates are available when the pure time preference rate is assumed to be 0%.</li>
+                   <li>Always refer to the latest Green Book guidance for the most up-to-date rates.</li>
+                 </ul>")))),
+              # Item 4: Version Control -------------
+              div(class = "accordion-item", h2(class = "accordion-header", id = "headingFourPV",
+                                               tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFourPV", 
+                                                           `aria-expanded` = "false", `aria-controls` = "collapseFourPV", "Version control")),
+                  div(id = "collapseFourPV", class = "accordion-collapse collapse", `aria-labelledby` = "headingFourPV", `data-bs-parent` = "#accordionExamplePV",
+                      div(class = "accordion-body", HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
+                 <p><strong>Discount Rates:</strong> Based on the latest HM Treasury Green Book guidance (2023 update).</p>
+                 <p><strong>Calculation Method:</strong> Follows the standard present value calculation methodology as outlined in the Green Book.</p>")))))
+              # End Accordion --------------
+             ))
+           )
+  )
   
 # End UI -----
   )
