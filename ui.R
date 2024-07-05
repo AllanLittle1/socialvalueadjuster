@@ -117,6 +117,30 @@ ui <- navbarPage(
              # Accordion -------------------------------------------------------------------------------------------------
              # Container -------
              div(class = "accordion-container", tags$div(class = "accordion", id = "accordionExample",
+                                                         
+                     # Accordion Container for AI Chat -------------
+                     div(class = "accordion-item",
+                         h2(class = "accordion-header", id = "headingChat",
+                            tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseChat", 
+                                        `aria-expanded` = "true", `aria-controls` = "collapseChat", 
+                                        icon("comments"), "Chat with Get Real Copilot"
+                            )),
+                         div(id = "collapseChat", class = "accordion-collapse collapse show", `aria-labelledby` = "headingChat", `data-bs-parent` = "#accordionChat",
+                             div(class = "accordion-body",
+                                 div(class = "card", 
+                                     div(class = "card-body",
+                                         uiOutput("chat_output"),
+                                         textInput("user_input", " ", placeholder = "Enter your message"),
+                                         actionBttn(inputId = "submit", label = "Send", style = "unite", color = "primary", icon = icon("paper-plane")), br(),
+                                         HTML("<small class='text-muted'>Please note: Get Real Copilot is an AI model trained specifically to support you with inflation and discounting. 
+                                              It can make mistakes. Check important info in the tooltip.</small>"),
+                                         bslib::tooltip(
+                                           tags$span(id = "ai_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                           "Get Real Copilot is an AI model trained specifically to support you with inflation and discounting",
+                                           placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class"))
+                                     )
+                                 )))),
+                    
                    # Item 1: Why do we need to Get Real? -------------
                                                          div(class = "accordion-item",
                                                              h2(class = "accordion-header", id = "headingOne",

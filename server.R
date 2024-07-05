@@ -1,3 +1,60 @@
+# SET UP CHATWELLBY  ---------------------------------------------------------------------------------------------------------------
+
+    # Read the API key from the configuration file
+    config <- readLines("config.txt")
+    api_key <- gsub("OPENAI_API_KEY=", "", config[grep("OPENAI_API_KEY", config)])
+    
+    openai_api_endpoint <- "https://api.openai.com/v1/chat/completions"
+    
+    # Initialize the conversation history
+    
+    conversation_history <- list(list(role = "system", 
+                                      content = "You are ChatWellby.ai, a knowledgeable and helpful assistant specialising in wellbeing economics. 
+                                      Your role is to provide insightful explanations, assisting users to build scenarios and interpret 
+                                      outputs within the House of Good Wellbeing Ready Reckoner. Stay focused on topics pertinent to wellbeing economics 
+                                      and the reckoner's functionalities. 
+                                      If asked about unrelated topics, respond politely by steering the conversation 
+                                      back to the reckoner's domain or declining to answer. You are not just a chatbot; you are an integral CoPilot in this 
+                                      social valuation App, committed to enhancing users' understanding and decision-making in wellbeing 
+                                      economics.
+                                      
+                                      Below are examples of your previous interactions:
+    
+                                      Question: What is the role of life satisfaction in the Ready Reckoner?
+                                      Answer: Life satisfaction is a key indicator in the Ready Reckoner. It reflects the overall wellbeing of individuals and is used to assess the impact of policies on population wellbeing.
+                                      
+                                      Question: How is the wellbeing value per person calculated in the reckoner?
+                                      Answer: The wellbeing value per person is calculated by multiplying the change in lifetime WELLBYs (Wellbeing Life Years) by the wellbeing value per person, reflecting the economic impact of policy changes on individual wellbeing.
+                                      
+                                      Question: When should I adjust the intervention cost in my scenario?
+                                      Answer: You should consider adjusting the intervention cost when there are significant changes in policy implementation costs, economic conditions, or when scaling the intervention to larger populations.
+    
+                                      "
+    ))
+    
+    
+    openai_api_call <- function(prompt_text, conversation_history) {
+      # Add the user message to the conversation history
+      conversation_history <- c(conversation_history, list(list(role = "user", content = prompt_text)))
+      
+      # API call
+      response <- POST(openai_api_endpoint,
+                       add_headers(Authorization = paste0("Bearer ", api_key)),
+                       body = list(model = "gpt-4", messages = conversation_history),
+                       encode = "json")
+      
+      # Parse the response
+      parsed_response <- content(response, "parsed")
+      assistant_message <- parsed_response$choices[[1]]$message$content
+      
+      # Add the assistant's message to the conversation history
+      conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
+      
+      # Return the assistant's message and the updated conversation history
+      return(list(assistant_message, conversation_history))
+    }
+
+
 # SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
 server <- function(input, output, session) {
   
@@ -233,6 +290,49 @@ server <- function(input, output, session) {
                         output_file = file, params = params, envir = new.env(parent = globalenv()))
     }
   )
+  
+  # CHATWELLBY -------------------------------------------------------------------------------------------------------------
+  
+  conversation_history_rv <- reactiveVal(conversation_history)
+  
+  # Initialize chat output with an empty chat container
+  output$chat_output <- renderUI({div(class = "chat-container empty-chat")})
+  
+  # Chat icon and window behavior
+  observeEvent(input$submit, {
+    user_message <- input$user_input
+    current_conversation_history <- conversation_history_rv()
+    
+    result <- tryCatch({
+      openai_api_call(user_message, current_conversation_history)
+    }, error = function(e) {
+      print(paste("Error in openai_api_call: ", e$message))
+      return(NULL)
+    })
+    
+    if (!is.null(result)) {
+      assistant_message <- result[[1]]
+      updated_history <- result[[2]]
+      
+      conversation_history_rv(updated_history)
+      
+      # Update the chat output to show the conversation
+      output$chat_output <- renderUI({
+        chat_contents <- lapply(updated_history, function(msg) {
+          # Skip system messages
+          if (msg$role != "system") {
+            if (msg$role == "user") {
+              div(class = "chat-message user-message", style="color: blue;", msg$content)  # User messages in blue
+            } else {
+              div(class = "chat-message assistant-message", style="color: black;", msg$content)  # AI messages in default color
+            }
+          }
+        })
+        do.call(div, c(list(class = "chat-container"), chat_contents))
+      })
+    }
+  })
+
   
   # END SERVER ------------------------------------------------------------------------------------------------------------------------
 }
