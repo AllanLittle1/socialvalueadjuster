@@ -5,7 +5,7 @@ account: missioneconomics
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12232288
-bundleId: 8810668
+bundleId: 8838527
 url: https://missioneconomics.shinyapps.io/getreal/
 version: 1
 asMultiple: FALSE

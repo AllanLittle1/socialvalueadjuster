@@ -25,22 +25,23 @@ library(bs4Dash)
 library(shinyalert)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
+
 custom_css <- "
-    .accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer;
-      border: 1px solid #ddd; border-bottom: none;}
-    .accordion .accordion-body {border: 1px solid #ddd; padding: 10px; font-size: 16px; background-color: #fff;}
-    .accordion .accordion-body p {margin: 0;}
-    .accordion-container {margin: 0 auto; width: 70%;}
-    .btn-unite {background-color: #5cb85c !important; color: white !important; border: none !important;
-      padding: 10px 20px !important; font-size: 18px !important;cursor: pointer !important;
-      display: inline-block !important; text-align: center !important; margin: 5px !important;}
-    .btn-unite:hover {background-color: #4cae4c !important;}
-    .specialist-value {font-size: 14px !important;}
-    .conditional-alert {position: fixed;top: 100px;  /* Adjust this value to move the panel below the header bar */
-      left: 80%; transform: translateX(-50%); width: 300px; padding: 10px; background-color: #d9edf7; border: 1px solid #bce8f1;
-      border-radius: 4px; color: #31708f; z-index: 9999;}
-    .custom-formula {font-size: 0.9em; overflow-x: auto;  /* Allow horizontal scrolling if necessary */
-      display: block; white-space: nowrap;}
+.custom-accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer; border: 1px solid #ddd; border-bottom: none;}
+.custom-accordion .accordion-body {border: 1px solid #ddd; padding: 10px; font-size: 16px; background-color: #fff;}
+.accordion-container {margin: 0 auto; width: 70%;}
+.accordion-button {display: flex; align-items: center; padding-left: 10px;}
+.accordion-button .fa {margin-right: 10px;}
+.accordion-button .icon-padding {margin-right: 10px;}
+.btn-unite {background-color: #5cb85c !important; color: white !important; border: none !important; padding: 10px 20px !important; font-size: 18px !important; cursor: pointer !important; display: inline-block !important; text-align: center !important; margin: 5px !important;}
+.btn-unite:hover {background-color: #4cae4c !important;}
+.specialist-value {font-size: 14px !important;}
+.conditional-alert {position: fixed; top: 100px; left: 80%; transform: translateX(-50%); width: 300px; padding: 10px; background-color: #d9edf7; border: 1px solid #bce8f1; border-radius: 4px; color: #31708f; z-index: 9999;}
+.custom-formula {font-size: 0.9em; overflow-x: auto; display: block; white-space: nowrap;}
+.chat-container {padding: 10px; background-color: #f7f7f7; border-radius: 10px; min-height: 50px; display: flex; flex-direction: column; justify-content: flex-end;}
+.chat-message {margin-bottom: 10px; padding: 10px; border-radius: 5px; width: 100%;}
+.user-message {background-color: #d9edf7; text-align: right; align-self: flex-end;}
+.assistant-message {background-color: #f5f5f5; align-self: flex-start;}
 
 "
 
@@ -115,121 +116,145 @@ ui <- navbarPage(
                                                 # End Fluid Row -------
              ))), br(), br(),
              
-             # Accordion -------------------------------------------------------------------------------------------------
-             # Container -------
-             div(class = "accordion-container", tags$div(class = "accordion", id = "accordionExample",
-                                                         
-                                                         # Accordion Container for AI Chat
-                                                         div(class = "accordion-item",
-                                                             h2(class = "accordion-header", id = "headingChat",
-                                                                tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseChat", 
-                                                                            `aria-expanded` = "true", `aria-controls` = "collapseChat", 
-                                                                            icon("comments"), "Chat with Get Real Copilot"
-                                                                )),
-                                                             div(id = "collapseChat", class = "accordion-collapse collapse show", `aria-labelledby` = "headingChat", `data-bs-parent` = "#accordionChat",
-                                                                 div(class = "accordion-body",
-                                                                     div(class = "card", 
-                                                                         div(class = "card-body",
-                                                                             uiOutput("chat_output"),
-                                                                             textInput("user_input", " ", placeholder = "Enter your message"),
-                                                                             actionBttn(inputId = "submit", label = "Send", style = "unite", size = "sm", color = "primary", icon = icon("paper-plane")), br(),
-                                                                             HTML("<small class='text-muted'>Please note: Get Real Copilot is an AI model trained specifically to support you with inflation and discounting. 
-                          It can make mistakes. Check important info in the tooltip.</small>"),
-                          bslib::tooltip(
-                            tags$span(id = "ai_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
-                            "Get Real Copilot is an AI model trained specifically to support you with inflation and discounting",
-                            placement = "top", options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class"))
-                                                                         )
-                                                                     )))),
-                          
-                          tags$style(HTML("
-    .chat-container {
-      padding: 10px;
-      background-color: #f7f7f7;
-      border-radius: 10px;
-    }
-    .chat-message {
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .user-message {
-      background-color: #d9edf7;
-      text-align: right;
-    }
-    .assistant-message {
-      background-color: #f5f5f5;
-    }
-    .accordion-body {
-      padding: 15px;
-    }
-  "))
-                          
-                          ,
-                 
-                    
-                   # Item 1: Why do we need to Get Real? -------------
-                                                         div(class = "accordion-item",
-                                                             h2(class = "accordion-header", id = "headingOne",
-                                                                tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOne", 
-                                                                            `aria-expanded` = "true", `aria-controls` = "collapseOne", "Why do we need to Get Real?")),
-                                                             div(id = "collapseOne", class = "accordion-collapse collapse show", `aria-labelledby` = "headingOne", `data-bs-parent` = "#accordionExample",
-                                                                 div(class = "accordion-body", HTML("<p>Proper adjustment of social values is crucial for:</p>
-                    <ul>
-                      <li><strong>Accurate comparison:</strong> Compare your social benefits to investment costs in 'real terms', essential for calculating Social Return on Investment (SROI).</li>
-                      <li><strong>Credibility:</strong> Maintain credibility with central and local government and other key funders.</li>
-                      <li><strong>Avoiding undervaluation:</strong> Recent high inflation rates mean you could be significantly undervaluing your social impacts. For example, values from five years ago could make your SROI about 20% higher than currently claimed.</li>
-                    </ul>")))),
-                   # Item 2: Non-Technical? -------------
-                    div(class = "accordion-item", h2(class = "accordion-header", id = "headingTwo",
-                                                     tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
-                                                                 `aria-expanded` = "false", `aria-controls` = "collapseTwo", "Non-technical explainer")),
-                        div(id = "collapseTwo", class = "accordion-collapse collapse", `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
-                            div(class = "accordion-body", HTML("<p><strong>Inflation:</strong></p>
-                   <ul>     
-                     <li>Prices typically increase over time. The rate of this increase is called inflation.</li> 
-                     <li>When we talk about changes in 'real terms,' we're accounting for inflation to make better 
-                         comparisons of the actual value of goods and services over time.</li>
-                     <li>The Treasury recommends using their 'GDP deflator' to adjust for inflation in social values. 
-                         While you may have heard of the Consumer Price Index (CPI), the GDP deflator is the preferred measure for this purpose.</li>
-                   </ul>")))),
-                   # Item 3: Technical? -------------
-                   # Item 3: Technical? -------------
-                   div(class = "accordion-item", h2(class = "accordion-header", id = "headingThree",
-                                                    tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
-                                                                `aria-expanded` = "false", `aria-controls` = "collapseThree", "Technical guidance")),
-                       div(id = "collapseThree", class = "accordion-collapse collapse", `aria-labelledby` = "headingThree", `data-bs-parent` = "#accordionExample",
-                           div(class = "accordion-body", HTML("
-          <p><strong>Inflation Adjustment:</strong></p>
-          <ul>
-            <li>Use 'real' base year prices for costs and benefits in social value appraisal.</li>
-            <li>For short time horizons, use the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts.</li>
-            <li>For longer horizons, refer to the OBR Fiscal Sustainability Report or extrapolate using the final year's growth rate.</li>
-            <li>Relative price effects can be used with historical evidence and future expectations, but must be justified and agreed upon.</li>
-            <li>We use the formula:
-              <div class='custom-formula'>\\[ \\text{Real Value} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\]</div>
-            </li>
-            <li>For wellbeing adjustments, the formula takes into account the changing marginal utility of income:
-              <div class='custom-formula'>\\[ \\text{Real Value (Wellbeing)} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\times \\left( \\frac{\\text{GDP per Capita (Real Year)}}{\\text{GDP per Capita (Nominal Year)}} \\right)^{1.3} \\]</div>
-            </li>
-            <li>The wellbeing adjustment differs because it accounts for the fact that as society's wealth increases, the additional happiness (utility) gained from an increase in income decreases. This is why we apply a power of 1.3 to the ratio of GDP per capita.</li>
-          </ul>
-        ")))),
-        
-                   # Item 4: Version Control -------------
-                   div(class = "accordion-item", h2(class = "accordion-header", id = "headingFour",
-                                                    tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFour", 
-                                                                `aria-expanded` = "false", `aria-controls` = "collapseFour", "Version control")),
-                       div(id = "collapseFour", class = "accordion-collapse collapse", `aria-labelledby` = "headingFour", `data-bs-parent` = "#accordionExample",
-                           div(class = "accordion-body", HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
-                     <p><strong>GDP Deflators:</strong> Market prices, and money GDP. 
-                       Outturn data are as at the Quarterly National Accounts from ONS - updated 28 March 2024. 
-                       Forecast data are consistent with OBR EFO data as at Budget 6 March 2024.</p>
-                     <p><strong>GVA per head used in WELLBY estimation:</strong> 
-                       Gross domestic product (Average) per head at market prices - released 10 May 2024</p>")))))
-                   # End Accordion --------------
-             ))
-             # End Get Real Tab ----
+
+
+
+# Accordion -------------------------------------------------------------------------------------------------
+# Accordion -------------------------------------------------------------------------------------------------
+div(class = "accordion-container",
+    tags$div(class = "accordion custom-accordion", id = "accordionExample",
+             
+             # Item 1: Chat with Get Real Copilot --------------
+             div(class = "accordion-item",
+                 h2(class = "accordion-header", id = "headingOne",
+                    tags$button(class = "accordion-button collapsed", type = "button", 
+                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOne", 
+                                `aria-expanded` = "false", `aria-controls` = "collapseOne", 
+                                span(class = "icon-padding", icon("comments")), "Chat with Get Real Copilot")),
+                 div(id = "collapseOne", class = "accordion-collapse collapse", 
+                     `aria-labelledby` = "headingOne", `data-bs-parent` = "#accordionExample",
+                     div(class = "accordion-body",
+                         div(class = "card", 
+                             div(class = "card-body",
+                                 uiOutput("chat_output"),
+                                 textInput("user_input", " ", placeholder = "Enter your message"),
+                                 actionBttn(inputId = "submit", label = "Send", style = "unite", 
+                                            size = "sm", color = "primary", icon = icon("paper-plane")),
+                                 br(),
+                                 HTML("<small class='text-muted'>Please note: Get Real Copilot is an AI model trained specifically to support you with 
+                                      inflation and discounting. It can make mistakes. Check important info in the tooltip.</small>"),
+                                 bslib::tooltip(
+                                   tags$span(id = "ai_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                   "Get Real Copilot is an AI model trained specifically to support you with inflation and discounting",
+                                   placement = "top", 
+                                   options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                 )
+                             )
+                         )
+                     )
+                 )
+             ),
+             
+             # Item 2: Why do we need to Get Real? -------------
+             div(class = "accordion-item",
+                 h2(class = "accordion-header", id = "headingTwo",
+                    tags$button(class = "accordion-button collapsed", type = "button", 
+                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
+                                `aria-expanded` = "false", `aria-controls` = "collapseTwo", 
+                                span(class = "icon-padding", icon("question-circle")), "Why do we need to Get Real?")),
+                 div(id = "collapseTwo", class = "accordion-collapse collapse", 
+                     `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
+                     div(class = "accordion-body", 
+                         HTML("<p>Proper adjustment of social values is crucial for:</p>
+                              <ul>
+                                <li><strong>Accurate comparison:</strong> Compare your social benefits to investment costs in 'real terms', 
+                                    essential for calculating Social Return on Investment (SROI).</li>
+                                <li><strong>Credibility:</strong> Maintain credibility with central and local government and other key funders.</li>
+                                <li><strong>Avoiding undervaluation:</strong> Recent high inflation rates mean you could be significantly undervaluing 
+                                    your social impacts. For example, values from five years ago could make your SROI about 20% higher than currently 
+                                    claimed.</li>
+                              </ul>")
+                     )
+                 )
+             ),
+             
+             # Item 3: Non-Technical? -------------
+             div(class = "accordion-item", 
+                 h2(class = "accordion-header", id = "headingThree",
+                    tags$button(class = "accordion-button collapsed", type = "button", 
+                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
+                                `aria-expanded` = "false", `aria-controls` = "collapseThree", 
+                                span(class = "icon-padding", icon("book")), "Non-technical explainer")),
+                 div(id = "collapseThree", class = "accordion-collapse collapse", 
+                     `aria-labelledby` = "headingThree", `data-bs-parent` = "#accordionExample",
+                     div(class = "accordion-body", 
+                         HTML("<p><strong>Inflation:</strong></p>
+                              <ul>     
+                                <li>Prices typically increase over time. The rate of this increase is called inflation.</li> 
+                                <li>When we talk about changes in 'real terms,' we're accounting for inflation to make better 
+                                    comparisons of the actual value of goods and services over time.</li>
+                                <li>The Treasury recommends using their 'GDP deflator' to adjust for inflation in social values. 
+                                    While you may have heard of the Consumer Price Index (CPI), the GDP deflator is the preferred measure 
+                                    for this purpose.</li>
+                              </ul>")
+                     )
+                 )
+             ),
+             
+             # Item 4: Technical? -------------
+             div(class = "accordion-item", 
+                 h2(class = "accordion-header", id = "headingFour",
+                    tags$button(class = "accordion-button collapsed", type = "button", 
+                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFour", 
+                                `aria-expanded` = "false", `aria-controls` = "collapseFour", 
+                                span(class = "icon-padding", icon("cogs")), "Technical guidance")),
+                 div(id = "collapseFour", class = "accordion-collapse collapse", 
+                     `aria-labelledby` = "headingFour", `data-bs-parent` = "#accordionExample",
+                     div(class = "accordion-body", 
+                         HTML("
+                              <p><strong>Inflation Adjustment:</strong></p>
+                              <ul>
+                                <li>Use 'real' base year prices for costs and benefits in social value appraisal.</li>
+                                <li>For short time horizons, use the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts.</li>
+                                <li>For longer horizons, refer to the OBR Fiscal Sustainability Report or extrapolate using the final year's growth rate.</li>
+                                <li>Relative price effects can be used with historical evidence and future expectations, but must be justified and agreed upon.</li>
+                                <li>We use the formula:
+                                  <div class='custom-formula'>\\[ \\text{Real Value} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\]</div>
+                                </li>
+                                <li>For wellbeing adjustments, the formula takes into account the changing marginal utility of income:
+                                  <div class='custom-formula'>\\[ \\text{Real Value (Wellbeing)} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\times \\left( \\frac{\\text{GDP per Capita (Real Year)}}{\\text{GDP per Capita (Nominal Year)}} \\right)^{1.3} \\]</div>
+                                </li>
+                                <li>The wellbeing adjustment differs because it accounts for the fact that as society's wealth increases, the additional happiness (utility) gained from an increase in income decreases. This is why we apply a power of 1.3 to the ratio of GDP per capita.</li>
+                              </ul>
+                              ")
+                     )
+                 )
+             ),
+             
+             # Item 5: Version Control -------------
+             div(class = "accordion-item", 
+                 h2(class = "accordion-header", id = "headingFive",
+                    tags$button(class = "accordion-button collapsed", type = "button", 
+                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFive", 
+                                `aria-expanded` = "false", `aria-controls` = "collapseFive", 
+                                span(class = "icon-padding", icon("code-branch")), "Version control")),
+                 div(id = "collapseFive", class = "accordion-collapse collapse", 
+                     `aria-labelledby` = "headingFive", `data-bs-parent` = "#accordionExample",
+                     div(class = "accordion-body", 
+                         HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
+                                     <p><strong>GDP Deflators:</strong> Market prices, and money GDP. 
+                                       Outturn data are as at the Quarterly National Accounts from ONS - updated 28 March 2024. 
+                                       Forecast data are consistent with OBR EFO data as at Budget 6 March 2024.</p>
+                                     <p><strong>GVA per head used in WELLBY estimation:</strong> 
+                                       Gross domestic product (Average) per head at market prices - released 10 May 2024</p>")
+                         )
+                     )
+                 )
+             )
+    )
+)
+
+          # End Real Value Tab -------------- 
            )),
   
 # PRESENT VALUES PANEL --------------------------------------------------------------------------------------------------------------
