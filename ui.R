@@ -13,7 +13,6 @@ library(bslib)
 library(bsicons)
 library(shinyjqui)
 library(openxlsx2)
-library(httr)
 library(jsonlite)
 library(officer)
 library(magrittr)
@@ -25,7 +24,6 @@ library(bs4Dash)
 library(shinyalert)
 
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
-
 custom_css <- "
 .custom-accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer; border: 1px solid #ddd; border-bottom: none;}
 .custom-accordion .accordion-body {border: 1px solid #ddd; padding: 10px; font-size: 16px; background-color: #fff;}
@@ -38,11 +36,16 @@ custom_css <- "
 .specialist-value {font-size: 14px !important;}
 .conditional-alert {position: fixed; top: 100px; left: 80%; transform: translateX(-50%); width: 300px; padding: 10px; background-color: #d9edf7; border: 1px solid #bce8f1; border-radius: 4px; color: #31708f; z-index: 9999;}
 .custom-formula {font-size: 0.9em; overflow-x: auto; display: block; white-space: nowrap;}
-.chat-container {padding: 10px; background-color: #f7f7f7; border-radius: 10px; min-height: 50px; display: flex; flex-direction: column; justify-content: flex-end;}
-.chat-message {margin-bottom: 10px; padding: 10px; border-radius: 5px; width: 100%;}
+.chat-container {padding: 10px; background-color: #f7f7f7; border-radius: 10px; min-height: 100px; display: flex; flex-direction: column; justify-content: flex-end;}
+.chat-message {margin-bottom: 10px; padding: 10px; border-radius: 5px; width: 100%; display: flex; align-items: center;}
 .user-message {background-color: #d9edf7; text-align: right; align-self: flex-end;}
 .assistant-message {background-color: #f5f5f5; align-self: flex-start;}
-
+.spinner {border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s linear infinite;}
+@keyframes spin {to { transform: rotate(360deg); }}
+.avatar {border-radius: 50%; width: 36px; height: 36px; margin-right: 10px;}
+.user-avatar {float: right;}
+.ai-avatar {float: left;}
+.timestamp {font-size: 0.8em; color: #888; margin-top: 5px;}
 "
 
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
@@ -52,7 +55,10 @@ my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
                   width: 20px; height: 20px; border-radius: 50%;
                   border: 1px solid #3498db; color: white; background-color: #3498db;
                   margin-left: 5px; cursor: pointer; transition: all 0.3s ease;}
-                .custom-info-icon:hover {background-color: transparent; color: #3498db;}")
+                .custom-info-icon:hover {background-color: transparent; color: #3498db;}
+                .dark-mode {background-color: #121212; color: #ffffff;}
+                .dark-mode .chat-container {background-color: #1e1e1e;}
+")
 
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
@@ -116,56 +122,53 @@ ui <- navbarPage(
                                                 # End Fluid Row -------
              ))), br(), br(),
              
-
-
-
-# Accordion -------------------------------------------------------------------------------------------------
-# Accordion -------------------------------------------------------------------------------------------------
-div(class = "accordion-container",
-    tags$div(class = "accordion custom-accordion", id = "accordionExample",
-             
-             # Item 1: Chat with Get Real Copilot --------------
-             div(class = "accordion-item",
-                 h2(class = "accordion-header", id = "headingOne",
-                    tags$button(class = "accordion-button collapsed", type = "button", 
-                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOne", 
-                                `aria-expanded` = "false", `aria-controls` = "collapseOne", 
-                                span(class = "icon-padding", icon("comments")), "Chat with Get Real Copilot")),
-                 div(id = "collapseOne", class = "accordion-collapse collapse", 
-                     `aria-labelledby` = "headingOne", `data-bs-parent` = "#accordionExample",
-                     div(class = "accordion-body",
-                         div(class = "card", 
-                             div(class = "card-body",
-                                 uiOutput("chat_output"),
-                                 textInput("user_input", " ", placeholder = "Enter your message"),
-                                 actionBttn(inputId = "submit", label = "Send", style = "unite", 
-                                            size = "sm", color = "primary", icon = icon("paper-plane")),
-                                 br(),
-                                 HTML("<small class='text-muted'>Please note: Get Real Copilot is an AI model trained specifically to support you with 
-                                      inflation and discounting. It can make mistakes. Check important info in the tooltip.</small>"),
-                                 bslib::tooltip(
-                                   tags$span(id = "ai_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
-                                   "Get Real Copilot is an AI model trained specifically to support you with inflation and discounting",
-                                   placement = "top", 
-                                   options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
-                                 )
-                             )
-                         )
-                     )
-                 )
-             ),
-             
-             # Item 2: Why do we need to Get Real? -------------
-             div(class = "accordion-item",
-                 h2(class = "accordion-header", id = "headingTwo",
-                    tags$button(class = "accordion-button collapsed", type = "button", 
-                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
-                                `aria-expanded` = "false", `aria-controls` = "collapseTwo", 
-                                span(class = "icon-padding", icon("question-circle")), "Why do we need to Get Real?")),
-                 div(id = "collapseTwo", class = "accordion-collapse collapse", 
-                     `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
-                     div(class = "accordion-body", 
-                         HTML("<p>Proper adjustment of social values is crucial for:</p>
+             # Accordion -------------------------------------------------------------------------------------------------
+             div(class = "accordion-container",
+                 tags$div(class = "accordion custom-accordion", id = "accordionExample",
+                          
+                          # Item 1: Chat with Mission Economics AI --------------
+                          div(class = "accordion-item",
+                              h2(class = "accordion-header", id = "headingOne",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOne", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseOne", 
+                                             span(class = "icon-padding", icon("comments")), "Chat with Mission Economics AI")),
+                              div(id = "collapseOne", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingOne", `data-bs-parent` = "#accordionExample",
+                                  div(class = "accordion-body",
+                                      div(class = "card", 
+                                          div(class = "card-body",
+                                              uiOutput("chat_output"),
+                                              textInput("user_input", " ", placeholder = "Enter your message"),
+                                              actionBttn(inputId = "submit", label = "Send", style = "unite", 
+                                                         size = "sm", color = "primary", icon = icon("paper-plane")),
+                                              br(),
+                                              div(class = "spinner", id = "loading-spinner", style = "display: none;"),
+                                              HTML("<small class='text-muted'>Please note: Mission Economics AI is trained specifically to support you with 
+                                                   inflation and discounting. It can make mistakes. Check important info in the tooltip.</small>"),
+                                              bslib::tooltip(
+                                                tags$span(id = "ai_tooltip", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                                "Mission Economics is an AI model trained specifically to support you with inflation and discounting",
+                                                placement = "top", 
+                                                options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                              )
+                                          )
+                                      )
+                                  )
+                              )
+                          ),
+                          
+                          # Item 2: Why do we need to Get Real? -------------
+                          div(class = "accordion-item",
+                              h2(class = "accordion-header", id = "headingTwo",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseTwo", 
+                                             span(class = "icon-padding", icon("question-circle")), "Why do we need to Get Real?")),
+                              div(id = "collapseTwo", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
+                                  div(class = "accordion-body", 
+                                      HTML("<p>Proper adjustment of social values is crucial for:</p>
                               <ul>
                                 <li><strong>Accurate comparison:</strong> Compare your social benefits to investment costs in 'real terms', 
                                     essential for calculating Social Return on Investment (SROI).</li>
@@ -174,21 +177,21 @@ div(class = "accordion-container",
                                     your social impacts. For example, values from five years ago could make your SROI about 20% higher than currently 
                                     claimed.</li>
                               </ul>")
-                     )
-                 )
-             ),
-             
-             # Item 3: Non-Technical? -------------
-             div(class = "accordion-item", 
-                 h2(class = "accordion-header", id = "headingThree",
-                    tags$button(class = "accordion-button collapsed", type = "button", 
-                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
-                                `aria-expanded` = "false", `aria-controls` = "collapseThree", 
-                                span(class = "icon-padding", icon("book")), "Non-technical explainer")),
-                 div(id = "collapseThree", class = "accordion-collapse collapse", 
-                     `aria-labelledby` = "headingThree", `data-bs-parent` = "#accordionExample",
-                     div(class = "accordion-body", 
-                         HTML("<p><strong>Inflation:</strong></p>
+                                  )
+                              )
+                          ),
+                          
+                          # Item 3: Non-Technical? -------------
+                          div(class = "accordion-item", 
+                              h2(class = "accordion-header", id = "headingThree",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseThree", 
+                                             span(class = "icon-padding", icon("book")), "Non-technical explainer")),
+                              div(id = "collapseThree", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingThree", `data-bs-parent` = "#accordionExample",
+                                  div(class = "accordion-body", 
+                                      HTML("<p><strong>Inflation:</strong></p>
                               <ul>     
                                 <li>Prices typically increase over time. The rate of this increase is called inflation.</li> 
                                 <li>When we talk about changes in 'real terms,' we're accounting for inflation to make better 
@@ -197,21 +200,21 @@ div(class = "accordion-container",
                                     While you may have heard of the Consumer Price Index (CPI), the GDP deflator is the preferred measure 
                                     for this purpose.</li>
                               </ul>")
-                     )
-                 )
-             ),
-             
-             # Item 4: Technical? -------------
-             div(class = "accordion-item", 
-                 h2(class = "accordion-header", id = "headingFour",
-                    tags$button(class = "accordion-button collapsed", type = "button", 
-                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFour", 
-                                `aria-expanded` = "false", `aria-controls` = "collapseFour", 
-                                span(class = "icon-padding", icon("cogs")), "Technical guidance")),
-                 div(id = "collapseFour", class = "accordion-collapse collapse", 
-                     `aria-labelledby` = "headingFour", `data-bs-parent` = "#accordionExample",
-                     div(class = "accordion-body", 
-                         HTML("
+                                  )
+                              )
+                          ),
+                          
+                          # Item 4: Technical? -------------
+                          div(class = "accordion-item", 
+                              h2(class = "accordion-header", id = "headingFour",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFour", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseFour", 
+                                             span(class = "icon-padding", icon("cogs")), "Technical guidance")),
+                              div(id = "collapseFour", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingFour", `data-bs-parent` = "#accordionExample",
+                                  div(class = "accordion-body", 
+                                      HTML("
                               <p><strong>Inflation Adjustment:</strong></p>
                               <ul>
                                 <li>Use 'real' base year prices for costs and benefits in social value appraisal.</li>
@@ -227,46 +230,46 @@ div(class = "accordion-container",
                                 <li>The wellbeing adjustment differs because it accounts for the fact that as society's wealth increases, the additional happiness (utility) gained from an increase in income decreases. This is why we apply a power of 1.3 to the ratio of GDP per capita.</li>
                               </ul>
                               ")
-                     )
-                 )
-             ),
-             
-             # Item 5: Version Control -------------
-             div(class = "accordion-item", 
-                 h2(class = "accordion-header", id = "headingFive",
-                    tags$button(class = "accordion-button collapsed", type = "button", 
-                                `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFive", 
-                                `aria-expanded` = "false", `aria-controls` = "collapseFive", 
-                                span(class = "icon-padding", icon("code-branch")), "Version control")),
-                 div(id = "collapseFive", class = "accordion-collapse collapse", 
-                     `aria-labelledby` = "headingFive", `data-bs-parent` = "#accordionExample",
-                     div(class = "accordion-body", 
-                         HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
+                                  )
+                              )
+                          ),
+                          
+                          # Item 5: Version Control -------------
+                          div(class = "accordion-item", 
+                              h2(class = "accordion-header", id = "headingFive",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFive", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseFive", 
+                                             span(class = "icon-padding", icon("code-branch")), "Version control")),
+                              div(id = "collapseFive", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingFive", `data-bs-parent` = "#accordionExample",
+                                  div(class = "accordion-body", 
+                                      HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
                                      <p><strong>GDP Deflators:</strong> Market prices, and money GDP. 
                                        Outturn data are as at the Quarterly National Accounts from ONS - updated 28 March 2024. 
                                        Forecast data are consistent with OBR EFO data as at Budget 6 March 2024.</p>
                                      <p><strong>GVA per head used in WELLBY estimation:</strong> 
                                        Gross domestic product (Average) per head at market prices - released 10 May 2024</p>")
-                         )
-                     )
+                                      )
+                                  )
+                              )
+                          )
                  )
              )
-    )
-)
-
-          # End Real Value Tab -------------- 
+             
+             # End Real Value Tab -------------- 
            )),
   
-# PRESENT VALUES PANEL --------------------------------------------------------------------------------------------------------------
+  # PRESENT VALUES PANEL --------------------------------------------------------------------------------------------------------------
   tabPanel("Present Values",
            fluidPage(
              useShinyjs(),
              tags$head(tags$script(src = "https://polyfill.io/v3/polyfill.min.js?features=es6")),
              tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")),
              tags$style(HTML(custom_css)),  # Include custom CSS
-        # Calculator Fluid Row ---------------------               
+             # Calculator Fluid Row ---------------------               
              fluidRow(column(6, offset = 3, div(class = "well",
-             # Inputs -------------
+                                                # Inputs -------------
                                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 18px;",
                                                     span(style = "padding-right: 5px;", "We estimate a real social value of £"),
                                                     numericInput("pv_real_value", "", value = 10, min = 0, step = 0.01, width = '100px'),
@@ -283,16 +286,16 @@ div(class = "accordion-container",
                                                     )), br(),
                                                 div(style = "text-align: center;",
                                                     actionBttn(inputId = "calculate_pv", label = "Calculate Present Value", style = "unite", color = "success")), br(), br(),
-             # Outputs -------------
+                                                # Outputs -------------
                                                 htmlOutput("present_value_output"), br(), br(),
                                                 
-             # Additional buttons ----------
+                                                # Additional buttons ----------
                                                 div(id = "pv_additional_buttons", style = "text-align: center; display: none;",
                                                     downloadBttn(outputId = "pv_download_report", label = "Download Report", style = "unite", color = "primary",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-download")),
                                                     downloadBttn(outputId = "pv_download_csv", label = "Download Discount Factors", style = "unite", color = "success",  
                                                                  size = "sm", block = FALSE, no_outline = TRUE, icon = shiny::icon("file-csv"))), br(), br(),
-             # Specialist options --------
+                                                # Specialist options --------
                                                 h5("Specialist Options", class = "specialist-value"),
                                                 div(style = "display: flex; align-items: center; flex-wrap: wrap; font-size: 14px;",
                                                     prettyRadioButtons(inputId = "pv_discount_type", label = " ", 
@@ -302,78 +305,143 @@ div(class = "accordion-container",
                                                     prettyRadioButtons(inputId = "pv_rate_type", label = " ", 
                                                                        choices = c("Standard STPR" = "standard_stpr", "Reduced Rate" = "reduced_rate"),
                                                                        inline = TRUE, icon = icon("check"), bigger = TRUE, status = "info", animation = "jelly"))
-             # End Fluid Row -------
+                                                # End Fluid Row -------
              ))), br(), br(),
              
              # Accordion -------------------------------------------------------------------------------------------------
-             div(class = "accordion-container", tags$div(class = "accordion", id = "accordionExamplePV",
-                # Item 1: Why discount to present value? -------------
-                                                         div(class = "accordion-item",
-                                                             h2(class = "accordion-header", id = "headingOnePV",
-                                                                tags$button(class = "accordion-button", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOnePV", 
-                                                                            `aria-expanded` = "true", `aria-controls` = "collapseOnePV", "Why discount to present value?")),
-                                                             div(id = "collapseOnePV", class = "accordion-collapse collapse show", `aria-labelledby` = "headingOnePV", `data-bs-parent` = "#accordionExamplePV",
-                                                                 div(class = "accordion-body", HTML("<p>Discounting future values to present value is crucial for:</p>
-                      <ul>
+             div(class = "accordion-container", 
+                 tags$div(class = "accordion custom-accordion", id = "accordionExamplePV",
+                          
+                          # Item 1: Chat with Mission Economics AI --------------
+                          div(class = "accordion-item",
+                              h2(class = "accordion-header", id = "headingOnePV",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOnePV", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseOnePV", 
+                                             span(class = "icon-padding", icon("comments")), "Chat with Mission Economics AI")),
+                              div(id = "collapseOnePV", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingOnePV", `data-bs-parent` = "#accordionExamplePV",
+                                  div(class = "accordion-body",
+                                      div(class = "card", 
+                                          div(class = "card-body",
+                                              uiOutput("chat_output_pv"),
+                                              textInput("user_input_pv", " ", placeholder = "Enter your message"),
+                                              actionBttn(inputId = "submit_pv", label = "Send", style = "unite", 
+                                                         size = "sm", color = "primary", icon = icon("paper-plane")),
+                                              br(),
+                                              div(class = "spinner", id = "loading-spinner-pv", style = "display: none;"),
+                                              HTML("<small class='text-muted'>Please note: Mission Economics AI is trained specifically to support you with 
+                                 inflation and discounting. It can make mistakes. Check important info in the tooltip.</small>"),
+                                 bslib::tooltip(
+                                   tags$span(id = "ai_tooltip_pv", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                   "Mission Economics is an AI model trained specifically to support you with inflation and discounting",
+                                   placement = "top", 
+                                   options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                 )
+                                          )
+                                      )
+                                  )
+                              )
+                          ),
+                          
+                          # Item 2: Why discount to present value? -------------
+                          div(class = "accordion-item",
+                              h2(class = "accordion-header", id = "headingTwoPV",
+                                 tags$button(class = "accordion-button collapsed", type = "button", 
+                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwoPV", 
+                                             `aria-expanded` = "false", `aria-controls` = "collapseTwoPV", 
+                                             span(class = "icon-padding", icon("question-circle")), "Why discount to present value?")),
+                              div(id = "collapseTwoPV", class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingTwoPV", `data-bs-parent` = "#accordionExamplePV",
+                                  div(class = "accordion-body", 
+                                      HTML("<p>Discounting future values to present value is crucial for:</p>
+                        <ul>
                         <li><strong>Comparing projects:</strong> Enabling a fair comparison of projects with different timelines and cash flows.</li>
                         <li><strong>Comparing costs with benefits:</strong> For example, to compare the social value of upfront costs and downstream benefits.</li>
                         <li><strong>Credibility:</strong> Government and other funders will expect your Social Return on Investment to be in present values.</li>
-                      </ul>")))),
-                # Item 2: Non-Technical Explainer -------------
-                      div(class = "accordion-item", h2(class = "accordion-header", id = "headingTwo",
-                                                       tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
-                                                                   `aria-expanded` = "false", `aria-controls` = "collapseTwo", "Non-technical explainer")),
-                          div(id = "collapseTwo", class = "accordion-collapse collapse", `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
-                              div(class = "accordion-body", HTML("
-                  <p><strong>Present Values:</strong></p>
-                   <ul>     
-                     <li>People generally prefer benefits now rather than later. If your social costs and benefits occur in the future you'll
+                        </ul>")
+                                  )
+                              )
+                          ),
+                        
+                        # Item 3: Non-Technical Explainer -------------
+                        div(class = "accordion-item", 
+                            h2(class = "accordion-header", id = "headingThreePV",
+                               tags$button(class = "accordion-button collapsed", type = "button", 
+                                           `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThreePV", 
+                                           `aria-expanded` = "false", `aria-controls` = "collapseThreePV", 
+                                           span(class = "icon-padding", icon("book")), "Non-technical explainer")),
+                            div(id = "collapseThreePV", class = "accordion-collapse collapse", 
+                                `aria-labelledby` = "headingThreePV", `data-bs-parent` = "#accordionExamplePV",
+                                div(class = "accordion-body", 
+                                    HTML("<p><strong>Present Values:</strong></p>
+                        <ul>     
+                        <li>People generally prefer benefits now rather than later. If your social costs and benefits occur in the future you'll
                         need to account for society's time preferences, to estimate your Social Return on Investment (SROI) </li> 
-                     <li>Discounting helps us determine the 'present value' of social impacts when they're given in monetary terms.</li>
-                     <li>Discounting is a completely separate concept to inflation.</li> 
-                     <li>Apply Treasury discount rates to your 'real' social value (after first removing inflation effects) to estimate the 
-                         'present value' of future social costs and benefits.</li>
-                     <li>Note that the discoutn rate reduces over time - that's built into our calculator. There are also different rates 
-                         applied for standard vs health/wellbeing values, and based on time preferences. You might need advice from trained
-                         social value pracitioners to applly these.</li>
-                   </ul>")))),
-                # Item 3: Technical Guidance -------------
-                div(class = "accordion-item", h2(class = "accordion-header", id = "headingThreePV",
-                                                 tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThreePV", 
-                                                             `aria-expanded` = "false", `aria-controls` = "collapseThreePV", "Technical guidance")),
-                    div(id = "collapseThreePV", class = "accordion-collapse collapse", `aria-labelledby` = "headingThreePV", `data-bs-parent` = "#accordionExamplePV",
-                        div(class = "accordion-body", HTML("
-          <p><strong>Discounting Procedure:</strong></p>
-          <ul>
-            <li>First, ensure all future values are in real terms (adjusted for inflation).</li>
-            <li>Apply the appropriate discount rate based on the project type (standard or health) and time horizon.</li>
-            <li>Use the formula:
-              <div class='custom-formula'>\\( \\text{Present Value} = \\frac{\\text{Future Value}}{(1 + r)^t} \\)</div>
-              where \\( r \\) is the discount rate and \\( t \\) is the number of years.
-            </li>
-            <li>For streams of benefits or costs, calculate the present value for each year and sum them.</li>
-          </ul>
-          <p><strong>Discount Rates:</strong></p>
-          <ul>
-            <li>Standard rate: 3.5% for years 0-30, 3% for years 31-75, and 2.5% for years 76-125.</li>
-            <li>Health rate: 1.5% for years 0-30, 1.29% for years 31-75, and 1.07% for years 76-125.</li>
-            <li>Reduced rates are available when the pure time preference rate is assumed to be 0%.</li>
-            <li>Always refer to the latest Green Book guidance for the most up-to-date rates.</li>
-          </ul>
-        "))))
-        ,
-                # Item 4: Version Control -------------
-                 div(class = "accordion-item", h2(class = "accordion-header", id = "headingFourPV",
-                                                  tags$button(class = "accordion-button collapsed", type = "button", `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFourPV", 
-                                                              `aria-expanded` = "false", `aria-controls` = "collapseFourPV", "Version control")),
-                     div(id = "collapseFourPV", class = "accordion-collapse collapse", `aria-labelledby` = "headingFourPV", `data-bs-parent` = "#accordionExamplePV",
-                         div(class = "accordion-body", HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
-                 <p><strong>Discount Rates:</strong> Based on the latest HM Treasury Green Book guidance (2023 update).</p>
-                 <p><strong>Calculation Method:</strong> Follows the standard present value calculation methodology as outlined in the Green Book.</p>")))))
-                # End Accordion --------------
-             ))
-           )
-  )
+                        <li>Discounting helps us determine the 'present value' of social impacts when they're given in monetary terms.</li>
+                        <li>Discounting is a completely separate concept to inflation.</li> 
+                        <li>Apply Treasury discount rates to your 'real' social value (after first removing inflation effects) to estimate the 
+                        'present value' of future social costs and benefits.</li>
+                        <li>Note that the discount rate reduces over time - that's built into our calculator. There are also different rates 
+                        applied for standard vs health/wellbeing values, and based on time preferences. You might need advice from trained
+                        social value practitioners to apply these.</li>
+                        </ul>")
+                                )
+                            )
+                        ),
+                        
+                        # Item 4: Technical Guidance -------------
+                        div(class = "accordion-item", 
+                            h2(class = "accordion-header", id = "headingFourPV",
+                               tags$button(class = "accordion-button collapsed", type = "button", 
+                                           `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFourPV", 
+                                           `aria-expanded` = "false", `aria-controls` = "collapseFourPV", 
+                                           span(class = "icon-padding", icon("cogs")), "Technical guidance")),
+                            div(id = "collapseFourPV", class = "accordion-collapse collapse", 
+                                `aria-labelledby` = "headingFourPV", `data-bs-parent` = "#accordionExamplePV",
+                                div(class = "accordion-body", 
+                                    HTML("<p><strong>Discounting Procedure:</strong></p>
+                        <ul>
+                        <li>First, ensure all future values are in real terms (adjusted for inflation).</li>
+                        <li>Apply the appropriate discount rate based on the project type (standard or health) and time horizon.</li>
+                        <li>Use the formula:
+                        <div class='custom-formula'>\\( \\text{Present Value} = \\frac{\\text{Future Value}}{(1 + r)^t} \\)</div>
+                        where \\( r \\) is the discount rate and \\( t \\) is the number of years.
+                        </li>
+                        <li>For streams of benefits or costs, calculate the present value for each year and sum them.</li>
+                        </ul>
+                        <p><strong>Discount Rates:</strong></p>
+                        <ul>
+                        <li>Standard rate: 3.5% for years 0-30, 3% for years 31-75, and 2.5% for years 76-125.</li>
+                        <li>Health rate: 1.5% for years 0-30, 1.29% for years 31-75, and 1.07% for years 76-125.</li>
+                        <li>Reduced rates are available when the pure time preference rate is assumed to be 0%.</li>
+                        <li>Always refer to the latest Green Book guidance for the most up-to-date rates.</li>
+                        </ul>")
+                                )
+                            )
+                        ),
+                        
+                        # Item 5: Version Control -------------
+                        div(class = "accordion-item", 
+                            h2(class = "accordion-header", id = "headingFivePV",
+                               tags$button(class = "accordion-button collapsed", type = "button", 
+                                           `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFivePV", 
+                                           `aria-expanded` = "false", `aria-controls` = "collapseFivePV", 
+                                           span(class = "icon-padding", icon("code-branch")), "Version control")),
+                            div(id = "collapseFivePV", class = "accordion-collapse collapse", 
+                                `aria-labelledby` = "headingFivePV", `data-bs-parent` = "#accordionExamplePV",
+                                div(class = "accordion-body", 
+                                    HTML(paste0("<p><strong>Get Real App Version:</strong> ", format(Sys.Date(), "%d %B %Y"), "</p>
+                                <p><strong>Discount Rates:</strong> Based on the latest HM Treasury Green Book guidance (2023 update).</p>
+                                <p><strong>Calculation Method:</strong> Follows the standard present value calculation methodology as outlined in the Green Book.</p>")
+                                    )
+                                )
+                            )
+                        )
+                 )
+             )
+           ))
+  
   
   # End UI -----
 )

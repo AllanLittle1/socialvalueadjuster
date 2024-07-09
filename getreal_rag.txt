@@ -1,500 +1,179 @@
-Adjustments for inflation
+To make the content more efficient for an LLM to access, read, and use for training and user responses, we should structure the information in a clear, concise, and indexed format. This involves organizing the sections by topic, using bullet points for clarity, and providing explicit headings for easy navigation. Here’s a restructured version:
 
-5.11 Costs and benefits in appraisal of social value should be estimated in ‘real’ base year prices
-(i.e. the first year of the proposal). This means the effects of general inflation should be removed.
-The effects of converting values from nominal to real terms are shown in Table 1 using a GDP
-deflator of 2%.
+### Adjustments for Inflation
 
-5.12 The following should be used to adjust prices from nominal to real terms:
-- for short time horizons, whole economy inflation (the “GDP deflator”) from the most
-recent forecasts by the Office for Budget Responsibility (OBR)
-- for long time horizons, forecasts of the GDP deflator published in the OBR Fiscal
-Sustainability Report (FSR)
-- for longer time horizons, beyond the end of the OBR’s FSR, the GDP deflator should be
-extrapolated using the growth rate in the final year of the OBR’s projection
+#### Overview
+- Costs and benefits should be estimated in ‘real’ base year prices.
+- General inflation effects should be removed using the GDP deflator.
 
-Table 1. Adjusting for the Effects of Inflation (Using a 2% GDP Deflator)
-Year 0 | 1 | 2 | 3 | 4 | 5
-Nominal terms £1,000 | £1,000 | £1,000 | £1,000 | £1,000 | £1,000
-Real terms (year 0 prices) £1,000 | £980 | £961 | £942 | £924 | £906
+#### Methods for Adjusting Prices
+- **Short Time Horizons**: Use whole economy inflation (GDP deflator) from the most recent OBR forecasts.
+- **Long Time Horizons**: Use GDP deflator forecasts from the OBR Fiscal Sustainability Report (FSR).
+- **Beyond FSR**: Extrapolate GDP deflator using the growth rate in the final year of the OBR’s projection.
 
-5.13 For some goods or services there may be a relative price effect i.e. the movement of a specific
-price index (e.g. construction) may differ significantly from the general inflation (such as the GDP
-deflator). Where there is historical evidence and an expectation this will continue in the future,
-different rates of inflation can be used to reflect the relative difference. For example, Information
-Technology has become relatively less expensive over time and land used for development relatively
-more expensive. Where prices or values are expected to grow in real terms, these assumptions
-must be based on objective evidence, for example, long term trends in relevant indices. These
-assumptions should be transparently set out in the business case and assumptions agreed with
-the approving authority.
+#### Table: Adjusting for the Effects of Inflation (2% GDP Deflator)
+| Year   | 0    | 1    | 2    | 3    | 4    | 5    |
+|--------|------|------|------|------|------|------|
+| Nominal terms (£) | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
+| Real terms (£)    | 1,000 | 980  | 961  | 942  | 924  | 906  |
 
-Discounting and Social Time Preference
+#### Relative Price Effect
+- **Concept**: Specific price index movements may differ from general inflation.
+- **Application**: Use historical evidence and future expectations to apply different inflation rates. 
+  - Example: Information Technology prices decrease over time, land prices increase.
+- **Requirements**: Assumptions must be based on objective evidence and clearly stated in the business case.
 
-5.32 Discounting is a technique used to compare costs and benefits occurring over different periods of time on a consistent basis. Discounting should be applied to all future costs and benefits. Discounting in appraisal of social value is based on the concept of time preference – that generally people prefer to receive goods and services now rather than later.
+### Discounting and Social Time Preference
 
-5.33 For individuals, time preference can be measured by the real interest rate on money lent or borrowed. Amongst other investments, people invest at fixed, low risk rates, hoping to receive more in the future to compensate for the deferral of consumption now. These real rates of return give some indication of their individual pure time preference rate. Society as a whole, also prefers to receive goods and services sooner rather than later. This is known as ‘social time preference’. The discount rate used in the Green Book is known as the ‘social time preference rate’ (STPR). It is the rate at which society values the present compared to the future.
+#### Overview
+- **Purpose**: Compare costs and benefits over different time periods consistently.
+- **Basis**: Time preference; people prefer goods/services sooner rather than later.
 
-5.34 The STPR has two components:
-- ‘time preference’ – the rate at which consumption and public spending are discounted over time, assuming no change in per capita consumption. This captures the preference for value now rather than later.
-- ‘wealth effect’ – this reflects expected growth in per capita consumption over time, where future consumption will be higher relative to current consumption and is expected to have a lower utility.
+#### Components of STPR
+- **Time Preference**: Rate at which consumption and public spending are discounted, assuming no per capita consumption change.
+- **Wealth Effect**: Reflects expected growth in per capita consumption over time.
 
-5.35 The STPR used in the Green Book is set at 3.5% in real terms, with exception for risk to life values which use a lower rate of 1.5%. The derivation of the discount rate can be found in Annex 6. Table 2 shows the present value of £1,000 declines in future years with a discount rate of 3.5%.
+#### Standard Discount Rates
+- **General**: 3.5% in real terms.
+- **Risk to Life Values**: 1.5%.
+- **Declining Rates for Long-Term**: Steps down over 30+ years due to future uncertainty.
 
-Table 2. Present Values and Discount Rate
-Year | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-Value | £1,000 | £966 | £934 | £902 | £871 | £842 | £814 | £786 | £759 | £734 | £709
+#### Table: Present Values and Discount Rate (3.5% Rate)
+| Year   | 0    | 1    | 2    | 3    | 4    | 5    | 6    | 7    | 8    | 9    | 10   |
+|--------|------|------|------|------|------|------|------|------|------|------|------|
+| Value (£) | 1,000 | 966  | 934  | 902  | 871  | 842  | 814  | 786  | 759  | 734  | 709  |
 
-5.36 The main role of discounting is to put interventions with different time spans and benefit cost profiles on to a common “present value” basis. In the longer term (over 30 years), the STPR declines in a series of steps to allow for future uncertainty in the value of its constituent parts, as explained in Annex 6. The approach to discounting where there are inter-generational wealth transfers is also described in Annex 6. The accompanying tables in Annex 6 and associated tables on the Green Book web pages show both the discount rate and discount factors that can be used to calculate a present value.
+#### Practical Application
+- **Inflation and Discounting**: Separate adjustments; first convert to real prices, then apply discounting.
+- **Never Retrospective**: Do not apply discounting to past costs/benefits.
+- **Government Funds**: STPR is not linked to costs of raising funds.
 
-5.37 Discounting is solely concerned with adjusting for social time preference and is separate from adjusting for inflation. The recommended Green Book discount rate applies to real values, with the effects of general inflation already removed. To promote transparency the best practice approach is to first convert costs or benefits to a real price basis, and then perform the discounting adjustment. The inflation rate and discount rate should not be added and applied to costs and benefits.
+### Box 15: NPSV and Discounting Example
+- **Option A**: Initial cost £10m, annual benefit £2.5m for 4 years.
+  - NPSV: -£0.82m
+- **Option B**: Initial cost £5m, annual benefit £1.5m for 4 years.
+  - NPSV: £0.51m
 
-5.38 In appraisal, discounting should never be applied retrospectively to costs and benefits that have already occurred. Values do not increase simply because activities took place in the past (although of course the value of some assets may tend to increase over time). Discounting and the calculation of NPSV are illustrated further in Box 15.
+#### Discount Factors Example
+| Year   | 0      | 1      | 2      | 3      | 4      |
+|--------|--------|--------|--------|--------|--------|
+| Factor | 1      | 0.9662 | 0.9335 | 0.9019 | 0.8714 |
 
-5.39 Costs to government of raising funds (either through taxation or borrowing) are not a decision variable because the planned level of public spending is decided in advance when the budget is decided. It is at this macroeconomic stage that borrowing costs are considered. The decisions that are the concern of the Green Book are about the allocation of the given funds to meet government objectives in a way that optimizes social (public) value for money. The STPR is therefore not linked to the costs of raising funds (either through taxes or borrowing).
+### Glossary
+- **Additionality**: Real increase in social value not occurring without the intervention.
+- **Adverse Selection**: Quality restriction due to asymmetric information.
+- **Affordability**: Assessment of public sector intervention costs.
+- **Agglomeration Benefits**: Benefits from firms/people clustering geographically.
+- **Appraisal**: Process of defining objectives, examining options, and weighing costs/benefits.
+- **Benefits Externalities**: Benefits not reflected in market price.
+- **Business As Usual**: Current arrangements without the intervention.
+- **Contingency Provision**: Reflects risk costs and optimism bias in nominal prices.
+- **Contingent Valuation**: Stated preference valuation asking WTP for goods/services.
+- **Cost Externalities**: Costs not reflected in market price.
+- **Cost of Capital**: Annual percentage rate for raising funds.
+- **Deadweight**: Outcomes occurring without the intervention.
+- **Diminishing Marginal Utility**: Satisfaction from additional units diminishes with more consumption.
+- **Discounting**: Converts future values to present value based on time preference.
+- **Discount Rate**: Annual rate decreasing future values over time.
+- **Displacement**: Increase in activity offset by reductions elsewhere.
+- **Do-Minimum Option**: Minimum intervention to meet core needs.
+- **Effectiveness**: Measure of intervention achieving objectives.
+- **Evaluation**: Systematic assessment of intervention design, implementation, and outcomes.
+- **Expected Value**: Risk product and probability of occurrence.
+- **Externalities**: Costs/benefits affecting others not involved in consumption/production.
+- **GDP Deflator**: Index of general price level in the economy.
+- **Gold Plating**: Adding features with little value but high cost.
+- **Hedonic Pricing**: Valuation using data from related markets.
+- **Information Asymmetry**: Unequal information in transactions.
+- **Intervention**: Proposed policy, programme, or project under appraisal.
+- **Implementation**: Activities to deliver intervention post-approval.
+- **Irreversibility**: Significant changes that cannot be undone.
+- **Leakage**: Effects leaking out of target area.
+- **Longlist**: Initial set of option choices before shortlisting.
+- **Market Failure**: Market unable to function fairly for welfare efficiency.
+- **Market Value**: Price determined by buyers/sellers interaction.
+- **Marginal Utility**: Satisfaction change from consumption change.
+- **Monte Carlo Analysis**: Simulation-based risk modelling technique.
+- **Moral Hazard**: Behaviour change due to risk protection.
+- **Multi-Criteria Decision Analysis**: Technique for dealing with complex values.
+- **Net Present Value (NPV)**: Sum of discounted future values.
+- **Net Present Social Value (NPSV)**: Present value of future social costs/benefits.
+- **Nominal Price**: Prices including inflation.
+- **Opportunity Cost**: Best alternative use value of a good/service.
+- **Optimism Bias**: Tendency to be over-optimistic about project parameters.
+- **Options Framework**: Process reducing longlist to shortlist through strategic choices.
+- **Outcome**: Consequences to society of public service change.
+- **Output**: Change in level/quality of public service.
+- **Policy**: Statement of intent, implemented as procedure/protocol.
+- **Portfolio**: Collection of programmes/projects for strategic benefits/efficiency.
+- **Portfolio Management**: Selection/prioritisation/control of programmes/projects.
+- **PPP**: Public Private Partnership in various forms.
+- **Precautionary Principle**: Justified action despite low risk probability.
+- **Preferred Option**: Best option for public value delivery post-analysis.
+- **Preferred Way Forward**: Likely option to deliver objectives pre-shortlisting.
+- **Price Index**: Measure of price levels over time.
+- **Programme**: Series of measures/events/activities for long-term objectives.
+- **Project**: Temporary organisation for specific predefined output.
+- **Proposal**: Policy, programme, or project under appraisal.
+- **Prosperity**: Level of social value.
+- **Public Sector Comparator**: Direct public provision option for PPP comparison.
+- **Real Option Theory**: Benefit of decision delay for flexibility in uncertainty.
+- **Real Price**: Nominal price deflated by general inflation measure.
+- **Real Terms**: Value at specified general price level.
+- **Relative Price Effect**: Specific price index movement relative to general index.
+- **Relevant Costs/Benefits**: Costs/benefits to UK society from proposal.
+- **Resources**: Real goods/services excluding other costs.
+- **Resource Cost**: Economic sense costs excluding transfer payments.
+- **Revealed Preference**: Value inferred from observed actions.
+- **Risks**: Specific uncertainties in proposal design/planning/operation.
+- **Risk Costs**: Costs of avoiding/transferring/mitigating risks.
+- **Risk Register**: Tool recording proposal risks, likelihood, value, management responsibility.
+- **SRO**: Senior Responsible Owner overseeing project/programme.
+- **Sensitivity Analysis**: Exploring intervention outcomes sensitivity to input changes.
+- **Shadow Price**: Estimated value where market prices are unavailable.
+- **Shortlist**: Viable options for detailed appraisal.
+- **Social Benefits**: Benefits to society.
+- **Social Costs**: Costs to society.
+- **Social Cost Benefit Analysis**: Quantifies social welfare effects in monetary terms.
+- **Social Cost-Effectiveness Analysis**: Compares costs of producing similar outputs.
+- **Social
 
-Box 15. NPSV and Discounting Worked Example
-Alternative options, A and B, are both expected to improve the quality of a department’s work and reduce staff costs.
-Option A requires £10 million in initial capital expenditure to realize benefits of £2.5 million per annum for the following four years (£2 million in reduced staff costs and £0.5 million in quality improvements).
-Option B requires £5 million in initial capital expenditure to realize benefits of £1.5 million per annum for the following four years (£1 million reduced staff costs and £0.5 million in quality improvements).
+ Time Preference Rate (STPR)**: Value society attaches to present vs. future.
+- **Social Value**: Measure of total social welfare.
+- **Stated Preference**: Technique for eliciting non-marketed values from surveys.
+- **Strategic Portfolio**: Programmes/projects for strategic objective delivery.
+- **Strategy**: Plan of action for achieving objectives.
+- **Substitution**: Labour/factor of production replacement without output increase.
+- **Switching Value**: Key input variable value for intervention to switch from recommended.
+- **Systematic Risk**: Output variation correlated with economy movements.
+- **Transfer Payments**: Transfer of purchasing power not affecting output/consumption.
+- **Value for Money (VfM)**: Balanced judgment based on Benefit Cost Ratio and SMART objectives.
+- **Willingness to Accept**: Value inference from survey on compensation to give up good/service.
+- **Willingness to Pay**: Value inference from survey on payment to acquire good/service.
 
-Year | 0 | 1 | 2 | 3 | 4
-Option A (£m) | Costs | -10.00 | 0 | 0 | 0 | 0
-Option A (£m) | Benefits | 0 | 2.50 | 2.50 | 2.50 | 2.50
-Option A (£m) | Net Benefit | -10.00 | 2.50 | 2.50 | 2.50 | 2.50
-Option A (£m) | Discounted net benefits | -10.00 | 2.42 | 2.33 | 2.25 | 2.18
-Option A (£m) | Net Present Social Value | -0.82
+### Wellbeing Guidance for Appraisal
 
-Option B (£m) | Costs | -5.00 | 0 | 0 | 0 | 0
-Option B (£m) | Benefits | 0 | 1.50 | 1.50 | 1.50 | 1.50
-Option B (£m) | Net Benefit | -5.00 | 1.50 | 1.50 | 1.50 | 1.50
-Option B (£m) | Discounted net benefits | -5.00 | 1.45 | 1.40 | 1.35 | 1.31
-Option B (£m) | Net Present Social Value | 0.51
+#### WELLBY value
 
-Discount factor | 1 | 0.9662 | 0.9335 | 0.9019 | 0.8714
-Option B has positive NPSV of £0.51m compared to -£0.82m for Option A.
+The value of a WELLBY is £13,000 in 2019 prices
 
-Glossary
-Additionality is a real increase in social value that would not have occurred in the absence of
-the intervention being appraised.
-Adverse Selection may occur where asymmetric information restricts the quality of a traded
-good. This typically happens because the side with more information can negotiate a more
-favourable exchange than would otherwise be the case.
-Affordability is an assessment of the costs of an intervention to the public sector taking into
-account current and expected future budgets.
-Agglomeration benefits come when firms and/or people locate near one another in
-geographical clusters.
-Appraisal is the process of defining objectives, examining options and weighing up the relevant
-costs, benefits, risks and uncertainties before a decision is made.
-Assessment may refer to either an appraisal or an evaluation.
-Benefits Externalities are benefits which are not reflected in the market price.
-Business As Usual is the continuation of current arrangements as if the intervention under
-consideration were not to happen. This serves as a benchmark to compare alternative
-interventions.
-Contingency provision should reflect the sum of measured risk (costs of risks avoided, shared
-and mitigated on an expected likelihood basis) and optimism bias adjustment estimated in
-nominal prices.
-Contingent valuation is a different description of stated preference valuation, where
-individuals are asked how much they would be willing to pay to obtain a good or service, or
-how much they would require to compensate them to give it up.
-Cost Externalities are costs which are not reflected in the market price.
-Cost of capital is the cost of raising funds and is sometimes expressed as an annual
-percentage rate.
-Deadweight refers to allowing for outcomes that would have taken place without the
-intervention under consideration. Deadweight will be revealed when the total outcome of an
-option for intervention is compared with business as usual, the (BAU).
-Diminishing marginal utility is the tendency for the satisfaction individuals derive from an
-additional unit of a good or service to diminish as more units are acquired or consumed.
-Diminishing marginal utility of income states that the value of an additional pound of
-income is higher for a low income recipient and lower for a high income recipient.
-The Green Book 127
-﻿Glossary
-Discounting is a technique that converts future values occurring over different periods of time
-to a present value by taking account of the human preference for value now rather than later.
-This concept is known as “social time preference”, and it is applied to real prices expressed in
-base year values and has nothing to do with inflation.
-Discount rate is the annual percentage rate at which the present value of future monetary
-values are estimated to decrease over time.
-Displacement is the degree to which an increase in economic activity or social welfare that is
-promoted by an intervention is offset by reductions elsewhere. in the area under consideration
-or in similar areas close by. This occurs where existing businesses close and reopen in a fresh
-location or move into the target area from similar areas close by.
-Do-minimum option in the Green Book refers to the minimum intervention required to deliver
-the core business needs required to deliver the SMART objectives identified in the strategic
-appraisal. This excludes additional features that take advantage of opportunities present during
-implementation of change.
-Effectiveness is a measure of the extent to which a proposed intervention achieves its
-objectives.
-Evaluation is the systematic assessment of an intervention’s design, implementation
-and outcomes.
-Expected value is the product of variable such as a risk multiplied by its probability
-of occurrence.
-External Benefits are benefits of production or consumption of a good which are not taken
-into account by individuals or included in the price of a good in a perfectly competitive market.
-External Costs are costs of production or consumption of a good which are not taken into
-account by individuals or included in the price of a good in a perfectly competitive market.
-Externalities occur when consuming or producing a good or service produces benefits or costs
-for others that are not directly involved in the consumption or production.
-GDP deflator is an index of the general price level in the economy as a whole, measured by the
-ratio of gross domestic product (GDP) in nominal (i.e. cash) terms to GDP at constant prices.
-Gold Plating is the inclusion in an option of additional features that add little value but add
-significantly to cost.
-Hedonic pricing is a form of revealed preference valuation that uses data from related
-surrogate markets and econometric techniques to estimate a value for a good or service.
-Information asymmetry is a difference in the information available to the parties involved in a
-transaction giving an advantage to one side over the other.
-Intervention refers to a proposed, policy, programme or project that is being appraised.
-Implementation refers to the activities required to deliver an intervention following approval.
-Irreversibility describes an option that would create a significant change that practically or
-affordably cannot be undone.
-Leakage is the extent to which effects “leak out” of a target area into others e.g. workers
-commuting into other areas to take up new employment opportunities.
-128 The Green Book
-﻿Glossary
-Longlist refers to the initial, wide set of possible option choices considered in the first stage of
-appraisal using the options framework filter before selecting the shortlist.
-Market failure occurs where, a market is unable to function fairly according to the economic
-ideas of efficient markets, from a Green Book perspective which looks beyond simply economic
-efficiency this means the market is unable to provide satisfactory levels of welfare efficiency.
-Market value or price is the price at which a commodity can be bought or sold, determined
-through the interaction of buyers and sellers in a market.
-Marginal utility is the change in satisfaction experienced by a consumer from a small change
-in the consumption of a good or service.
-Monte Carlo Analysis is a simulation-based risk modelling technique that produces expected
-values and confidence intervals as a result of many simulations that model the collective impact
-of a number of uncertainties.
-Moral Hazard occurs when an individual changes their behaviour and takes risks because they
-are protected from negative consequences and someone else bears the costs.
-Multi Criteria Decision Analysis is a technique for dealing with competing complex
-unmonetisable values. In certain circumstances, it can be used at the longlisting stage to
-consider the scope and the technical means of delivery of a service. The technique permitted
-uses swing weighting in controlled conditions led by an experienced facilitator it is different from
-simple weighting and scoring which is explicitly not recognised as a valid objective methodology.
-Net Present Value (NPV) is a generic term for the sum of a stream of any future values that
-have been discounted to bring them to a present value.
-Net Present Social Value (NPSV) or Net Present Public Value (NPPV) mean the same
-and are the present value of a stream of future costs and benefits to UK society (that are already
-in real prices) and that have been discounted over the life of a proposal by the appropriate
-Green Book social time preference rate.
-Nominal price refers to prices that include inflation they are the actual prices that are paid, or
-which it is expected will be paid in the future, this is the same price base as is used for public
-sector budgets.
-Opportunity cost is the value which reflects the best alternative use a good or service could be
-put to.
-Optimism bias is the proven tendency for appraisers to be over-optimistic about key project
-parameters, including capital costs, operating costs, project duration and benefits delivery.
-Options Framework is a process where an initial longlist is reduced to a shortlist by breaking
-a proposal down into a sequence of strategic choices looking at scope, solution, delivery,
-implementation and funding.
-Outcome refers to the consequences to society of a change in a public service. For example,
-changes in cardiovascular surgery which lead to improved life expectancy of the population.
-Output refers to the change in the level or quality of a public service. For example, more
-successful cardiovascular operations carried out.
-(a) Policy is a statement of intent, and is implemented as a procedure or protocol and a
-deliberate system of principles to guide decisions and achieve rational outcomes, adopted by
-a governance body within an organization. Policy and its implementation consists of all of the
-elements below.
-The Green Book 129
-﻿Glossary
-(a) Portfolio is a collection of programmes and/or projects it may be used to structure and
-manage investments at an organisational or functional level to optimise strategic benefits and/or
-operational efficiency.
-Portfolio Management is the selection, prioritisation and control of an organisation’s
-programmes and projects, in line with its strategic objectives and capacity to deliver. The goal of
-PM is to balance the implementation of change initiatives and the maintenance of Business As
-Usual, while optimising performance in the private sector this is return on investment and in the
-public sector this is the social/public welfare return on spending.
-PPP refers to a Public Private Partnership which can take many organisational forms.
-Precautionary principle refers to the concept that where the potential consequences of
-a perceived risk are significantly adverse, action may be justified even if the probability of its
-occurrence is low.
-Preferred Option is the option preferred after a detailed analysis of the shortlist. Comparison
-of each shortlist option, and their advantages over Business As Usual allows identification of the
-best option for the delivery of public value.
-Preferred Way Forward, found using the options framework, is the option that appears most
-likely to deliver SMART objectives at the longlist stage before a detailed appraisal of the shortlist.
-This option, together with Business As Usual, a viable do-minimum and one or two other
-alternatives are taken forward as a shortlist for more detailed appraisal.
-Price index is a standardised measure of price levels over time. General price indices cover a
-wide range of prices and include the GDP deflator, the Consumer Price Index (CPI) and the Retail
-Price Index (RPI). There are also separate price indices that apply to one commodity or type
-of commodity.
-(a) Programme is an interrelated series of planned measures (Sub-Programmes, Projects) and
-related events and coordinated activities in pursuit of an organisation’s long-term objectives.
-(a) Project is a temporary organisation that is needed to produce a specific predefined output
-or result at a pre-specified time using predetermined resources.
-Proposal refers to a policy, programme or project that is being appraised. See also Intervention.
-Prosperity is measured by the level of social value as defined in the Green Book, so that an
-increase in social value is an increase in prosperity and a decrease in social value is a fall in
-prosperity.
-Public Sector Comparator or Comparable Public Option is an option for direct public
-provision with comparable output assumptions to a Public Private Partnership option, including
-allowances for differences in risk and tax between the public and private sectors. The purpose
-of creating this option is to provide comparable comparison with a PPP option based on a level
-playing field.
-Real option theory or analysis is used to estimate the benefit of delaying a decision
-by retaining flexibility in situations with high levels of uncertainty but where knowledge is
-increasing significantly over time.
-Real price is the nominal price (i.e. current cash price at the time) deflated by a measure of
-general inflation.
-Real terms is a reference to the value of expenditure at a specified general price level
-(calculated by dividing a nominal cash value by a general price index).
-130 The Green Book
+#### Calculating Willingness to Pay (WTP) for Life Satisfaction Changes
+- **Method**: Analysis of ln(income) and life satisfaction.
+  - Coefficient on ln(income): 1.25 (life satisfaction on 1-7 scale).
+  - WELLBY: Aggregation of WTP for gains in life satisfaction.
+- **Formula**: \( WTP_{\text{WELLBY}} = \left[ f'(\ln(M)) \cdot M \right]^{-1} = M^{\beta_Y} \)
+  - \( \beta_Y \): Coefficient on ln(income) on 0-10 scale.
+  - For ln(income) coefficient of 1.25 on 1-7 scale, \( \beta_Y = \frac{11}{7} \cdot 1.25 = 1.96 \).
+- **Calculation**: WTP per WELLBY with average earnings (£30,673 in 2019):
+  - \( WTP_{\text{WELLBY}} = \frac{£30,673}{1.96} = £15,649 \)
+  - Rounded to £16,000.
+- **Central Recommended WELLBY Value**: Mid-point of £10,023 and £15,649.
+  - \( WTP_{\text{WELLBY}} = \frac{10,000 + 16,000}{2} = £13,000 \)
 
-Glossary
+#### Adjusting for Price Year and Discounting
+- **Formula**: 
+  - \( WTP_{\text{WELLBY}_t} = WTP_{\text{WELLBY}_{\text{base}}} \cdot \frac{GDP_{\text{deflator}_t}}{GDP_{\text{deflator}_{\text{base}}}} \cdot \left( \frac{GDP_{\text{per capita}_t}}{GDP_{\text{per capita}_{\text{base}}}} \right)^{1.3} \)
+  - 1.3: Negative of marginal utility of income elasticity.
+- **Discount Rate for Wellbeing**: Green Book ‘health’ discount rate (1.5% for years 0-30, declining thereafter).
 
-Relative price effect is the movement over time of a specific price index (such as Information
-Technology) relative to a general price index (such as the GDP deflator).
-Relevant costs and benefits are the costs and benefits to UK society overall that affect or can
-be affected by a proposal or decision.
-Resources in the Green Book is used to mean real goods and services excluding other costs. It is
-widely used in other ways that have different meanings depending on context.
-Resource Cost is used in the Green Book in the economic sense to mean the costs of goods
-and services excluding transfer payments such as for example VAT. In resource accounting,
-‘resource costs’ are accruals expressed in real terms.
-Revealed preference is a value revealed or inferred as a result of observing people’s actions.
-Risks are specific uncertainties that arise in the design, planning, build/creation and operation
-of a proposal.
-Risk costs are the costs of avoiding, transferring or mitigating risks associated with a specific
-project, programme or policy. The costs of risk mitigation are based on a combination of
-likelihood of a risk materialising and its cost.
-Risk register refers to a tool used to record, the risks specific to a proposal, their likelihood and
-value and the assignment of risk management responsibility.
-SRO the Senior Responsible Owner is the person to whom the project or programme manager
-reports, they "own" the proposal on behalf of the originating organisation but do not take
-part in its detailed day to day running. They have overall responsibility for asking questions,
-keeping it on track, dealing with significant external problems and making strategic decisions on
-submission for approval or not.
-Sensitivity Analysis involves exploring the sensitivity of expected outcomes of an intervention
-to potential changes in key input variables. It can be used to test the impact of changes in
-assumptions and should be clearly presented in the results of appraisal.
-Shadow price refers to an estimated value of a good where market prices are not available, or
-do not reflect total costs and benefits.
-Shortlist refers to the set of viable options to be taken forward to the more detailed analysis in
-the second stage of appraisal.
-Social Benefits are the benefits to society, the total of which in the Green Book is the sum of
-benefits accruing to society and any benefits accruing to the public sector.
-Social Costs are the costs to society , the total of which in the Green Book is the sum of costs
-accruing to society and any benefits accruing to the public sector.
-Social Cost Benefit Analysis quantifies in monetary terms the effects on UK social welfare.
-Costs to society are given a negative value and benefits to society a positive value. Costs to the
-public sector are counted as a social welfare cost. It generates measure of social value. When
-combined with an appropriate public sector cost measure a BCR is produced which provides a
-social unit cost measure.
-Social Cost-Effectiveness Analysis compares the costs of alternative ways of producing the
-same or similar outputs, it produces a unit cost measure.
-Social Time Preference Rate or STPR is defined as the value society attaches to present, as
-opposed to future values.
-The Green Book 131
-﻿Glossary
-Social Value is a measure of total social welfare. As a net value it is the sum of total benefits
-and total costs to society of a proposal.
-Stated preference is a technique for eliciting values for something that is not-marketed, and is
-derived from responses to expertly designed surveys. (See willingness to pay and willingness
-to accept below).
-(a) Strategic Portfolio consists of the programmes projects and related activities that are
-necessary to make the changes required to deliver a strategic objective or objectives.
-Strategy is a plan of action designed to achieve an overall aim or objective. Derived from the art
-of planning and directing overall military operations and movements in a war or battle.
-Substitution is where one type of labour of factor of production such as capital equipment is
-substituted for another but there is no increase in employment or output.
-Switching value refers to the value a key input variable would need to take for a proposed
-intervention to switch from a recommended option to being pointless.
-Systematic risk is the variation in outputs that is correlated with movements in the wider
-economy and which cannot be reduced by risk management.
-Transfer payments pass purchasing power from one economic agent to another and do not
-affect output or consumption of resources. They include the transfer of resources between
-people such as gifts, taxes such as VAT or social security payments and are not included as an
-element of social values.
-Value for Money – (VfM) is a balanced judgment based on the Benefit Cost Ratio which
-brings together social costs and benefits including public sector costs over the entire life of
-a proposal, together with decisively significant unquantified deliverables, and unmonetised
-risks and uncertainties, to deliver a proposals SMART objectives. The judgement is made in the
-context of the proposals role, in supporting government policies and strategies of which it is a
-part, and its fit with wider public policies.
-Willingness to Accept is a technique for the inference of value of a non-marketed good or
-service from the amount that respondents to an expertly designed survey are willing to accept.
-to give up the good or service.
-Willingness to Pay is a technique for the inference of value of a non-marketed good or service
-from the amount that respondents to an expertly designed survey are willing to pay to acquire a
-good or service.
-
-A6.Discounting
-
-A6.1 This Annex sets out the role of discounting in appraisal and how the 3.5% discount rate is
-derived. It also provides guidance on long term discounting and the treatment of intergenerational
-wealth transfers. Discounting and its role in appraisal are introduced in Chapter 2 paragraphs
-2.22 ‑ 2.23 and Chapter 5 Paragraphs 5.32 ‑ 5.38 and Box 15.
-
-Role of discounting
-
-A6.2 Discounting in the public sector allows costs and benefits with different time spans to
-be compared on a common “present value” basis. The public sector discount rate adjusts for
-social time preference, defined as the value society attaches to present, as opposed to future,
-consumption. It is based on comparisons of utility across different points in time or different
-generations.
-
-A6.3 The Green Book discount rate, known as the Social Time Preference Rate (STPR), for use in
-UK government appraisal is set at 3.5% in real terms. This rate has been used in the UK since 2003.
-Exceptions to the use of the standard STPR are outlined below.
-
-A6.4 The use of the STPR in public sector appraisal differs from private sector discounting.
-Decisions about the overall size of public spending and allocation of budgets are taken on a
-top down basis. The costs associated with raising funds (i.e. through taxes or debt issuance) are
-not used when appraising individual projects, programmes or policies. The cost of borrowing is
-not included as a decision variable on whether to go ahead with an individual project or not. In
-addition, there is no allowance for project specific risk in the STPR as risks should be identified and
-costed explicitly in appraisal. This approach to the STPR contrasts with private sector discounting
-which incorporates allowances for the cost of raising capital and compensation for risk.
-
-Breakdown of the discount rate
-
-A6.5 The STPR has two components:39
-¨ ‘time preference’ – the rate at which consumption and public spending are discounted
-over time, assuming no change in per capita consumption. This captures the preference
-for value now rather than later.
-¨ ‘wealth effect’ – this reflects expected growth in per capita consumption over time,
-where future consumption will be higher relative to current consumption and is expected
-to have a lower utility.
-A6.6 The STPR is expressed as:
-¨ r = ρ + μg
-where:
-¨ r is the STPR
-¨ ρ (rho) is time preference comprising pure time preference (δ, delta) and catastrophic
-risk (L)
-¨ μg is the wealth effect. The marginal utility of consumption (μ, mu), multiplied by
-expected growth rate of future real per capita consumption g
-A6.7 As recognised in the 2003 Green Book there are a range of estimates of the individual
-components of the discount rate.40 Research continues to illustrate a range of plausible estimates
-but concludes that the overall discount rate of 3.5% remains within that range and is justifiable.41
-A6.8 The way in which the STPR is applied in the Green Book requires each component to be
-specified. This facilitates sensitivity analysis and clarifies treatment where individual components
-of the discount rate should be adjusted (e.g. for health discounting). The overall values ascribed
-to specific components of the STPR are retained from the 2003 edition as set out below. The
-calculation of the STPR is shown in Box 37.
-Estimates of ρ
-A6.9 The estimate of ρ (rho) is the sum of:
-¨ an allowance for time preference (δ)
-¨ an allowance for unpredictable risks not normally included in appraisal, known as
-‘catastrophic’ and ‘systemic’ risk (L)
-A6.10 The risks contained in L could, for example, be disruptions due to unforeseeable and rapid
-technological advances that lead to obsolescence, or natural disasters that are not directly connected
-to the appraisal. L also includes a small premium for ‘systemic risk’ because costs and benefits are
-usually positively correlated to real income per capita. With regard to time preference, δ, Freeman,
-Groom and Spackman (2018)42 survey the evidence and show that plausible values range from 0%
-to 1%. Coupled with an estimate of 1% for the risk component, L, this is compatible with a value
-of 1.5% for the overall value of ρ.
-A6.11 For the purposes of the STPR the estimate of δ is retained at 0.5% and the
-estimate of L is retained at 1%. The estimate of ρ is therefore 1.5%.
-Estimates of μ and g
-A6.12 Available evidence suggests a range of plausible values of μ (mu). The 2003 edition of the
-Green Book set a value of 1. As set out in Annex 3, the estimate used by DWP for distributional
-weighting is 1.3 (based on Layard et al. 200843), while Groom and Maddison (2018)44 use a
-number of techniques to estimate a pooled value of 1.5.
-A6.13 Historic growth rates in consumption per capita depend on the time period considered
-and the extent to which more recent growth rates or projections are considered to be
-representative of long term trends. The 2003 Green Book set g at 2%. Freeman, Groom and
-
-Annex A6: Discounting
-
-A6.14 Future projected growth rates are also relevant. Long-run forecasts of GDP growth (rather
-than consumption) from the Office of Budget Responsibility are for growth of 2.2% per year in
-real terms. This implies an annual projected growth rate of GDP per capita of 1.9%.47
-A6.15 Taken together, the range of estimates of μ and g suggest 2% remains plausible
-as an estimate of the overall wealth effect. For the purposes of the STPR the estimate
-of μ is retained at 1 and g at 2%.
-
-Box 37. Calculation Of STPR
-r = ρ + μg
-Where ρ = 1.5%; μ = 1.0; and g = 2%
-0.015 + 1*0.02 = 3.5%
-
-Exceptions to the standard STPR
-
-A6.16 The recommended discount rate for risk to health and life values is 1.5%. This is because the
-‘wealth effect’, or real per capita consumption growth element of the discount rate, is excluded.
-As set out in Annex 2, health and life effects are expressed using welfare or utility values, such
-as Quality Adjusted Life Years (QALYs), as opposed to monetary values. The diminishing marginal
-utility associated with higher incomes does not apply as the welfare or utility associated with
-additional years of life will not decline as real incomes rise.
-A6.17 The standard UK discount rate may not be appropriate for appraisal of Official Development
-Assistance (ODA) expenditure. For example, long term growth rates, the probability of catastrophic
-risk and the macro-economic effects associated with expenditure may differ. An appropriate
-estimate of the STPR for the recipient country should be used. Government departments should
-contact Department for International Development if they require further information.
-Long term discounting
-A6.18 Policies or projects which involve long term effects may require a different approach.
-This can be particularly important for policies expected to have significant environmental effects.
-Where long term effects are expected to occur, the appraisal of proposals may involve longer
-timescales. Generally, the maximum life span of an intervention is assumed to be up to 60 years.
-This may be extended where there is evidence a longer time period is required for the full effects
-of an intervention to materialise.
-A6.19 The standard STPR of 3.5% applied in appraisal should decline over the long term due to
-uncertainty about future values of its components. To support practical application in appraisal,
-standard declining discount rates and discount factors by year can be found in Table 7 and the
-corresponding values for the reduced health rate are given in Table 8.
-45 See Freeman, Groom and Spackman (2018) “Social Discount Rates for Cost-Benefit Analysis: A Report for HM Treasury” published on the HMT Green
-Book web page.
-46 The ONS quarterly national accounts publication provides historic consumption data. Based on analysis in December 2017 the approximate compound
-annual growth rate in consumptions per capita between 1996 and 2016 was 1.7%. Freeman, Groom and Spackman (2018) provide a range of estimates
-for different historical horizons.
-47 Long-run forecast of GDP growth from the Office for Budget Responsibility – Long-term economic determinants – November 2017 Economic and fiscal
-outlook – supplementary documents published on 24th of January 2018. Estimate of average long-term GDP per capita growth consistent with OBR’s
-long term economic determinants.
-
-Intergenerational effects
-A6.20 Where the possible effects of an intervention being examined as part of an appraisal are
-long term and involve very substantial or irreversible wealth transfers between generations further
-sensitivity analysis is appropriate. This could include irreversible changes to the natural
-environment. This involves applying both the standard Green Book discount rate and a reduced
-discount rate (excluding pure social time preference, δ) to costs and benefits.
-A6.21 When applying this approach the Net Present Social Value (NPSV) using the standard
-STPR and the reduced rate STPR should both be included in the results of the appraisal and
-explained clearly. The difference between these two estimates of NPSV provides an estimate of the
-intergenerational wealth transfer attributable to pure social time preference which should be part
-of the explanation of the approach. The basis for the approach to long-term discounting set out
-here can be found in supplementary guidance on intergenerational wealth transfers and social
-discounting.
-
-Table 5. Declining Long Term Discount Rate
-Year 0 – 30 31 – 75 76 – 125
-STPR (standard) 3.50% 3.00% 2.50%
-STPR (reduced rate where pure STP = 0) 3.00% 2.57% 2.14%
-Health 1.50% 1.29% 1.07%
-Health (reduced rate where pure STP = 0) 1.00% 0.86% 0.71%
-
-A6.22 In addition to declining values for the standard STPR and a reduced rate STPR further
-sensitivity analysis to increase transparency and visibility of long term effects can be undertaken.
-This involves presenting:
-¨ the average discounted annual cost of the effect over the first 30 years, alongside the
-calculation of UK welfare
-¨ an indication of how long the effect is expected to persist
-¨ an indication of the level of accuracy indicated by a range of reasonable values
-¨ an explanation of how the value may be expected to change in the future
-A6.23 Further information on the basis for this approach to intergenerational effects can be
-found in supplementary guidance on intergenerational wealth transfers and social discounting.
-Discounting and inflation
-A6.24 Discounting is solely concerned with adjusting for social time preference and has nothing
-to do with adjusting for inflation. The recommended Green Book discount rate applies to real
-values, with the effects of general inflation already removed. To promote transparency the best
-practice approach is to first convert costs or benefits to a real price basis, and then perform the
-discounting adjustment. The inflation rate and discount rate should not be added and applied to
-costs and benefits, as it gives an arithmetically incorrect result.
-
-Treasury Wellbeing Guidance for Appraisal 
-
-Approach 2: Calculating the willingness to pay for life satisfaction changes
-
-The second approach is based on analysis of the relationship between ln(income) and life satisfaction. Fujiwara (2021) finds the coefficient on ln(income) is 1.25 (with life satisfaction measured on a 1-7 scale). We can define a WELLBY in this context as the aggregation of WTP for many infinitesimally small individual gains in life satisfaction which sum to 1 point of life satisfaction for one year (i.e. 1 WELLBY).104 If life satisfaction us related to ln(income), this can be computed as the inverse of the marginal utility of income: 𝑊𝑇𝑃−𝑊𝐸𝐿𝐿𝐵𝑌=[𝑓′(ln(𝑀))𝑀]−1=𝑀𝛽𝑌
-This expression is simply the marginal rate of substitution between income and life satisfaction. In this expression 𝛽𝑌 is the coefficient on ln(income), converted to a 0-10 scale. Given we are using a ln(income) coefficient of 1.25 on a 1-7 scale, this needs multiplying by 11/7 to be expressed on a 0-10 scale. Then, we have: 𝛽𝑌=117(1.25)=1.96
-We can then calculate the WTP per WELLBY with reference to average earnings based on ONS data, which were £30,673 in 2019 as follows: 𝑊𝑇𝑃 (𝑊𝐸𝐿𝐿𝐵𝑌)=£30,6731.96=£15,649.
-For simplicity this is rounded to £16,000.
-Deriving the central recommended WELLBY value
-Summarising, we have derived two estimates of the monetary equivalent value of a WELLBY, £10,023, and £15,649 (both in 2019 prices and values). We treat these as the upper and lower bound, and take the mid-point as the recommended central estimate of the WTP-per-WELLBY, which is then: 𝑊𝑇𝑃 (𝑊𝐸𝐿𝐿𝐵𝑌)=10,000+16,0002=£13,000.
-Therefore, the recommended value of a WELLBY, alongside the low-high range recommended for sensitivity testing, is given in the below table.
-
-Further details: price year and discounting
-
-To convert to convert this figure into a different price and value base year using outturn ONS economic data, the following formula should be used:
-𝑊𝑇𝑃 (𝑊𝐸𝐿𝐿𝐵𝑌𝑡)=𝑊𝑇𝑃 (𝑊𝐸𝐿𝐿𝐵𝑌𝑏𝑎𝑠𝑒)∙𝐺𝐷𝑃_𝑑𝑒𝑓𝑙𝑎𝑡𝑜𝑟𝑡𝐺𝐷𝑃_𝑑𝑒𝑓𝑙𝑎𝑡𝑜𝑟𝑏𝑎𝑠𝑒∙(𝐺𝐷𝑃_𝑝𝑒𝑟_𝑐𝑎𝑝𝑖𝑡𝑎𝑡𝐺𝐷𝑃_𝑝𝑒𝑟_𝑐𝑎𝑝𝑖𝑡𝑎𝑏𝑎𝑠𝑒)1.3
-Where 1.3 is the negative of the marginal utility of income elasticity, taken from the HMT Green Book Annex 3 on distributional weights (HMT, 2020). Applying the elasticity in this way ensures that the ‘utility value’ of one unit of life satisfaction change is held constant over time.
-In appraisal, changes in wellbeing which occur in future years are discounted using the Green Book ‘health’ discount rate which starts at 1.5% (years 0-30) and declines gradually thereafter. This is because the ‘wealth effect’, or real per capita consumption growth element of the discount rate, is excluded, again preserving constant a utility value per point change in life satisfaction in future years. Please refer to the HMT Green Book, Annex A6. Note, the WELLBY value should always be uprated to the appraisal base year using the formula above.
+This structured format ensures the information is organized logically, making it easier for the LLM to access, read, and use efficiently.

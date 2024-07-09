@@ -23,55 +23,52 @@ library(officer)
 library(flextable)
 library(dplyr)
 ```
+# Get Real: What's Your Future Social Value Worth Today? - `r format(Sys.Date(), "%d %B %Y")`
 
-# Get Real: Present Values Report - `r format(Sys.Date(), "%d %B %Y")`
+## Your Future Value, Translated to Today
 
-## Your Present Value Calculation
+Great news! We've calculated what your future social value is worth right now:
 
-Your future social value of **£`r params$pv_real_value`** in **`r params$pv_future_year`** has a present value of **£`r  params$present_value`** in **`r params$pv_present_year`**.
-The discount factor applied was **`r params$discount_factor`** over a period of **`r params$years_diff`** years.
+- Future value: **£`r params$pv_real_value`** in **`r params$pv_future_year`**
+- Value today: **£`r params$present_value`** in **`r params$pv_present_year`**
 
-To validate these estimates, or to calculate present values over multiple years, you can download a CSV file with the discount factor series from the Get Real app.
+We applied a discount factor of **`r params$discount_factor`** over **`r params$years_diff`** years to make this calculation.
 
-## Why Discount to Present Values?
+Want to crunch the numbers yourself or calculate values for multiple years? Download our discount factor data (CSV file) from the Get Real app.
 
-Discounting future values to present value is crucial for:
+## Why Do We "Discount" Future Values?
 
-Comparing projects: Enabling a fair comparison of projects with different timelines and cash flows.
-Comparing costs with benefits: For example, to compare the social value of upfront costs and downstream benefits.
-Credibility: Government and other funders will expect your Social Return on Investment to be in present values.
+1. **Fair Project Comparisons:** It helps you compare projects with different timelines on an equal footing.
+2. **Balancing Costs and Benefits:** You can weigh today's costs against future benefits more accurately.
+3. **Credibility Boost:** Funders and government bodies expect to see values adjusted this way in your Social Return on Investment (SROI) calculations.
 
-## Non-technical Explainer
+## The Time Value of Social Impact: A Simple Explanation
 
-People generally prefer benefits now rather than later.
-If your social costs and benefits occur in the future, you'll need to account for society's time preferences to estimate your Social Return on Investment (SROI).
+Imagine being offered £100 today or £100 in a year. Most would choose the money now, right? The same principle applies to social value. We "discount" future values to reflect this preference for immediate benefits.
 
-Discounting helps us determine the 'present value' of social impacts when they're given in monetary terms.
-Discounting is a completely separate concept to inflation.
+This discounting is separate from inflation adjustment. Think of it this way:
+1. First, we adjust for inflation to get "real" values.
+2. Then, we discount these "real" values to find out what they're worth today.
 
-Apply Treasury discount rates to your 'real' social value (after first removing inflation effects) to estimate the 'present value' of future social costs and benefits.
+## How We Calculate Present Value
 
-Note that the discount rate reduces over time - that's built into our calculator.
-There are also different rates applied for standard vs health/wellbeing values, and based on time preferences.
-You might need advice from trained social value practitioners to apply these.
+We use official Treasury discount rates, which actually decrease over time. Why? It helps give more weight to long-term impacts, especially on future generations.
 
-## Technical Guidance Discounting Procedure:
+Different rates apply to different types of projects:
+- Standard projects: Start at 3.5% for the first 30 years, then gradually decrease.
+- Health and wellbeing projects: Use lower rates, starting at 1.5% for the first 30 years.
 
-First, ensure all future values are in real terms (adjusted for inflation).
+## For Those Who Love the Details
 
-Apply the appropriate discount rate based on the project type (standard or health) and time horizon.
-Use the formula: Present Value = Future Value / (1 + r)\^t where r is the discount rate and t is the number of years.
-For streams of benefits or costs, calculate the present value for each year and sum them.
+Here's our calculation process:
 
-Discount Rates:
+1. Make sure future values are in "real" terms (inflation-adjusted).
+2. Choose the right discount rate based on your project type and timeline.
+3. Use this formula: Present Value = Future Value / (1 + discount rate)^(number of years)
+4. For multiple years of benefits or costs, calculate each year separately and add them up.
 
--   Standard rate: 3.5% for years 0-30, 3% for years 31-75, and 2.5% for years 76-125.
+## Our Data Sources
 
--   Health rate: 1.5% for years 0-30, 1.29% for years 31-75, and 1.07% for years 76-125.
+We use discount rates from the latest HM Treasury Green Book guidance (2023 update).
 
--   Reduced rates are available when the pure time preference rate is assumed to be 0%.
-
-## Version
-
-Discount Rates: Based on the latest HM Treasury Green Book guidance (2023 update).
-
+Need more information or help with complex calculations? Don't hesitate to ask a social value expert!

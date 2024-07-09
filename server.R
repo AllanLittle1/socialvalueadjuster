@@ -57,6 +57,37 @@ openai_api_call <- function(prompt_text, conversation_history) {
   
   # Return the assistant's message and the updated conversation history
   return(list(assistant_message, conversation_history))
+  
+  # Call OpenAI API with retry logic and timeout messages
+        max_attempts <- 5
+        attempt <- 1
+        
+        while (attempt <= max_attempts) {
+          response <- tryCatch({
+            POST(openai_api_endpoint,
+                 add_headers(Authorization = paste0("Bearer ", api_key)),
+                 body = list(model = "gpt-4", messages = conversation_history),
+                 encode = "json",
+                 timeout(60)  # Set a timeout for the request
+            )
+          }, error = function(e) {
+            NULL
+          })
+          
+          if (!is.null(response) && status_code(response) == 200) {
+            parsed_response <- content(response, "parsed")
+            assistant_message <- parsed_response$choices[[1]]$message$content
+            conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
+            return(list(assistant_message, conversation_history))
+          } else {
+            attempt <- attempt + 1
+            Sys.sleep(2^attempt)  # Exponential backoff
+          }
+        }
+        
+        stop("Failed to reach the OpenAI API after multiple attempts.")
+
+
 }
 
 # Initialize conversation history
@@ -304,9 +335,11 @@ server <- function(input, output, session) {
   
   # Initialize chat output with an empty chat container
   output$chat_output <- renderUI({ div(class = "chat-container empty-chat") })
+  output$chat_output_pv <- renderUI({ div(class = "chat-container empty-chat") })
   
-  # Chat icon and window behavior
+  # Chat icon and window behavior for Real Values tab
   observeEvent(input$submit, {
+    shinyjs::show("loading-spinner")  # Show spinner while processing
     user_message <- input$user_input
     current_conversation_history <- conversation_history_rv()
     
@@ -332,17 +365,66 @@ server <- function(input, output, session) {
           # Skip system messages
           if (msg$role != "system") {
             if (msg$role == "user") {
-              div(class = "chat-message user-message", style = "color: blue;", msg$content)  # User messages in blue
+              div(class = "chat-message user-message",
+                  div(class = "message-content", msg$content)
+              )
             } else {
-              div(class = "chat-message assistant-message", style = "color: black;", msg$content)  # AI messages in default color
+              div(class = "chat-message assistant-message",
+                  div(class = "message-content", msg$content)
+              )
+            }
+          }
+        })
+        do.call(div, c(list(class = "chat-container"), chat_contents))
+      })
+      
+    }
+    shinyjs::hide("loading-spinner")  # Hide spinner after processing
+  })
+  
+  # Chat icon and window behavior for Present Values tab
+  observeEvent(input$submit_pv, {
+    shinyjs::show("loading-spinner-pv")  # Show spinner while processing
+    user_message <- input$user_input_pv
+    current_conversation_history <- conversation_history_rv()
+    
+    result <- tryCatch({
+      openai_api_call(user_message, current_conversation_history)
+    }, error = function(e) {
+      print(paste("Error in openai_api_call: ", e$message))
+      return(NULL)
+    })
+    
+    if (!is.null(result)) {
+      assistant_message <- result[[1]]
+      updated_history <- result[[2]]
+      
+      conversation_history_rv(updated_history)
+      
+      # Clear the user input message box
+      updateTextInput(session, "user_input_pv", value = "")
+      
+      # Update the chat output to show the conversation
+      output$chat_output_pv <- renderUI({
+        chat_contents <- lapply(updated_history, function(msg) {
+          # Skip system messages
+          if (msg$role != "system") {
+            if (msg$role == "user") {
+              div(class = "chat-message user-message",
+                  div(class = "message-content", msg$content)
+              )
+            } else {
+              div(class = "chat-message assistant-message",
+                  div(class = "message-content", msg$content)
+              )
             }
           }
         })
         do.call(div, c(list(class = "chat-container"), chat_contents))
       })
     }
+    shinyjs::hide("loading-spinner-pv")  # Hide spinner after processing
   })
-  
   
   # END SERVER ------------------------------------------------------------------------------------------------------------------------
 }

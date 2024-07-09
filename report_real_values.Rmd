@@ -20,43 +20,47 @@ library(officer)
 library(flextable)
 ```
 
-# Get Real: Real Values Report - `r format(Sys.Date(), "%d %B %Y")`
+# Get Real: Your Social Value in Today's Terms - `r format(Sys.Date(), "%d %B %Y")`
 
-## Your Real Value
+## Your Updated Social Value
 
-Your social value of **£`r params$nominal_value`** in **`r params$price_year`** prices is equivalent to **£`r params$adjusted_value`** in 'real terms' (**`r params$adjusted_year`** prices).
+Good news! Your social value has been adjusted for inflation:
 
-Cumulative inflation was **`r params$cumulative_inflation`%** over this period**,** an average of **`r params$avg_inflation`%** inflation per year. The estimates are based on **`r if (params$year_type == 'fy') 'financial years' else 'calendar years'`** and **`r if (params$value_type == 'wellbeing') 'wellbeing values' else 'standard social values'`**.
+- Original value: **£`r params$nominal_value`** in **`r params$price_year`** prices
+- Updated value: **£`r params$adjusted_value`** in today's terms (**`r params$adjusted_year`** prices)
 
-To validate these estimates, or to estimate social values over multiple years, you can download a CSV file with the deflator series from the Get Real app.
+Over this period, prices increased by **`r params$cumulative_inflation`%** in total, averaging **`r params$avg_inflation`%** per year. We based these calculations on **`r if (params$year_type == 'fy') 'financial years' else 'calendar years'`** and used **`r if (params$value_type == 'wellbeing') 'wellbeing values' else 'standard social values'`**.
 
-## Why do we need to Get Real?
+Want to check our math or calculate values for multiple years? Download the inflation data (CSV file) from the Get Real app.
 
-Proper adjustment of social values is crucial for:
+## Why Updating Your Social Value Matters
 
--   **Accurate comparison:** Comparing social benefits to investment costs in 'real terms' is essential for calculating Social Return on Investment (SROI).
--   **Avoiding undervaluation:** High inflation rates over recent years mean that you could be significantly undervaluing your social impacts. For example, values estimated five years ago are around 20% higher.
--   **Credibility:** Maintain credibility with central and local government and other key funders. The H.M. Treasury Green Book provides guidance for economic appraisal and evalaution, used in Business Cases, Impact Assessments and all other public / social value practice. It states that the effects of inflation should be removed with all values expressed in real terms and present values.
+1. **Fair Comparisons:** It lets you accurately compare your social benefits to current investment costs when calculating your Social Return on Investment (SROI).
 
-## Non-technical Explainer
+2. **Avoiding Underestimation:** Recent high inflation means older values might be selling your impact short. For example, a value from five years ago could be about 20% higher today!
 
-**Inflation**: Prices increase over time. The rate of this increase is called inflation. When we talk about changes in 'real terms,' we're accounting for inflation to make better comparisons of the actual value of goods and services over time.
+3. **Trustworthiness:** Government bodies and funders expect to see up-to-date values. Following official guidance (like the H.M. Treasury Green Book) shows you're doing things by the book.
 
-**GDP Deflators:** The Treasury recommends using their measures of inflation - the GDP deflator series - to adjust for inflation in social values. The GDP deflator is recommended as a measure of general inflation across the whole economy. You may have heard of other popular measures like the Consumer Price Index (CPI) or Retail Price Index (RPI) - these are also reliable ways to adjust for inflation for the goods and services we buy. But, they are less applicable to estimate the real value of things that we don't buy, like public services. This is why the Treasury and trained social value practitioners use GDP deflators.
+## Inflation Explained Simply
 
-## Technical Guidance
+Imagine you could buy a sandwich for £5 last year, but now it costs £5.50. That 50p increase is inflation in action. When we talk about 'real terms,' we're adjusting for these price changes to make fair comparisons over time.
 
-**Inflation Adjustment**: Get Real uses the GDP deflator from the latest Office for Budget Responsibility (OBR) forecasts. It is suitable to estimate values in real terms since the base year is typically the first year of a proposal, or a relatively recent year.
+## How We Update Your Value
 
-**Short and long-term adjustments:** Get Real is currently suitable for inflating and deflating values up to 2028. For inflation forecasts over longer horizons, Treasury refers practitioners to the OBR Fiscal Sustainability Report.
+We use something called the GDP deflator - it's the government's preferred way to measure overall price changes in the economy. While you might have heard of the Consumer Price Index (CPI), the GDP deflator is better for estimating the real value of things we don't typically buy, like public services.
 
-**General vs specific inflation:** The GDP deflator accounts for general inflation. There can be a case for applying a more specific inflation index, e.g. for construction or information technology. Treasury suggest that relative price effects for specific goods and services can be used in economic appraisal but only where the historical evidence and future expectations support their use. These must be clearly justified.
+## For the Technically Curious
 
-## Version
+- Our app uses forecasts from the Office for Budget Responsibility (OBR) to estimate values up to 2028.
+- For longer-term projections, check out the OBR Fiscal Sustainability Report.
+- Sometimes, specific inflation rates (e.g., for construction projects) can be used, but this needs solid justification.
 
-**GDP Deflators:** Market prices, and money GDP. Outturn data are as at the Quarterly National Accounts from ONS - updated 28 March 2024. Forecast data are consistent with OBR EFO data as at Budget 6 March 2024.
+## Data Sources
 
-**GVA per head used in WELLBY estimation:** Gross domestic product (Average) per head at market prices - released 10 May 2024.
+- GDP Deflators: Based on ONS Quarterly National Accounts (updated 28 March 2024) and OBR forecasts from the 6 March 2024 Budget.
+- Wellbeing Calculations: Use GDP per head figures released on 10 May 2024.
+
+Need more details? Feel free to ask!
 
 \newpage
 
