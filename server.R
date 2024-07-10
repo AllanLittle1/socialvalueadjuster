@@ -57,37 +57,6 @@ openai_api_call <- function(prompt_text, conversation_history) {
   
   # Return the assistant's message and the updated conversation history
   return(list(assistant_message, conversation_history))
-  
-  # Call OpenAI API with retry logic and timeout messages
-        max_attempts <- 5
-        attempt <- 1
-        
-        while (attempt <= max_attempts) {
-          response <- tryCatch({
-            POST(openai_api_endpoint,
-                 add_headers(Authorization = paste0("Bearer ", api_key)),
-                 body = list(model = "gpt-4", messages = conversation_history),
-                 encode = "json",
-                 timeout(60)  # Set a timeout for the request
-            )
-          }, error = function(e) {
-            NULL
-          })
-          
-          if (!is.null(response) && status_code(response) == 200) {
-            parsed_response <- content(response, "parsed")
-            assistant_message <- parsed_response$choices[[1]]$message$content
-            conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
-            return(list(assistant_message, conversation_history))
-          } else {
-            attempt <- attempt + 1
-            Sys.sleep(2^attempt)  # Exponential backoff
-          }
-        }
-        
-        stop("Failed to reach the OpenAI API after multiple attempts.")
-
-
 }
 
 # Initialize conversation history
@@ -333,11 +302,11 @@ server <- function(input, output, session) {
   
   conversation_history_rv <- reactiveVal(list())
   
-  # Initialize chat output with an empty chat container
-  output$chat_output <- renderUI({ div(class = "chat-container empty-chat") })
-  output$chat_output_pv <- renderUI({ div(class = "chat-container empty-chat") })
+  # Chat for Real Values tab
+  output$chat_output <- renderUI({
+    div(class = "chat-container empty-chat")
+  })
   
-  # Chat icon and window behavior for Real Values tab
   observeEvent(input$submit, {
     shinyjs::show("loading-spinner")  # Show spinner while processing
     user_message <- input$user_input
@@ -382,7 +351,11 @@ server <- function(input, output, session) {
     shinyjs::hide("loading-spinner")  # Hide spinner after processing
   })
   
-  # Chat icon and window behavior for Present Values tab
+  # Chat for Present Values tab
+  output$chat_output_pv <- renderUI({
+    div(class = "chat-container empty-chat")
+  })
+  
   observeEvent(input$submit_pv, {
     shinyjs::show("loading-spinner-pv")  # Show spinner while processing
     user_message <- input$user_input_pv
@@ -422,6 +395,7 @@ server <- function(input, output, session) {
         })
         do.call(div, c(list(class = "chat-container"), chat_contents))
       })
+      
     }
     shinyjs::hide("loading-spinner-pv")  # Hide spinner after processing
   })
