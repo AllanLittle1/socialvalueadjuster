@@ -189,10 +189,10 @@ server <- function(input, output, session) {
     content = function(file) {
       req(input$nominal_value, input$price_year, input$adjusted_year, rv$adjusted_value, rv$cumulative_inflation, rv$avg_inflation)
       params <- list(
-        nominal_value = round(input$nominal_value, 2),
+        nominal_value = format(round(as.numeric(input$nominal_value), 2), big.mark = ",", nsmall = 2),
         price_year = input$price_year,
         adjusted_year = input$adjusted_year,
-        adjusted_value = round(rv$adjusted_value, 2),
+        adjusted_value = format(round(rv$adjusted_value, 2), big.mark = ",", nsmall = 2),
         cumulative_inflation = round(rv$cumulative_inflation, 2),
         avg_inflation = round(rv$avg_inflation, 2),
         year_type = input$year_type,
@@ -200,7 +200,9 @@ server <- function(input, output, session) {
         deflators_df = deflators_df)
       
       rmarkdown::render("report_real_values.Rmd", 
-                        output_file = file, params = params, envir = new.env(parent = globalenv()))})
+                        output_file = file, params = params, envir = new.env(parent = globalenv()))
+    }
+  )
   
   # PV CALCULATOR ------------------------------------------------------------------------------------------------------------- 
   # Reactive value for Present Value calculation -------------
@@ -283,10 +285,10 @@ server <- function(input, output, session) {
       years_diff <- as.numeric(input$pv_future_year) - as.numeric(input$pv_present_year)
       
       params <- list(
-        pv_real_value = round(as.numeric(input$pv_real_value), 2),
+        pv_real_value = format(round(as.numeric(input$pv_real_value), 2), big.mark = ",", nsmall = 2),
         pv_future_year = input$pv_future_year,
         pv_present_year = input$pv_present_year,
-        present_value = round(rv_pv$present_value, 2),
+        present_value = format(round(rv_pv$present_value, 2), big.mark = ",", nsmall = 2),
         discount_factor = round(rv_pv$discount_factor, 4),
         years_diff = years_diff,
         pv_discount_type = input$pv_discount_type,
