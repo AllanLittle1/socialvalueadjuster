@@ -46,6 +46,13 @@ custom_css <- "
 .user-avatar {float: right;}
 .ai-avatar {float: left;}
 .timestamp {font-size: 0.8em; color: #888; margin-top: 5px;}
+.animated-background {position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;}
+.animated-background img {position: absolute; opacity: 0.5; width: 300px; height: auto;}
+.animated-background img:nth-child(1) {top: 20%; left: -10%; animation: float-1 20s infinite linear;}
+.animated-background img:nth-child(2) {bottom: 10%; right: -5%; animation: float-2 16.67s infinite linear;}
+@keyframes float-1 {0% { transform: translateX(0) rotate(0deg); } 100% { transform: translateX(120%) rotate(360deg); }}
+@keyframes float-2 {0% { transform: translateX(0) rotate(0deg); } 100% { transform: translateX(-120%) rotate(-360deg); }}
+.home-content {background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px; margin-top: 20px;}
 "
 
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
@@ -65,110 +72,80 @@ ui <- navbarPage(
   theme = my_theme,
   "Get Real",
   
-
-
-# HOME ------------------------------------------------------------------------------------------------------------------
-    # Home Panel set up ------------------ 
-    tabPanel("Home",
-             fluidPage(
-               theme = my_theme,
-               tags$head(
-                 tags$style(HTML("
-        .navbar {background: url('economic_background.jpg') cover; min-height: 30px; height: auto !important; padding-bottom: 10px;}
-        .navbar-nav {float: none; text-align: center; margin-top: 50px;}
-        .navbar-nav > li {float: none; display: inline-block;}
-        .navbar-nav > li > a {color: white !important; font-size: 24px; padding: 10px 20px;text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .navbar-nav > li > a:hover, .navbar-nav > li > a:focus {background-color: rgba(255,255,255,0.2) !important;}
-        @media (max-width: 768px) {
-          .navbar { min-height: 100px; }
-          .navbar-nav { margin-top: 20px; }
-          .navbar-nav > li > a { font-size: 18px; padding: 5px 10px; }
-        }
-        @media (max-width: 480px) {
-          .navbar-nav > li { display: block; }
-          .navbar-nav > li > a { font-size: 16px; padding: 5px; }
-        }
-        .video-container {display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;}
-        .video-item {flex: 0 1 100%; max-width: 100%;}
-        .video-item video {width: 100%; height: auto;}
-        @media (max-width: 768px) {.video-item {flex: 0 1 100%; max-width: 100%;}}
-
-        /* Animated background styles */
-        .animated-background {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: -1;
-          overflow: hidden;
-        }
-        .animated-background img {
-          position: absolute;
-          opacity: 0.5;
-        }
-        .animated-background img:nth-child(1) {
-          top: 20%;
-          left: -10%;
-          animation: float-1 30s infinite linear;
-        }
-        .animated-background img:nth-child(2) {
-          bottom: 10%;
-          right: -5%;
-          animation: float-2 25s infinite linear;
-        }
-        @keyframes float-1 {
-          0% { transform: translateX(0) rotate(0deg); }
-          100% { transform: translateX(120%) rotate(360deg); }
-        }
-        @keyframes float-2 {
-          0% { transform: translateX(0) rotate(0deg); }
-          100% { transform: translateX(-120%) rotate(-360deg); }
-        }
-      "))
-               ),
-      
-      # Animated Background ---------------
-      div(class = "animated-background",
-          tags$img(src = "pound_icon.png", alt = "Pound"),
-          tags$img(src = "graph_icon.png", alt = "Graph")),
-      
-      # Home Content --------------
-      div(class = "home-content",
-          style = "position: relative; z-index: 1; background-color: rgba(255, 255, 255, 0.8);",
-          
-          div(style = "display: flex; align-items: center; justify-content: center;",
-              img(src = "calculator_icon.gif", style = "height: 80px; width: auto; margin-right: 30px;"),
-              h1(HTML('<span style="font-weight: bold; color: #00a5df;">Get Real</span>'), 
-                 style = "margin-right: 0px;"),
-              img(src = "chart_icon.gif", style = "height: 80px; width: auto; margin-left: 30px;")),
-          h3("Adjust your social values for inflation and time preferences. Make your impact clear!", align = "center"),
-          br(),
-          fluidRow(
-            column(1),
-            column(5, div(style = "height: 400px; overflow-y: auto; padding: 20px; border: 0px solid #ddd; border-radius: 5px;",
-                          tags$ul(style = "list-style-type: none; padding-left: 0; font-size: 1.5em;",
-                                  tags$li(icon("chart-line", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Adjust social values for inflation using GDP deflators"),
-                                  tags$li(icon("clock", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Calculate present values with Treasury-approved discount rates"),
-                                  tags$li(icon("calculator", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Handle both standard and health/wellbeing values"),
-                                  tags$li(icon("file-alt", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Generate comprehensive reports for your adjusted values"),
-                                  tags$li(icon("coins", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Make fair comparisons of costs and benefits over time"),
-                                  tags$li(icon("book", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                          "Built using Treasury Green Book guidance")))),
-            column(5, div(style = "height: 400px; display: flex; align-items: center; justify-content: center; border: 0px solid #ddd; border-radius: 5px;",
-                          tags$video(src = "get_real_intro.mp4", controls = TRUE, width = "100%", height = "auto",
-                                     style = "max-height: 100%; object-fit: contain;"))),
-            column(1),
+  # HOME ------------------------------------------------------------------------------------------------------------------
+  # Home Panel set up ------------------ 
+  tabPanel("Home",
+           fluidPage(
+             theme = my_theme,
+             tags$head(
+               tags$style(HTML("
+          .navbar {background: url('backgrounds-06.jpg') cover; min-height: 30px; height: auto !important; padding-bottom: 10px;}
+          .navbar-nav {float: none; text-align: center; margin-top: 50px;}
+          .navbar-nav > li {float: none; display: inline-block;}
+          .navbar-nav > li > a {color: white !important; font-size: 24px; padding: 10px 20px;text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+          .navbar-nav > li > a:hover, .navbar-nav > li > a:focus {background-color: rgba(255,255,255,0.2) !important;}
+          @media (max-width: 768px) {
+            .navbar { min-height: 100px; }
+            .navbar-nav { margin-top: 20px; }
+            .navbar-nav > li > a { font-size: 18px; padding: 5px 10px; }
+          }
+          @media (max-width: 480px) {
+            .navbar-nav > li { display: block; }
+            .navbar-nav > li > a { font-size: 16px; padding: 5px; }
+          }
+        "))
+             ),
+        
+        # Animated Background ---------------
+        div(class = "animated-background",
+            tags$img(src = "icon.png", alt = "Mission Economics Icon"),
+            tags$img(src = "icon.png", alt = "Mission Economics Icon")
+        ),
+        
+        # Home Content --------------
+        div(class = "home-content",
+            div(style = "display: flex; align-items: center; justify-content: center;",
+                img(src = "icon.png", style = "height: 80px; width: auto; margin-right: 30px;"),
+                h1(HTML('<span style="font-weight: bold; color: #00a5df;">Get Real</span>'), 
+                   style = "margin-right: 0px;"),
+                img(src = "icon.png", style = "height: 80px; width: auto; margin-left: 30px;")
+            ),
+            h3("Adjust your social values for inflation and time preferences. Make your impact clear!", align = "center"),
+            br(),
+            fluidRow(
+              column(1),
+              column(5, 
+                     div(style = "height: 400px; overflow-y: auto; padding: 20px; border: 0px solid #ddd; border-radius: 5px; background-color: rgba(255, 255, 255, 0.7);",
+                         tags$ul(style = "list-style-type: none; padding-left: 0; font-size: 1.5em;",
+                                 tags$li(icon("chart-line", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Adjust social values for inflation using GDP deflators"),
+                                 tags$li(icon("clock", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Calculate present values with Treasury-approved discount rates"),
+                                 tags$li(icon("calculator", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Handle both standard and health/wellbeing values"),
+                                 tags$li(icon("file-alt", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Generate comprehensive reports for your adjusted values"),
+                                 tags$li(icon("coins", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Make fair comparisons of costs and benefits over time"),
+                                 tags$li(icon("book", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                         "Built using Treasury Green Book guidance")
+                         )
+                     )
+              ),
+              column(5, 
+                     div(style = "height: 400px; display: flex; align-items: center; justify-content: center; border: 0px solid #ddd; border-radius: 5px; background-color: rgba(255, 255, 255, 0.7);",
+                         tags$video(src = "get_real_intro.mp4", controls = TRUE, width = "100%", height = "auto",
+                                    style = "max-height: 100%; object-fit: contain;")
+                     )
+              ),
+              column(1)
+            ),
             # Add Get Started button
             div(style = "text-align: center; margin-top: 30px;",
                 actionBttn(inputId = "get_started", label = "Get Started", style = "unite", color = "primary", size = "lg")
             )
-          ))),
+        )
+           ),
       
       # Accordion -------------------------------------------------------------------------------------------------
       div(class = "accordion-container",
@@ -685,9 +662,21 @@ tabPanel("Present Values",
                             )
                         )
                )
-           )))
+           ))),
            
-
+# FOOTER ------------------------------------------------------------------------------------------------------------------
+div(style = "width: 100%; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;",
+    div(style = "margin-left: 20px;", 
+        tags$a(href = "https://missioneconomics.org", target = "_blank",
+               img(src = "main-logo.png", style = "height: 200px; width: auto;")
+        )
+    ),
+    div(style = "margin-right: 20px;", 
+        tags$a(href = "https://missioneconomics.org", target = "_blank",
+               img(src = "main-logo.png", style = "height: 200px; width: auto;")
+        )
+    )
+)
   
   # End UI -----
 )
