@@ -65,7 +65,251 @@ ui <- navbarPage(
   theme = my_theme,
   "Get Real",
   
-  # REAL VALUES PANEL --------------------------------------------------------------------------------------------------------------
+
+
+# HOME ------------------------------------------------------------------------------------------------------------------
+    # Home Panel set up ------------------ 
+    tabPanel("Home",
+             fluidPage(
+               theme = my_theme,
+               tags$head(
+                 tags$style(HTML("
+        .navbar {background: url('economic_background.jpg') cover; min-height: 30px; height: auto !important; padding-bottom: 10px;}
+        .navbar-nav {float: none; text-align: center; margin-top: 50px;}
+        .navbar-nav > li {float: none; display: inline-block;}
+        .navbar-nav > li > a {color: white !important; font-size: 24px; padding: 10px 20px;text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .navbar-nav > li > a:hover, .navbar-nav > li > a:focus {background-color: rgba(255,255,255,0.2) !important;}
+        @media (max-width: 768px) {
+          .navbar { min-height: 100px; }
+          .navbar-nav { margin-top: 20px; }
+          .navbar-nav > li > a { font-size: 18px; padding: 5px 10px; }
+        }
+        @media (max-width: 480px) {
+          .navbar-nav > li { display: block; }
+          .navbar-nav > li > a { font-size: 16px; padding: 5px; }
+        }
+        .video-container {display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;}
+        .video-item {flex: 0 1 100%; max-width: 100%;}
+        .video-item video {width: 100%; height: auto;}
+        @media (max-width: 768px) {.video-item {flex: 0 1 100%; max-width: 100%;}}
+
+        /* Animated background styles */
+        .animated-background {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          overflow: hidden;
+        }
+        .animated-background img {
+          position: absolute;
+          opacity: 0.5;
+        }
+        .animated-background img:nth-child(1) {
+          top: 20%;
+          left: -10%;
+          animation: float-1 30s infinite linear;
+        }
+        .animated-background img:nth-child(2) {
+          bottom: 10%;
+          right: -5%;
+          animation: float-2 25s infinite linear;
+        }
+        @keyframes float-1 {
+          0% { transform: translateX(0) rotate(0deg); }
+          100% { transform: translateX(120%) rotate(360deg); }
+        }
+        @keyframes float-2 {
+          0% { transform: translateX(0) rotate(0deg); }
+          100% { transform: translateX(-120%) rotate(-360deg); }
+        }
+      "))
+               ),
+      
+      # Animated Background ---------------
+      div(class = "animated-background",
+          tags$img(src = "pound_icon.png", alt = "Pound"),
+          tags$img(src = "graph_icon.png", alt = "Graph")),
+      
+      # Home Content --------------
+      div(class = "home-content",
+          style = "position: relative; z-index: 1; background-color: rgba(255, 255, 255, 0.8);",
+          
+          div(style = "display: flex; align-items: center; justify-content: center;",
+              img(src = "calculator_icon.gif", style = "height: 80px; width: auto; margin-right: 30px;"),
+              h1(HTML('<span style="font-weight: bold; color: #00a5df;">Get Real</span>'), 
+                 style = "margin-right: 0px;"),
+              img(src = "chart_icon.gif", style = "height: 80px; width: auto; margin-left: 30px;")),
+          h3("Adjust your social values for inflation and time preferences. Make your impact clear!", align = "center"),
+          br(),
+          fluidRow(
+            column(1),
+            column(5, div(style = "height: 400px; overflow-y: auto; padding: 20px; border: 0px solid #ddd; border-radius: 5px;",
+                          tags$ul(style = "list-style-type: none; padding-left: 0; font-size: 1.5em;",
+                                  tags$li(icon("chart-line", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Adjust social values for inflation using GDP deflators"),
+                                  tags$li(icon("clock", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Calculate present values with Treasury-approved discount rates"),
+                                  tags$li(icon("calculator", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Handle both standard and health/wellbeing values"),
+                                  tags$li(icon("file-alt", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Generate comprehensive reports for your adjusted values"),
+                                  tags$li(icon("coins", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Make fair comparisons of costs and benefits over time"),
+                                  tags$li(icon("book", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
+                                          "Built using Treasury Green Book guidance")))),
+            column(5, div(style = "height: 400px; display: flex; align-items: center; justify-content: center; border: 0px solid #ddd; border-radius: 5px;",
+                          tags$video(src = "get_real_intro.mp4", controls = TRUE, width = "100%", height = "auto",
+                                     style = "max-height: 100%; object-fit: contain;"))),
+            column(1),
+            # Add Get Started button
+            div(style = "text-align: center; margin-top: 30px;",
+                actionBttn(inputId = "get_started", label = "Get Started", style = "unite", color = "primary", size = "lg")
+            )
+          ))),
+      
+      # Accordion -------------------------------------------------------------------------------------------------
+      div(class = "accordion-container",
+          tags$div(class = "accordion custom-accordion", id = "accordionExample",
+                   
+                   div(class = "accordion-item",
+                       h2(class = "accordion-header", id = "headingOneHome",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOneHome", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseOneHome", 
+                                      span(class = "icon-padding", icon("comments")), "Chat with Get Real AI Assistant")),
+                       div(id = "collapseOneHome", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingOneHome", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body",
+                               div(class = "card", 
+                                   div(class = "card-body",
+                                       uiOutput("chat_output_home"),
+                                       textInput("user_input_home", " ", placeholder = "Enter your message"),
+                                       actionBttn(inputId = "submit_home", label = "Send", style = "unite", 
+                                                  size = "sm", color = "primary", icon = icon("paper-plane")),
+                                       br(),
+                                       div(class = "spinner", id = "loading-spinner-home", style = "display: none;"),
+                                       HTML("<small class='text-muted'>Please note: Get Real AI Assistant is trained specifically to support you with 
+                         inflation adjustments and present value calculations. It can make mistakes. Check important info in the tooltip.</small>"),
+                         bslib::tooltip(
+                           tags$span(id = "ai_tooltip_home", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                           "Get Real AI Assistant is trained specifically to support you with inflation adjustments and present value calculations",
+                           placement = "top", 
+                           options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                         )
+                                   )
+                               )
+                           )
+                       )
+                   ),
+                   
+                   # Item 2: Why Updating Your Social Value Matters -------------
+                   div(class = "accordion-item",
+                       h2(class = "accordion-header", id = "headingTwo",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseTwo", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseTwo", 
+                                      span(class = "icon-padding", icon("question-circle")), "Why Updating Your Social Value Matters")),
+                       div(id = "collapseTwo", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingTwo", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body", 
+                               HTML("<p>Proper adjustment of social values is crucial for:</p>
+                               <ul>
+                                 <li><strong>Fair Comparisons:</strong> It lets you accurately compare your social benefits to current investment costs when calculating your Social Return on Investment (SROI).</li>
+                                 <li><strong>Avoiding Underestimation:</strong> Recent high inflation means older values might be selling your impact short. For example, a value from five years ago could be about 20% higher today!</li>
+                                 <li><strong>Trustworthiness:</strong> Government bodies and funders expect to see up-to-date values. It's important to show you're doing things by the book - the <a href='https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government' target='_blank'>Treasury Green Book</a>.</li>
+                               </ul>")
+                           )
+                       )
+                   ),
+                   
+                   # Item 3: Inflation Explained Simply -------------
+                   div(class = "accordion-item", 
+                       h2(class = "accordion-header", id = "headingThree",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseThree", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseThree", 
+                                      span(class = "icon-padding", icon("book")), "Inflation Explained Simply")),
+                       div(id = "collapseThree", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingThree", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body", 
+                               HTML("<p><strong>Inflation:</strong></p>
+                               <p>Imagine you could buy a sandwich for £5 last year, but now it costs £5.50. That 50p increase is inflation in action. When we talk about 'real terms,' we're adjusting for these price changes to make fair comparisons over time.</p>")
+                           )
+                       )
+                   ),
+                   
+                   # Item 4: How We Update Your Value -------------
+                   div(class = "accordion-item", 
+                       h2(class = "accordion-header", id = "headingFour",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFour", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseFour", 
+                                      span(class = "icon-padding", icon("cogs")), "How We Update Your Value")),
+                       div(id = "collapseFour", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingFour", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body", 
+                               HTML("<p>We use something called the GDP deflator - it's the government's preferred way to measure overall price changes in the economy. While you might have heard of the Consumer Price Index (CPI), the GDP deflator is better for estimating the real value of things we don't typically buy, like public services.</p>")
+                           )
+                       )
+                   ),
+                   
+                   # Item 5: For the Technically Curious -------------
+                   div(class = "accordion-item", 
+                       h2(class = "accordion-header", id = "headingFive",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseFive", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseFive", 
+                                      span(class = "icon-padding", icon("code-branch")), "For the Technically Curious")),
+                       div(id = "collapseFive", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingFive", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body", 
+                               HTML("<ul>
+                                <li>Our app uses forecasts from the Office for Budget Responsibility (OBR) to estimate values up to 2028.</li>
+                                <li>For longer-term projections, check out the OBR Fiscal Sustainability Report.</li>
+                                <li>Sometimes, specific inflation rates (e.g., for construction projects) can be used, but this needs solid justification.</li>
+                                <li>We use the formula:
+                                  <div class='custom-formula'>\\[ \\text{Real Value} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\]</div>
+                                </li>
+                                <li>For wellbeing adjustments, the formula takes into account the changing marginal utility of income:
+                                  <div class='custom-formula'>\\[ \\text{Real Value (Wellbeing)} = \\text{Nominal Value} \\times \\frac{\\text{GDP Deflator (Real Year)}}{\\text{GDP Deflator (Nominal Year)}} \\times \\left( \\frac{\\text{GDP per Capita (Real Year)}}{\\text{GDP per Capita (Nominal Year)}} \\right)^{1.3} \\]</div>
+                                </li>
+                                <li>The wellbeing adjustment differs because it accounts for the fact that as society's wealth increases, the additional happiness (utility) gained from an increase in income decreases. This is why we apply a power of 1.3 to the ratio of GDP per capita.</li>
+                              </ul>")
+                           )
+                       )
+                   ),
+                   
+                   # Item 6: Data Sources -------------
+                   div(class = "accordion-item", 
+                       h2(class = "accordion-header", id = "headingSix",
+                          tags$button(class = "accordion-button collapsed", type = "button", 
+                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseSix", 
+                                      `aria-expanded` = "false", `aria-controls` = "collapseSix", 
+                                      span(class = "icon-padding", icon("database")), "Data Sources")),
+                       div(id = "collapseSix", class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingSix", `data-bs-parent` = "#accordionExample",
+                           div(class = "accordion-body", 
+                               HTML("<p><strong>Data Sources:</strong></p>
+                              <ul>
+                                <li><a href='https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government' target='_blank'>Green Book</a></li>
+                                <li><a href='https://www.gov.uk/government/publications/green-book-supplementary-guidance-wellbeing' target='_blank'>H.M. Treasury (2021) Wellbeing Guidance for Appraisal</a></li>
+                                <li><a href='https://www.gov.uk/government/collections/gdp-deflators-at-market-prices-and-money-gdp' target='_blank'>H.M. Treasury GDP Deflators</a></li>
+                                <li><a href='https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihxw/pn2' target='_blank'>Office for National Statistics GVA per head</a></li>
+                              </ul>
+                              <p>Need more details? Feel free to ask! <a href='mailto:allan@missioneconomics.org'>allan@missioneconomics.org</a></p>")
+                           )
+                       )
+                   )
+          )
+      )),
+      
+
+
+
+    # REAL VALUES PANEL --------------------------------------------------------------------------------------------------------------
   tabPanel("Real Values",
            fluidPage(
              useShinyjs(),  # Initialize shinyjs

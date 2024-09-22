@@ -304,6 +304,58 @@ server <- function(input, output, session) {
   
   conversation_history_rv <- reactiveVal(list())
   
+  
+  # Chat for Home tab
+  
+  output$chat_output_home <- renderUI({
+    div(class = "chat-container empty-chat")
+  })
+  
+  observeEvent(input$submit_home, {
+    shinyjs::show("loading-spinner-home")  # Show spinner while processing
+    user_message <- input$user_input_home
+    current_conversation_history <- conversation_history_rv()
+    
+    result <- tryCatch({
+      openai_api_call(user_message, current_conversation_history)
+    }, error = function(e) {
+      print(paste("Error in openai_api_call: ", e$message))
+      return(NULL)
+    })
+    
+    if (!is.null(result)) {
+      assistant_message <- result[[1]]
+      updated_history <- result[[2]]
+      
+      conversation_history_rv(updated_history)
+      
+      # Clear the user input message box
+      updateTextInput(session, "user_input_home", value = "")
+      
+      # Update the chat output to show the conversation
+      output$chat_output_home <- renderUI({
+        chat_contents <- lapply(updated_history, function(msg) {
+          # Skip system messages
+          if (msg$role != "system") {
+            if (msg$role == "user") {
+              div(class = "chat-message user-message",
+                  div(class = "message-content", msg$content)
+              )
+            } else {
+              div(class = "chat-message assistant-message",
+                  div(class = "message-content", msg$content)
+              )
+            }
+          }
+        })
+        do.call(div, c(list(class = "chat-container"), chat_contents))
+      })
+      
+    }
+    shinyjs::hide("loading-spinner-home")  # Hide spinner after processing
+  })
+  
+  
   # Chat for Real Values tab
   output$chat_output <- renderUI({
     div(class = "chat-container empty-chat")
