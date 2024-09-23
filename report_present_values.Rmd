@@ -2,7 +2,7 @@
 title: "Get Real: Present Values Report"
 output: 
   officedown::rdocx_document:
-    reference_docx: style_reference.docx
+    reference_docx: Mission Economics Template.docx
 params:
   pv_real_value: NULL
   pv_future_year: NULL

@@ -1,28 +1,3 @@
-# LIBRARIES --------------------------------------------------------------------
-library(shiny)
-library(shinyjs)
-library(shinyWidgets)
-library(shinyBS)
-library(readxl)
-library(shinythemes)
-library(DT)
-library(dplyr)
-library(httr)
-library(plotly)
-library(bslib)
-library(bsicons)
-library(shinyjqui)
-library(openxlsx2)
-library(jsonlite)
-library(officer)
-library(magrittr)
-library(officedown)
-library(rmarkdown)
-library(ggplot2)
-library(shinydashboard)
-library(bs4Dash)
-library(shinyalert)
-
 # CUSTOM CSS -------------------------------------------------------------------------------------------------------------------------
 custom_css <- "
 .custom-accordion .accordion-header {background-color: #f7f7f7; color: #333; font-size: 18px; padding: 10px; cursor: pointer; border: 1px solid #ddd; border-bottom: none;}
@@ -48,35 +23,135 @@ custom_css <- "
 .timestamp {font-size: 0.8em; color: #888; margin-top: 5px;}
 .animated-background {position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;}
 .animated-background img {position: absolute; opacity: 0.5; width: 300px; height: auto;}
-.animated-background img:nth-child(1) {top: 20%; left: -10%; animation: float-1 20s infinite linear;}
-.animated-background img:nth-child(2) {bottom: 10%; right: -5%; animation: float-2 16.67s infinite linear;}
+.animated-background img:nth-child(1) {top: 20%; left: -10%; animation: float-1 10s linear 1 forwards;}
+.animated-background img:nth-child(2) {bottom: 10%; right: -5%; animation: float-2 10s linear 1 forwards;}
 @keyframes float-1 {0% { transform: translateX(0) rotate(0deg); } 100% { transform: translateX(120%) rotate(360deg); }}
 @keyframes float-2 {0% { transform: translateX(0) rotate(0deg); } 100% { transform: translateX(-120%) rotate(-360deg); }}
 .home-content {background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px; margin-top: 20px;}
+.svg-bullet {list-style: none; padding-left: 0;}
+.svg-bullet li {padding-left: 40px; position: relative; margin-bottom: 15px;}
+.svg-bullet li::before {content: ''; width: 30px; height: 30px; position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-size: contain; background-repeat: no-repeat;}
+.svg-bullet li:nth-child(odd)::before {background-image: url('arrow-blue.svg');}
+.svg-bullet li:nth-child(even)::before {background-image: url('arrow-green.svg');}
+.gradient-text {background: linear-gradient(45deg, #07a48e, #009cd6, #8b559d); background-size: 800%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: animated_text 30s ease-in-out infinite; -moz-animation: animated_text 30s ease-in-out infinite; -webkit-animation: animated_text 30s ease-in-out infinite;}
+@keyframes animated_text {0% { background-position: 0px 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0px 50%; }}
+@-moz-keyframes animated_text {0% { background-position: 0px 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0px 50%; }}
+@-webkit-keyframes animated_text {0% { background-position: 0px 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0px 50%; }}
+.navbar {
+  background: linear-gradient(-45deg, #07a48e, #009cd6, #8b559d, #009cd6) !important;
+  background-size: 400% 400% !important;
+  animation: gradient 15s ease infinite !important;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+}
 "
 
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
-my_theme <- bs_theme(bootswatch = "flatly") |> bs_add_rules("
-                .custom-info-icon {
-                  display: inline-flex; align-items: center; justify-content: center;
-                  width: 20px; height: 20px; border-radius: 50%;
-                  border: 1px solid #3498db; color: white; background-color: #3498db;
-                  margin-left: 5px; cursor: pointer; transition: all 0.3s ease;}
-                .custom-info-icon:hover {background-color: transparent; color: #3498db;}
-                .dark-mode {background-color: #121212; color: #ffffff;}
-                .dark-mode .chat-container {background-color: #1e1e1e;}
-")
+# CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
+my_theme <- bs_theme(bootswatch = "flatly") %>%
+  bs_theme_update(
+    bg = "#ffffff",
+    fg = "#333333",
+    primary = "#009cd6",  # Middle color of the gradient
+    "navbar-bg" = "transparent",  # Set to transparent to allow gradient to show
+    "navbar-fg" = "#ffffff"
+  ) %>%
+  bs_add_rules("
+    .navbar {
+      background: linear-gradient(-45deg, #07a48e, #009cd6, #8b559d, #009cd6) !important;
+      background-size: 400% 400% !important;
+      animation: gradient 15s ease infinite !important;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff !important;
+    }
+    
+    .navbar-nav {
+      display: flex;
+      justify-content: center;
+      flex-grow: 1;
+    }
+    
+    .navbar-nav > li > a {
+      padding: 15px 20px !important;
+      color: #ffffff !important;
+      font-size: 18px;
+    }
+    
+    .navbar-nav > li > a:hover,
+    .navbar-nav > li > a:focus {
+      background-color: rgba(255,255,255,0.2) !important;
+    }
+    
+    .custom-info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid #009cd6;
+      color: white;
+      background-color: #009cd6;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .custom-info-icon:hover {
+      background-color: transparent;
+      color: #009cd6;
+    }
+    
+    .dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+    
+    .dark-mode .chat-container {
+      background-color: #1e1e1e;
+    }
+  ")
 
 # UI SET UP -------------------------------------------------------------------------------------------------------------------------
 ui <- navbarPage(
+  title = div(
+    class = "navbar-brand",
+    img(src = "main-logo-white.png", height = "100px", style = "margin-right: 15px;"),
+    span("Get Real", style = "color: #ffffff;")
+  ),
+  id = "navbarPage",
   theme = my_theme,
-  "Get Real",
   
   # HOME ------------------------------------------------------------------------------------------------------------------
-  # Home Panel set up ------------------ 
   tabPanel("Home",
            fluidPage(
              theme = my_theme,
+             # Animated Background for Home tab
+             div(class = "animated-background",
+                 tags$img(src = "icon.png", alt = "Mission Economics Icon"),
+                 tags$img(src = "icon.png", alt = "Mission Economics Icon")
+             ),
              tags$head(
                tags$style(HTML("
           .navbar {background: url('backgrounds-06.jpg') cover; min-height: 30px; height: auto !important; padding-bottom: 10px;}
@@ -96,18 +171,13 @@ ui <- navbarPage(
         "))
              ),
         
-        # Animated Background ---------------
-        div(class = "animated-background",
-            tags$img(src = "icon.png", alt = "Mission Economics Icon"),
-            tags$img(src = "icon.png", alt = "Mission Economics Icon")
-        ),
-        
         # Home Content --------------
         div(class = "home-content",
             div(style = "display: flex; align-items: center; justify-content: center;",
                 img(src = "icon.png", style = "height: 80px; width: auto; margin-right: 30px;"),
-                h1(HTML('<span style="font-weight: bold; color: #00a5df;">Get Real</span>'), 
-                   style = "margin-right: 0px;"),
+                h1(class = "gradient-text", 
+                   style = "font-weight: bold; margin-right: 0px;", 
+                   "Get Real"),
                 img(src = "icon.png", style = "height: 80px; width: auto; margin-left: 30px;")
             ),
             h3("Adjust your social values for inflation and time preferences. Make your impact clear!", align = "center"),
@@ -116,22 +186,14 @@ ui <- navbarPage(
               column(1),
               column(5, 
                      div(style = "height: 400px; overflow-y: auto; padding: 20px; border: 0px solid #ddd; border-radius: 5px; background-color: rgba(255, 255, 255, 0.7);",
-                         tags$ul(style = "list-style-type: none; padding-left: 0; font-size: 1.5em;",
-                                 tags$li(icon("chart-line", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Adjust social values for inflation using GDP deflators"),
-                                 tags$li(icon("clock", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Calculate present values with Treasury-approved discount rates"),
-                                 tags$li(icon("calculator", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Handle both standard and health/wellbeing values"),
-                                 tags$li(icon("file-alt", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Generate comprehensive reports for your adjusted values"),
-                                 tags$li(icon("coins", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Make fair comparisons of costs and benefits over time"),
-                                 tags$li(icon("book", class = "fa-solid", style = "color: #00a5df; margin-right: 10px;"),
-                                         "Built using Treasury Green Book guidance")
-                         )
-                     )
-              ),
+                         tags$ul(class = "svg-bullet", style = "font-size: 1.5em;",
+                                 tags$li("Adjust social values for inflation using GDP deflators"),
+                                 tags$li("Calculate present values with Treasury-approved discount rates"),
+                                 tags$li("Handle both standard and health/wellbeing values"),
+                                 tags$li("Generate comprehensive reports for your adjusted values"),
+                                 tags$li("Make fair comparisons of costs and benefits over time"),
+                                 tags$li("Built using Treasury Green Book guidance")))),
+              
               column(5, 
                      div(style = "height: 400px; display: flex; align-items: center; justify-content: center; border: 0px solid #ddd; border-radius: 5px; background-color: rgba(255, 255, 255, 0.7);",
                          tags$video(src = "get_real_intro.mp4", controls = TRUE, width = "100%", height = "auto",
@@ -146,7 +208,7 @@ ui <- navbarPage(
             )
         )
            ),
-      
+  
       # Accordion -------------------------------------------------------------------------------------------------
       div(class = "accordion-container",
           tags$div(class = "accordion custom-accordion", id = "accordionExample",
@@ -665,17 +727,18 @@ tabPanel("Present Values",
            ))),
            
 # FOOTER ------------------------------------------------------------------------------------------------------------------
-div(style = "width: 100%; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;",
-    div(style = "margin-left: 20px;", 
-        tags$a(href = "https://missioneconomics.org", target = "_blank",
-               img(src = "main-logo.png", style = "height: 200px; width: auto;")
-        )
-    ),
-    div(style = "margin-right: 20px;", 
-        tags$a(href = "https://missioneconomics.org", target = "_blank",
-               img(src = "main-logo.png", style = "height: 200px; width: auto;")
-        )
-    )
+footer = div(
+  style = "width: 100%; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;",
+  div(style = "margin-left: 20px;", 
+      tags$a(href = "https://missioneconomics.org", target = "_blank",
+             img(src = "main-logo.png", style = "height: 200px; width: auto;")
+      )
+  ),
+  div(style = "margin-right: 20px;", 
+      tags$a(href = "https://missioneconomics.org", target = "_blank",
+             img(src = "main-logo.png", style = "height: 200px; width: auto;")
+      )
+  )
 )
   
   # End UI -----
