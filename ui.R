@@ -79,7 +79,6 @@ custom_css <- "
 "
 
 # CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
-# CUSTOM BS-THEME ---------------------------------------------------------------------------------------------------------------------
 my_theme <- bs_theme(bootswatch = "flatly") %>%
   bs_theme_update(
     bg = "#ffffff",
@@ -223,11 +222,28 @@ ui <- navbarPage(
                                  ))),
               
               column(5, 
-                     div(style = "height: 400px; display: flex; align-items: center; justify-content: center; border: 0px solid #ddd; border-radius: 5px; background-color: rgba(255, 255, 255, 0.7);",
-                         tags$video(src = "get_real_intro.mp4", controls = TRUE, width = "100%", height = "auto",
-                                    style = "max-height: 100%; object-fit: contain;")
+                     div(style = "height: 400px; 
+                 display: flex; 
+                 align-items: center; 
+                 justify-content: center; 
+                 border: 1px solid #e0e0e0; 
+                 border-radius: 8px; 
+                 background-color: rgba(255, 255, 255, 0.7);
+                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                 padding: 10px;",
+                         tags$iframe(
+                           src = "https://www.powtoon.com/embed/ePwqY92sgIB/",
+                           width = "100%",
+                           height = "100%",
+                           frameborder = "0",
+                           allowfullscreen = TRUE,
+                           style = "max-height: 100%; 
+                    object-fit: contain;
+                    border-radius: 4px;"
+                         )
                      )
               ),
+              
               column(1)
             ),
             # Add Get Started button
@@ -368,6 +384,14 @@ ui <- navbarPage(
                                 <li><a href='https://www.gov.uk/government/collections/gdp-deflators-at-market-prices-and-money-gdp' target='_blank'>H.M. Treasury GDP Deflators</a></li>
                                 <li><a href='https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihxw/pn2' target='_blank'>Office for National Statistics GVA per head</a></li>
                               </ul>
+                              
+                              <p><strong>Version:</strong></p>
+                              <ul>
+                               <li>GDP Deflator series (standard social values): HM Treasury Autumn Budget, 30th October 2024</li>
+                               <li>GVA per capita series (wellbeing values): ONS release, 1st November 2024</li>
+                               <li>Next planned update: When HM Treasury release new GDP deflator series ahead of 2025 Spending Review</li>
+                              </ul>
+                              
                               <p>Need more details? Feel free to ask! <a href='mailto:allan@missioneconomics.org'>allan@missioneconomics.org</a></p>")
                             
                            )))))
@@ -385,11 +409,7 @@ ui <- navbarPage(
              tags$head(tags$script(src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")),
              tags$style(HTML(custom_css)),  # Include custom CSS
              tags$script(HTML("$(function() {$('.draggable-card').draggable();});")), # Include jQuery UI for draggable function
-             conditionalPanel(
-               condition = "output.showAlert == true",
-               div(class = "conditional-alert", "Does your social value occur in the future? Consider using our Present Value calculator.")
-             ),
-             
+
              # Calculator Fluid Row -------------------------------------------------------------------------------------------------
              fluidRow(column(6, offset = 3, div(class = "well",
                                                 # Inputs ----------
@@ -565,6 +585,15 @@ ui <- navbarPage(
                                 <li><a href='https://www.gov.uk/government/collections/gdp-deflators-at-market-prices-and-money-gdp' target='_blank'>H.M. Treasury GDP Deflators</a></li>
                                 <li><a href='https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihxw/pn2' target='_blank'>Office for National Statistics GVA per head</a></li>
                               </ul>
+                              
+                              <p><strong>Version:</strong></p>
+                              <ul>
+                               <li>GDP Deflator series (standard social values): HM Treasury Autumn Budget, 30th October 2024</li>
+                               <li>GVA per capita series (wellbeing values): ONS release, 1st November 2024</li>
+                               <li>Next planned update: When HM Treasury release new GDP deflator series ahead of 2025 Spending Review</li>
+                              </ul>
+                              
+                              
                               <p>Need more details? Feel free to ask! <a href='mailto:allan@missioneconomics.org'>allan@missioneconomics.org</a></p>")
                                       
                                   )))))
@@ -750,6 +779,14 @@ tabPanel("Present Values",
                                 <li><a href='https://www.gov.uk/government/collections/gdp-deflators-at-market-prices-and-money-gdp' target='_blank'>H.M. Treasury GDP Deflators</a></li>
                                 <li><a href='https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihxw/pn2' target='_blank'>Office for National Statistics GVA per head</a></li>
                               </ul>
+                              
+                              <p><strong>Version:</strong></p>
+                              <ul>
+                               <li>GDP Deflator series (standard social values): HM Treasury Autumn Budget, 30th October 2024</li>
+                               <li>GVA per capita series (wellbeing values): ONS release, 1st November 2024</li>
+                               <li>Next planned update: When HM Treasury release new GDP deflator series ahead of 2025 Spending Review</li>
+                              </ul>
+                              
                               <p>Need more details? Feel free to ask! <a href='mailto:allan@missioneconomics.org'>allan@missioneconomics.org</a></p>")
                                     
                                 )))))

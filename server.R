@@ -1,68 +1,70 @@
 library(httr)
 
-# Function to retrieve content from a text file
-get_content_from_file <- function(file_path) {
-  content <- readLines(file_path, warn = FALSE)
-  return(paste(content, collapse = "\n"))
-}
+# AI SET UP ------------------------------------------------------------------------------------------------------------
 
-# Function to retrieve relevant sections from a text document based on the user query using grep
-search_relevant_sections <- function(query, file_path) {
-  # Load the text document (Green Book)
-  text_content <- readLines(file_path, warn = FALSE)
-  
-  # Use grep to find relevant sections
-  matched_lines <- grep(query, text_content, value = TRUE)
-  
-  return(paste(matched_lines, collapse = "\n"))
-}
-
-# Read the API key from the configuration file
-config <- readLines("config.txt")
-api_key <- gsub("OPENAI_API_KEY=", "", config[grep("OPENAI_API_KEY", config)])
-
-openai_api_endpoint <- "https://api.openai.com/v1/chat/completions"
-
-# Function to call the OpenAI API
-openai_api_call <- function(prompt_text, conversation_history) {
-  # Retrieve the system prompt
-  system_prompt <- get_content_from_file("getreal_system_prompt.txt")
-  
-  # Initialize the conversation history with the initial system prompt if not already set
-  if (length(conversation_history) == 0) {
-    conversation_history <- list(list(role = "system", content = system_prompt))
+  # Function to retrieve content from a text file
+  get_content_from_file <- function(file_path) {
+    content <- readLines(file_path, warn = FALSE)
+    return(paste(content, collapse = "\n"))
   }
   
-  # Retrieve relevant sections based on the user prompt using grep
-  sections <- search_relevant_sections(prompt_text, "getreal_rag.txt")
+  # Function to retrieve relevant sections from a text document based on the user query using grep
+  search_relevant_sections <- function(query, file_path) {
+    # Load the text document (Green Book)
+    text_content <- readLines(file_path, warn = FALSE)
+    
+    # Use grep to find relevant sections
+    matched_lines <- grep(query, text_content, value = TRUE)
+    
+    return(paste(matched_lines, collapse = "\n"))
+  }
   
-  # Add the relevant sections to the conversation history
-  conversation_history <- c(conversation_history, list(list(role = "system", content = sections)))
+  # Read the API key from the configuration file
+  config <- readLines("config.txt")
+  api_key <- gsub("OPENAI_API_KEY=", "", config[grep("OPENAI_API_KEY", config)])
   
-  # Add the user message to the conversation history
-  conversation_history <- c(conversation_history, list(list(role = "user", content = prompt_text)))
+  openai_api_endpoint <- "https://api.openai.com/v1/chat/completions"
   
-  # API call
-  response <- POST(openai_api_endpoint,
-                   add_headers(Authorization = paste0("Bearer ", api_key)),
-                   body = list(model = "gpt-4", messages = conversation_history),
-                   encode = "json")
+  # Function to call the OpenAI API
+  openai_api_call <- function(prompt_text, conversation_history) {
+    # Retrieve the system prompt
+    system_prompt <- get_content_from_file("getreal_system_prompt.txt")
+    
+    # Initialize the conversation history with the initial system prompt if not already set
+    if (length(conversation_history) == 0) {
+      conversation_history <- list(list(role = "system", content = system_prompt))
+    }
+    
+    # Retrieve relevant sections based on the user prompt using grep
+    sections <- search_relevant_sections(prompt_text, "getreal_rag.txt")
+    
+    # Add the relevant sections to the conversation history
+    conversation_history <- c(conversation_history, list(list(role = "system", content = sections)))
+    
+    # Add the user message to the conversation history
+    conversation_history <- c(conversation_history, list(list(role = "user", content = prompt_text)))
+    
+    # API call
+    response <- POST(openai_api_endpoint,
+                     add_headers(Authorization = paste0("Bearer ", api_key)),
+                     body = list(model = "gpt-4", messages = conversation_history),
+                     encode = "json")
+    
+    # Parse the response
+    parsed_response <- content(response, "parsed")
+    assistant_message <- parsed_response$choices[[1]]$message$content
+    
+    # Add the assistant's message to the conversation history
+    conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
+    
+    # Return the assistant's message and the updated conversation history
+    return(list(assistant_message, conversation_history))
+  }
   
-  # Parse the response
-  parsed_response <- content(response, "parsed")
-  assistant_message <- parsed_response$choices[[1]]$message$content
-  
-  # Add the assistant's message to the conversation history
-  conversation_history <- c(conversation_history, list(list(role = "assistant", content = assistant_message)))
-  
-  # Return the assistant's message and the updated conversation history
-  return(list(assistant_message, conversation_history))
-}
+  # Initialize conversation history
+  conversation_history <- list()
 
-# Initialize conversation history
-conversation_history <- list()
-
-# SERVER SET UP -------------------------------------------------------------------------------------------------------------------------
+# SERVER SET UP ------------------------------------------------------------------------------------------------------------
 server <- function(input, output, session) {
   
   # INITIALISE TOOLTIP -----------------------------------------------------------------------------------------------------
@@ -95,6 +97,12 @@ server <- function(input, output, session) {
     rv$calculated <- FALSE
     rv$showAlert <- FALSE
     output$adjusted_value <- renderUI({NULL})
+  })
+  
+  # GET STARTED BUTTON -------------------------------------------------------------------------------------
+  # Add this in your server function
+  observeEvent(input$get_started, {
+    updateTabsetPanel(session, "navbarPage", selected = "Real Values")
   })
   
   # CALCULATOR ----------------------------------------------------------------------------------------------------------------------
