@@ -310,24 +310,29 @@ server <- function(input, output, session) {
   
   # CHATWELLBY -------------------------------------------------------------------------------------------------------------
   
-  conversation_history_rv <- reactiveVal(list())
+  # Initialize separate conversation histories for each tab
+  conversation_histories <- reactiveVal(list(
+    home = list(),
+    real = list(),
+    present = list()
+  ))
   
-  
-  # Chat for Home tab
-  
+  # Chat handler for Home tab
   output$chat_output_home <- renderUI({
     div(class = "chat-container empty-chat")
   })
   
   observeEvent(input$submit_home, {
-    shinyjs::show("loading-spinner-home")  # Show spinner while processing
+    shinyjs::show("loading-spinner-home")
+    
     user_message <- input$user_input_home
-    current_conversation_history <- conversation_history_rv()
+    histories <- conversation_histories()
+    current_history <- histories$home
     
     result <- tryCatch({
-      openai_api_call(user_message, current_conversation_history)
+      openai_api_call(user_message, current_history)
     }, error = function(e) {
-      print(paste("Error in openai_api_call: ", e$message))
+      print(paste("Error in openai_api_call:", e$message))
       return(NULL)
     })
     
@@ -335,15 +340,13 @@ server <- function(input, output, session) {
       assistant_message <- result[[1]]
       updated_history <- result[[2]]
       
-      conversation_history_rv(updated_history)
+      histories$home <- updated_history
+      conversation_histories(histories)
       
-      # Clear the user input message box
       updateTextInput(session, "user_input_home", value = "")
       
-      # Update the chat output to show the conversation
       output$chat_output_home <- renderUI({
         chat_contents <- lapply(updated_history, function(msg) {
-          # Skip system messages
           if (msg$role != "system") {
             if (msg$role == "user") {
               div(class = "chat-message user-message",
@@ -358,26 +361,27 @@ server <- function(input, output, session) {
         })
         do.call(div, c(list(class = "chat-container"), chat_contents))
       })
-      
     }
-    shinyjs::hide("loading-spinner-home")  # Hide spinner after processing
+    
+    shinyjs::hide("loading-spinner-home")
   })
   
-  
-  # Chat for Real Values tab
-  output$chat_output <- renderUI({
+  # Chat handler for Real Values tab
+  output$chat_output_real <- renderUI({
     div(class = "chat-container empty-chat")
   })
   
-  observeEvent(input$submit, {
-    shinyjs::show("loading-spinner")  # Show spinner while processing
-    user_message <- input$user_input
-    current_conversation_history <- conversation_history_rv()
+  observeEvent(input$submit_real, {
+    shinyjs::show("loading-spinner-real")
+    
+    user_message <- input$user_input_real
+    histories <- conversation_histories()
+    current_history <- histories$real
     
     result <- tryCatch({
-      openai_api_call(user_message, current_conversation_history)
+      openai_api_call(user_message, current_history)
     }, error = function(e) {
-      print(paste("Error in openai_api_call: ", e$message))
+      print(paste("Error in openai_api_call:", e$message))
       return(NULL)
     })
     
@@ -385,15 +389,13 @@ server <- function(input, output, session) {
       assistant_message <- result[[1]]
       updated_history <- result[[2]]
       
-      conversation_history_rv(updated_history)
+      histories$real <- updated_history
+      conversation_histories(histories)
       
-      # Clear the user input message box
-      updateTextInput(session, "user_input", value = "")
+      updateTextInput(session, "user_input_real", value = "")
       
-      # Update the chat output to show the conversation
-      output$chat_output <- renderUI({
+      output$chat_output_real <- renderUI({
         chat_contents <- lapply(updated_history, function(msg) {
-          # Skip system messages
           if (msg$role != "system") {
             if (msg$role == "user") {
               div(class = "chat-message user-message",
@@ -408,25 +410,27 @@ server <- function(input, output, session) {
         })
         do.call(div, c(list(class = "chat-container"), chat_contents))
       })
-      
     }
-    shinyjs::hide("loading-spinner")  # Hide spinner after processing
+    
+    shinyjs::hide("loading-spinner-real")
   })
   
-  # Chat for Present Values tab
-  output$chat_output_pv <- renderUI({
+  # Chat handler for Present Values tab
+  output$chat_output_present <- renderUI({
     div(class = "chat-container empty-chat")
   })
   
-  observeEvent(input$submit_pv, {
-    shinyjs::show("loading-spinner-pv")  # Show spinner while processing
-    user_message <- input$user_input_pv
-    current_conversation_history <- conversation_history_rv()
+  observeEvent(input$submit_present, {
+    shinyjs::show("loading-spinner-present")
+    
+    user_message <- input$user_input_present
+    histories <- conversation_histories()
+    current_history <- histories$present
     
     result <- tryCatch({
-      openai_api_call(user_message, current_conversation_history)
+      openai_api_call(user_message, current_history)
     }, error = function(e) {
-      print(paste("Error in openai_api_call: ", e$message))
+      print(paste("Error in openai_api_call:", e$message))
       return(NULL)
     })
     
@@ -434,15 +438,13 @@ server <- function(input, output, session) {
       assistant_message <- result[[1]]
       updated_history <- result[[2]]
       
-      conversation_history_rv(updated_history)
+      histories$present <- updated_history
+      conversation_histories(histories)
       
-      # Clear the user input message box
-      updateTextInput(session, "user_input_pv", value = "")
+      updateTextInput(session, "user_input_present", value = "")
       
-      # Update the chat output to show the conversation
-      output$chat_output_pv <- renderUI({
+      output$chat_output_present <- renderUI({
         chat_contents <- lapply(updated_history, function(msg) {
-          # Skip system messages
           if (msg$role != "system") {
             if (msg$role == "user") {
               div(class = "chat-message user-message",
@@ -457,9 +459,9 @@ server <- function(input, output, session) {
         })
         do.call(div, c(list(class = "chat-container"), chat_contents))
       })
-      
     }
-    shinyjs::hide("loading-spinner-pv")  # Hide spinner after processing
+    
+    shinyjs::hide("loading-spinner-present")
   })
   
   # END SERVER ------------------------------------------------------------------------------------------------------------------------

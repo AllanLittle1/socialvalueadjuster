@@ -258,35 +258,55 @@ ui <- navbarPage(
           tags$div(class = "accordion custom-accordion", id = "accordionExample",
                    
                    # Item 1: AI -------------
+                   # For the Home tab:
                    div(class = "accordion-item",
-                       h2(class = "accordion-header", id = "headingOneHome",
+                       h2(class = "accordion-header", id = "headingChatHome",
                           tags$button(class = "accordion-button collapsed", type = "button", 
-                                      `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOneHome", 
-                                      `aria-expanded` = "false", `aria-controls` = "collapseOneHome", 
-                                      span(class = "icon-padding", icon("comments")), "Chat with Get Real AI Assistant")),
-                       div(id = "collapseOneHome", class = "accordion-collapse collapse", 
-                           `aria-labelledby` = "headingOneHome", `data-bs-parent` = "#accordionExample",
+                                      `data-bs-toggle` = "collapse", 
+                                      `data-bs-target` = "#collapseChatHome", 
+                                      `aria-expanded` = "false", 
+                                      `aria-controls` = "collapseChatHome", 
+                                      span(class = "icon-padding", icon("comments")), 
+                                      "Chat with Get Real AI Assistant")),
+                       div(id = "collapseChatHome", 
+                           class = "accordion-collapse collapse", 
+                           `aria-labelledby` = "headingChatHome", 
+                           `data-bs-parent` = "#accordionExample",
                            div(class = "accordion-body",
                                div(class = "card", 
                                    div(class = "card-body",
                                        uiOutput("chat_output_home"),
-                                       textInput("user_input_home", " ", placeholder = "Enter your message"),
-                                       actionBttn(inputId = "submit_home", label = "Send", style = "unite", 
-                                                  size = "sm", color = "primary", icon = icon("paper-plane")),
+                                       textInput("user_input_home", " ", 
+                                                 placeholder = "Enter your message"),
+                                       actionBttn(
+                                         inputId = "submit_home", 
+                                         label = "Send", 
+                                         style = "unite", 
+                                         size = "sm", 
+                                         color = "primary", 
+                                         icon = icon("paper-plane")
+                                       ),
                                        br(),
-                                       div(class = "spinner", id = "loading-spinner-home", style = "display: none;"),
+                                       div(class = "spinner", 
+                                           id = "loading-spinner-home", 
+                                           style = "display: none;"),
                                        HTML("<small class='text-muted'>Get Real AI Assistant can make mistakes. Check important information.</small>"),
                                        bslib::tooltip(
-                                         tags$span(id = "ai_tooltip_home", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                         tags$span(
+                                           id = "ai_tooltip_home", 
+                                           class = "custom-info-icon", 
+                                           icon("circle-info", class = "fa-light")
+                                         ),
                                          "Get Real AI Assistant is a specialised tool for questions about inflation adjustments and present value calculations. While it works locally and doesn't store data, avoid entering sensitive or personal information.",
-                                       placement = "top", 
-                           options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
-                         )
+                                         placement = "top",
+                                         options = list(container = "body", html = TRUE)
+                                       )
                                    )
                                )
                            )
                        )
-                   ),
+                   )
+                   ,
                    
                    # Item 2: Understanding Social Value Adjustments -------------
                    div(class = "accordion-item",
@@ -460,28 +480,46 @@ ui <- navbarPage(
                           
                           # Item 1: AI -------------
                           div(class = "accordion-item",
-                              h2(class = "accordion-header", id = "headingOneHome",
+                              h2(class = "accordion-header", id = "headingChatReal",
                                  tags$button(class = "accordion-button collapsed", type = "button", 
-                                             `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOneHome", 
-                                             `aria-expanded` = "false", `aria-controls` = "collapseOneHome", 
-                                             span(class = "icon-padding", icon("comments")), "Chat with Get Real AI Assistant")),
-                              div(id = "collapseOneHome", class = "accordion-collapse collapse", 
-                                  `aria-labelledby` = "headingOneHome", `data-bs-parent` = "#accordionExample",
+                                             `data-bs-toggle` = "collapse", 
+                                             `data-bs-target` = "#collapseChatReal", 
+                                             `aria-expanded` = "false", 
+                                             `aria-controls` = "collapseChatReal", 
+                                             span(class = "icon-padding", icon("comments")), 
+                                             "Chat with Get Real AI Assistant")),
+                              div(id = "collapseChatReal", 
+                                  class = "accordion-collapse collapse", 
+                                  `aria-labelledby` = "headingChatReal", 
+                                  `data-bs-parent` = "#accordionExample",
                                   div(class = "accordion-body",
                                       div(class = "card", 
                                           div(class = "card-body",
-                                              uiOutput("chat_output_home"),
-                                              textInput("user_input_home", " ", placeholder = "Enter your message"),
-                                              actionBttn(inputId = "submit_home", label = "Send", style = "unite", 
-                                                         size = "sm", color = "primary", icon = icon("paper-plane")),
+                                              uiOutput("chat_output_real"),
+                                              textInput("user_input_real", " ", 
+                                                        placeholder = "Enter your message"),
+                                              actionBttn(
+                                                inputId = "submit_real", 
+                                                label = "Send", 
+                                                style = "unite", 
+                                                size = "sm", 
+                                                color = "primary", 
+                                                icon = icon("paper-plane")
+                                              ),
                                               br(),
-                                              div(class = "spinner", id = "loading-spinner-home", style = "display: none;"),
+                                              div(class = "spinner", 
+                                                  id = "loading-spinner-real", 
+                                                  style = "display: none;"),
                                               HTML("<small class='text-muted'>Get Real AI Assistant can make mistakes. Check important information.</small>"),
                                               bslib::tooltip(
-                                                tags$span(id = "ai_tooltip_home", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                                tags$span(
+                                                  id = "ai_tooltip_real", 
+                                                  class = "custom-info-icon", 
+                                                  icon("circle-info", class = "fa-light")
+                                                ),
                                                 "Get Real AI Assistant is a specialised tool for questions about inflation adjustments and present value calculations. While it works locally and doesn't store data, avoid entering sensitive or personal information.",
-                                                placement = "top", 
-                                                options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                                placement = "top",
+                                                options = list(container = "body", html = TRUE)
                                               )
                                           )
                                       )
@@ -654,28 +692,46 @@ tabPanel("Present Values",
                         
                         # Item 1: AI -------------
                         div(class = "accordion-item",
-                            h2(class = "accordion-header", id = "headingOneHome",
+                            h2(class = "accordion-header", id = "headingChatPresent",
                                tags$button(class = "accordion-button collapsed", type = "button", 
-                                           `data-bs-toggle` = "collapse", `data-bs-target` = "#collapseOneHome", 
-                                           `aria-expanded` = "false", `aria-controls` = "collapseOneHome", 
-                                           span(class = "icon-padding", icon("comments")), "Chat with Get Real AI Assistant")),
-                            div(id = "collapseOneHome", class = "accordion-collapse collapse", 
-                                `aria-labelledby` = "headingOneHome", `data-bs-parent` = "#accordionExample",
+                                           `data-bs-toggle` = "collapse", 
+                                           `data-bs-target` = "#collapseChatPresent", 
+                                           `aria-expanded` = "false", 
+                                           `aria-controls` = "collapseChatPresent", 
+                                           span(class = "icon-padding", icon("comments")), 
+                                           "Chat with Get Real AI Assistant")),
+                            div(id = "collapseChatPresent", 
+                                class = "accordion-collapse collapse", 
+                                `aria-labelledby` = "headingChatPresent", 
+                                `data-bs-parent` = "#accordionExample",
                                 div(class = "accordion-body",
                                     div(class = "card", 
                                         div(class = "card-body",
-                                            uiOutput("chat_output_home"),
-                                            textInput("user_input_home", " ", placeholder = "Enter your message"),
-                                            actionBttn(inputId = "submit_home", label = "Send", style = "unite", 
-                                                       size = "sm", color = "primary", icon = icon("paper-plane")),
+                                            uiOutput("chat_output_present"),
+                                            textInput("user_input_present", " ", 
+                                                      placeholder = "Enter your message"),
+                                            actionBttn(
+                                              inputId = "submit_present", 
+                                              label = "Send", 
+                                              style = "unite", 
+                                              size = "sm", 
+                                              color = "primary", 
+                                              icon = icon("paper-plane")
+                                            ),
                                             br(),
-                                            div(class = "spinner", id = "loading-spinner-home", style = "display: none;"),
+                                            div(class = "spinner", 
+                                                id = "loading-spinner-present", 
+                                                style = "display: none;"),
                                             HTML("<small class='text-muted'>Get Real AI Assistant can make mistakes. Check important information.</small>"),
                                             bslib::tooltip(
-                                              tags$span(id = "ai_tooltip_home", class = "custom-info-icon", icon("circle-info", class = "fa-light")),
+                                              tags$span(
+                                                id = "ai_tooltip_present", 
+                                                class = "custom-info-icon", 
+                                                icon("circle-info", class = "fa-light")
+                                              ),
                                               "Get Real AI Assistant is a specialised tool for questions about inflation adjustments and present value calculations. While it works locally and doesn't store data, avoid entering sensitive or personal information.",
-                                              placement = "top", 
-                                              options = list(container = "body", html = TRUE, customClass = "custom-tooltip-class")
+                                              placement = "top",
+                                              options = list(container = "body", html = TRUE)
                                             )
                                         )
                                     )
