@@ -1,5 +1,5 @@
 ---
-title: "Get Real: Real Values Report"
+title: "Real Value Report"
 output: 
   officedown::rdocx_document:
     reference_docx: Mission Economics Template.docx
@@ -13,6 +13,9 @@ params:
   year_type: NULL
   value_type: NULL
   deflators_df: NULL
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -20,67 +23,95 @@ library(officer)
 library(flextable)
 ```
 
-# Get Real: Your Social Value in Today's Terms - `r format(Sys.Date(), "%d %B %Y")`
+# `r format(Sys.Date(), "%d %B %Y")`
 
-## Your Updated Social Value
+## Summary
 
-Good news! Your social value has been adjusted for inflation:
+Your social value has been adjusted from **£`r params$nominal_value`**
+(`r params$price_year` prices) to **£`r params$adjusted_value`**
+(`r params$adjusted_year` prices).
 
-- Original value: **£`r params$nominal_value`** in **`r params$price_year`** prices
-- Updated value: **£`r params$adjusted_value`** in today's terms (**`r params$adjusted_year`** prices)
+### Details
 
-Over this period, prices increased by **`r params$cumulative_inflation`%** in total, averaging **`r params$avg_inflation`%** per year. We based these calculations on **`r if (params$year_type == 'fy') 'financial years' else 'calendar years'`** and used **`r if (params$value_type == 'wellbeing') 'wellbeing values' else 'standard social values'`**.
+- Calculation basis: `r if (params$year_type == 'fy') 'Financial Years' else 'Calendar Years'` -
+- Value type: `r if (params$value_type == 'wellbeing') 'Wellbeing Values' else 'Standard Social Values'` 
+- Price change: `r params$cumulative_inflation`% 
+- Average annual change: `r params$avg_inflation`%
 
-Want to check our math or calculate values for multiple years? Download the inflation data (CSV file) from the Get Real app.
+## Understanding Your Adjusted Value
 
-## Why Updating Your Social Value Matters
+### Why update my value?
 
-1. **Fair Comparisons:** It lets you accurately compare your social benefits to current investment costs when calculating your Social Return on Investment (SROI).
+Your updated value more accurately reflects today's economic conditions.
+This adjustment is essential for:
 
-2. **Avoiding Underestimation:** Recent high inflation means older values might be selling your impact short. For example, a value from five years ago could be about 20% higher today!
+1.  Making fair cost-benefit comparisons
+2.  Ensuring your social impact isn't undervalued
+3.  Meeting H.M. Treasury Green Book requirements
 
-3. **Trustworthiness:** Government bodies and funders expect to see up-to-date values. Following official guidance (like the H.M. Treasury Green Book) shows you're doing things by the book.
+### Methodology
 
-## Inflation Explained Simply
+We use the GDP deflator, the Treasury's recommended inflation index because it: 
 
-Imagine you could buy a sandwich for £5 last year, but now it costs £5.50. That 50p increase is inflation in action. When we talk about 'real terms,' we're adjusting for these price changes to make fair comparisons over time.
+- Captures economy-wide price changes 
+- Is the best measure for public sector and non-market impacts 
+- Follows Government guidance for Business Cases
 
-## How We Update Your Value
+You selected
+`r if (params$value_type == 'wellbeing') 'wellbeing' else 'standard'`
+values. For these we use the following formula:
 
-We use something called the GDP deflator - it's the government's preferred way to measure overall price changes in the economy. While you might have heard of the Consumer Price Index (CPI), the GDP deflator is better for estimating the real value of things we don't typically buy, like public services.
+`r if (params$value_type == 'wellbeing') {   "Real Value = Nominal Value × (GDP Deflator[Real Year] / GDP Deflator[Nominal Year]) × (GDP per Capita[Real Year] / GDP per Capita[Nominal Year])^1.3" } else {   "Real Value = Nominal Value × (GDP Deflator[Real Year] / GDP Deflator[Nominal Year])" }`
 
-## For the Technically Curious
+`r if (params$value_type == 'wellbeing') {   "The additional GDP per capita adjustment (with power 1.3) accounts for the diminishing marginal utility of income as society's wealth increases." }`
 
-- Our app uses forecasts from the Office for Budget Responsibility (OBR) to estimate values up to 2028.
-- For longer-term projections, check out the OBR Fiscal Sustainability Report.
-- Sometimes, specific inflation rates (e.g., for construction projects) can be used, but this needs solid justification.
+## Technical Notes
 
-## Data Sources
+### Sources
 
-- GDP Deflators: Based on ONS Quarterly National Accounts (updated 28 March 2024) and OBR forecasts from the 6 March 2024 Budget.
-- Wellbeing Calculations: Use GDP per head figures released on 10 May 2024.
+-   H.M. Treasury Green
+    Book: https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government
+-   H.M. Treasury (2021) Wellbeing Guidance for
+    Appraisal: https://www.gov.uk/government/publications/green-book-supplementary-guidance-wellbeing)
+-   H.M. Treasury GDP
+    Deflator: https://www.gov.uk/government/collections/gdp-deflators-at-market-prices-and-money-gdp)
+-   Office for National Statistics GVA per
+    head: https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihxw/pn2)
 
-Need more details? Feel free to ask!
+### Version
+
+-   GDP Deflator series (standard social values): HM Treasury Autumn
+    Budget, 30th October 2024
+-   GVA per capita series (wellbeing values): ONS release, 1st November
+    2024
+-   Next planned update: When HM Treasury release new GDP deflator
+    series ahead of 2025 Spending Review
+
+## Next Steps
+
+1.  Download the complete deflator series (CSV) from the app for batch
+    calculations
+2.  Consider whether your values need converting to Present Values
+3.  Use these adjusted figures in your business case or impact reporting
 
 \newpage
 
-## Annex: GDP deflators and GVA per head
+## Appendix: Reference Data
+
+### GDP Deflators and GVA per Head
 
 ```{r, echo=FALSE, results='asis'}
-# Create a nicely formatted flextable
 df <- params$deflators_df
 ft <- flextable(df)
 ft <- theme_vanilla(ft)
 ft <- autofit(ft)
-
-# Remove the default header row
 ft <- delete_part(ft, part = "header")
-
-# Add a custom header row
-ft <- add_header_row(ft, values = c("Year", "Deflator CY", "Deflator FY", "Label FY", "GVA per Capita"))
-
-# Print the table
+ft <- add_header_row(ft, values = c("Year", "Calendar Year Deflator", "Financial Year Deflator", "Financial Year Label", "GVA per Head (£)"))
+ft <- set_table_properties(ft, width = 1, layout = "autofit")
 ft
-
-
 ```
+
+------------------------------------------------------------------------
+
+*Report generated using Get Real*\
+*A Mission Economics tool: www.missioneconomics.org*

@@ -160,12 +160,13 @@ server <- function(input, output, session) {
         div(style = "text-align: center; position: relative;",
             HTML(paste0("<div style='text-align: center; font-size: 18px;'>",
                         "Your value in real terms is <b style='color: #337ab7;'>£", 
-                        format(round(rv$adjusted_value, 2), big.mark = ","), "</b>.</div>")),
+                        format(round(rv$adjusted_value, 2), big.mark = ",", nsmall = 2), "</b>.</div>")),
             br(),
             HTML(paste0("<div style='font-size: 14px; color: #666; text-align: center;'>",
                         "Cumulative inflation ", input$price_year, " to ", input$adjusted_year, ": ",
                         round(rv$cumulative_inflation, 1), "%<br>",
-                        "Average inflation per year: ", round(rv$avg_inflation, 1), "%<br>","</div>")))})
+                        "Average inflation per year: ", round(rv$avg_inflation, 1), "%<br>","</div>")))
+      })
       
       # Show additional buttons after calc ------
       shinyjs::show("additional_buttons")
@@ -261,7 +262,7 @@ server <- function(input, output, session) {
         div(style = "text-align: center; position: relative;",
             HTML(paste0("<div style='text-align: center; font-size: 18px;'>",
                         "The present value is <b style='color: #337ab7;'>£", 
-                        format(round(rv_pv$present_value, 2), big.mark = ","), "</b>.</div>")),
+                        format(round(rv_pv$present_value, 2), big.mark = ",", nsmall = 2), "</b>.</div>")),
             br(),
             HTML(paste0("<div style='font-size: 14px; color: #666; text-align: center;'>",
                         "Discount factor: ", round(rv_pv$discount_factor, 4), "<br>",

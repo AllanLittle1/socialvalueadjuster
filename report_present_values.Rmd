@@ -9,13 +9,13 @@ params:
   pv_present_year: NULL
   present_value: NULL
   discount_factor: NULL
-  years_diff: NULL
+  years_diff: NULL 
   pv_discount_type: NULL
   pv_rate_type: NULL
   discount_factors_df: NULL
 editor_options: 
   markdown: 
-    wrap: sentence
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -23,52 +23,58 @@ library(officer)
 library(flextable)
 library(dplyr)
 ```
-# Get Real: What's Your Future Social Value Worth Today? - `r format(Sys.Date(), "%d %B %Y")`
 
-## Your Future Value, Translated to Today
+# `r format(Sys.Date(), "%d %B %Y")`
 
-Great news! We've calculated what your future social value is worth right now:
+## Summary
 
-- Future value: **£`r params$pv_real_value`** in **`r params$pv_future_year`**
-- Value today: **£`r params$present_value`** in **`r params$pv_present_year`**
+Your future social value has been discounted from **£`r params$pv_real_value`** in **`r params$pv_future_year`** to a present value of **£`r params$present_value`** in **`r params$pv_present_year`**.
 
-We applied a discount factor of **`r params$discount_factor`** over **`r params$years_diff`** years to make this calculation.
+### Details
 
-Want to crunch the numbers yourself or calculate values for multiple years? Download our discount factor data (CSV file) from the Get Real app.
+- Discount factor applied: `r params$discount_factor`
+- Years discounted: `r params$years_diff`
+- Discount rate type: `r if(params$pv_discount_type == "standard") "Standard" else "Health"`
+- Rate variant: `r if(params$pv_rate_type == "standard_stpr") "Standard STPR" else "Reduced Rate"`
 
-## Why Do We "Discount" Future Values?
+## Understanding Present Values
 
-1. **Fair Project Comparisons:** It helps you compare projects with different timelines on an equal footing.
-2. **Balancing Costs and Benefits:** You can weigh today's costs against future benefits more accurately.
-3. **Credibility Boost:** Funders and government bodies expect to see values adjusted this way in your Social Return on Investment (SROI) calculations.
+### Why discount future values?
 
-## The Time Value of Social Impact: A Simple Explanation
+Society generally prefers to receive benefits sooner rather than later. This preference is captured through discounting. Converting future values to present values is essential for:
 
-Imagine being offered £100 today or £100 in a year. Most would choose the money now, right? The same principle applies to social value. We "discount" future values to reflect this preference for immediate benefits.
+1. **Fair comparison** - Compare projects with different timelines on an equal basis
+2. **Balanced decision making** - Weigh upfront costs against future net benefits
+3. **Credibility** - Meet Treasury Business Cases requirements
 
-This discounting is separate from inflation adjustment. Think of it this way:
-1. First, we adjust for inflation to get "real" values.
-2. Then, we discount these "real" values to find out what they're worth today.
+### How We Calculate Present Value
 
-## How We Calculate Present Value
+For individual future values, we use this formula:
 
-We use official Treasury discount rates, which actually decrease over time. Why? It helps give more weight to long-term impacts, especially on future generations.
+Present Value = Future Value ÷ (1 + discount rate)^years
 
-Different rates apply to different types of projects:
-- Standard projects: Start at 3.5% for the first 30 years, then gradually decrease.
-- Health and wellbeing projects: Use lower rates, starting at 1.5% for the first 30 years.
+The discount rate varies by:
+- Time period (lower rates for longer periods)
+- Benefit type (lower rates for health/wellbeing)
+- Pure time preference assumptions
 
-## For Those Who Love the Details
+## Technical Details
 
-Here's our calculation process:
+### Standard Discount Rates
 
-1. Make sure future values are in "real" terms (inflation-adjusted).
-2. Choose the right discount rate based on your project type and timeline.
-3. Use this formula: Present Value = Future Value / (1 + discount rate)^(number of years)
-4. For multiple years of benefits or costs, calculate each year separately and add them up.
+- Years 0-30: 3.5%
+- Years 31-75: 3.0%
+- Years 76-125: 2.5%
 
-## Our Data Sources
+### Health Discount Rates
 
-We use discount rates from the latest HM Treasury Green Book guidance (2023 update).
+- Years 0-30: 1.5%
+- Years 31-75: 1.29%
+- Years 76-125: 1.07%
 
-Need more information or help with complex calculations? Don't hesitate to ask a social value expert!
+### Tips
+
+1. Always use real values (inflation-adjusted) before discounting
+2. Never discount past values - only future ones
+
+
